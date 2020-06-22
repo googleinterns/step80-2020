@@ -1,0 +1,4 @@
+com/google/sps/data/Profile.class
+com/google/sps/servlets/DataServlet.class
+com/google/sps/servlets/UserServlet.class
+com/google/sps/servlets/ProfileServlet.class
