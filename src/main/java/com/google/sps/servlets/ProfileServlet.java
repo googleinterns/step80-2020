@@ -35,6 +35,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject;
 
+import java.util.Arrays;
+import java.util.ArrayList;
+
 /** Servlet that posts and gets user profiles in Datastore */
 @WebServlet("/profile")
 public class ProfileServlet extends HttpServlet {
@@ -54,13 +57,13 @@ public class ProfileServlet extends HttpServlet {
       if (entity == null) {
         responseMap.put("hasProfile", false);
       } else {
-        long id = (long) entity.getProperty("id");
+        String id = (String) entity.getProperty("id");
         String userName = (String) entity.getProperty("userName");
         boolean vegetarian = (boolean) entity.getProperty("vegetarian");
         boolean vegan = (boolean) entity.getProperty("vegan");
         boolean glutenFree = (boolean) entity.getProperty("glutenFree");
         boolean dairyFree = (boolean) entity.getProperty("dairyFree");
-        String[] allergies = (String[]) entity.getProperty("allergies");
+        ArrayList<String> allergies = (ArrayList<String>) entity.getProperty("allergies");
 
         Profile profileObject = new Profile(id, userName, vegetarian, vegan, glutenFree, dairyFree, allergies);
         responseMap.put("profile", profileObject);
@@ -96,7 +99,7 @@ public class ProfileServlet extends HttpServlet {
       boolean glutenFree = Boolean.parseBoolean(request.getParameter("glutenFree"));
       boolean dairyFree = Boolean.parseBoolean(request.getParameter("dairyFree"));
       String[] allergies = request.getParameterValues("allergies");
-
+      
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       Entity entity = new Entity("Profile", id);
       entity.setProperty("id", id);
@@ -105,7 +108,7 @@ public class ProfileServlet extends HttpServlet {
       entity.setProperty("vegan", vegan);
       entity.setProperty("glutenFree", glutenFree);
       entity.setProperty("dairyFree", dairyFree);
-      entity.setProperty("allergies", allergies);
+      entity.setProperty("allergies", Arrays.asList(allergies));
       
       // The put() function automatically inserts new data or updates existing data based on id
       datastore.put(entity);
