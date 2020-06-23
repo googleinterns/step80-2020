@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.json.simple.JSONObject;
 
-/** Servlet that returns and saves comments in Datastore */
+/** Servlet that posts and gets user profiles in Datastore */
 @WebServlet("/profile")
 public class ProfileServlet extends HttpServlet {
   
