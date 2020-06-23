@@ -40,7 +40,7 @@ function getLoginStatus() {
       if (userInfo.hasProfile) {
         textElement.innerHTML = "Welcome, <strong>" + userInfo.userName + "</strong>";
       } else {
-        textElement.innerHTML = "Welcome! Remember to set a profile!";
+        textElement.innerHTML = "Welcome! Remember to create a profile!";
       }
 
       loginStatusElement.appendChild(logoutElement);
@@ -58,5 +58,4 @@ function getLoginStatus() {
       loginStatusElement.appendChild(textElement);
     }
   });
-
 }
