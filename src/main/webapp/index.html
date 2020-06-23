@@ -8,14 +8,14 @@
   </head>
   <body class="home-body">
     <h2>Popup Form</h2>
-    <button id="popupButton" class="open-button" onclick="openForm()">Analyze Your Dish</button>
-    <div class="form-popup" id="myForm">
+    <button id="popup-button" class="open-button" onclick="openImageForm()">Analyze Your Dish</button>
+    <div class="form-popup" id="popup">
       <form action="/vision" method="POST" class="form-container">
         <input type="file" id="image" name="image" accept="image/png, image/jpeg" multiple="false" onchange="preview(this);">
         <img class="image-preview" id="image-preview" >
         <br>
         <button type="submit" class="btn">Upload</button>
-        <button type="submit" class="btn cancel" onclick="closeForm()">Cancel</button>
+        <button type="submit" class="btn cancel" onclick="closeImageForm()">Cancel</button>
       </form>
     </div>
   </body>

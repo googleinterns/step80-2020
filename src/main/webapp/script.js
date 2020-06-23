@@ -12,18 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function openForm() {
-  document.getElementById("myForm").style.display = "block";
-  document.getElementById("popupButton").style.display = "none";
+/* Opens form for user to submit image of dish for anlysis on home page */
+function openImageForm() {
+  document.getElementById("popup").style.display = "block";
+  document.getElementById("popup-button").style.display = "none";
 }
 
-function closeForm() {
-  document.getElementById("myForm").style.display = "none";
-  document.getElementById("popupButton").style.display = "block";
+/* Closes form for user to submit image of dish */
+function closeImageForm() {
+  document.getElementById("popup").style.display = "none";
+  document.getElementById("popup-button").style.display = "block";
 }
 
+/* Generates a preview of the user's uploaded image */
 function preview(input) {
-//   document.getElementById("image-preview").src = "none";
   if(input.files && input.files[0]) {
       var reader = new FileReader();
       reader.onload = function (e) {
