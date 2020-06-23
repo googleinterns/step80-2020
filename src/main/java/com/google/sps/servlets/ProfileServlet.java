@@ -33,8 +33,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
 import org.json.simple.JSONObject;
 
 /** Servlet that posts and gets user profiles in Datastore */
