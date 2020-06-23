@@ -10,14 +10,14 @@
   <body onload="getProfile()"> 
     <h2>Profile</h2>
     <p id="saved-profile-status"></p>
-    <form action="javascript:postProfile()" method="POST">
-      <p>Username</p>
+    <form action="javascript:postProfile()" method="POST" onchange="clearSavedProfileStatus()">
+      <span>Username</span>
       <textarea id="name-entry" required="true" placeholder="Place your username here..." name="name-input"></textarea>
       <br/><input id="vegetarian-checkbox" type="checkbox"/><span>Vegetarian</span>
       <br/><input id="vegan-checkbox" type="checkbox"/><span>Vegan</span>
       <br/><input id="gluten-checkbox" type="checkbox"/><span>Gluten Free</span>
       <br/><input id="dairy-checkbox" type="checkbox"/><span>Dairy Free</span>
-      <br/><textarea id="allergies-entry" placeholder="Separate allergies using commas.." name="allergy-input"></textarea>
+      <br/><span>Allergies</span><textarea id="allergies-entry" placeholder="Separate allergies using commas.." name="allergy-input"></textarea>
       <br/><input id="profile-submit-button" type="submit" />
     </form>
   </body>

@@ -61,13 +61,17 @@ function postProfile() {
 
   fetch('/profile', {method: 'POST', body: params}).then(response => response.json()).then((message) => {
     const profileStatusElement = document.getElementById('saved-profile-status');
-    profileStatusElement.innerHTML = "";
     if (message.error != null) {
       alert(message.error);
     } else {
       profileStatusElement.innerHTML = "saved";
     }
   });
+}
+
+function clearSavedProfileStatus() {
+  const profileStatusElement = document.getElementById('saved-profile-status');
+  profileStatusElement.innerHTML = "";
 }
 
 /**
