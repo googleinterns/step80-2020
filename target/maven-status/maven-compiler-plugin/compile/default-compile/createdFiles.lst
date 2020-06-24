@@ -1,2 +1,4 @@
+com/google/sps/servlets/BlobstoreImageServlet.class
+Serve.class
 com/google/sps/servlets/DataServlet.class
 com/google/sps/servlets/VisionServlet.class

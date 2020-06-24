@@ -23,35 +23,40 @@ import com.google.cloud.vision.v1.Feature.Type;
 import com.google.cloud.vision.v1.Image;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.google.protobuf.ByteString;
+import javax.servlet.ServletException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import javax.imageio.ImageIO;
 import java.util.ArrayList;
 import java.util.List;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+
 
 /** Servlet that uses VisionAPI to analyze uploaded images */
 @WebServlet("/vision")
+@MultipartConfig
 public class VisionServlet extends HttpServlet {
-
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    
     // Initialize client used to send requests.
     try (ImageAnnotatorClient vision = ImageAnnotatorClient.create()) {
-      // Get the file path from the form.
-      String fileName = getParameter(request, "image", "");
+      // Read the image file in
+      Part imgPart = request.getPart("image");
+      InputStream imgStream = imgPart.getInputStream();
+      ByteString imgBytes = ByteString.readFrom(imgStream);
 
-      // Reads the image file into memory
-      Path path = Paths.get(fileName);
-      byte[] data = Files.readAllBytes(path);
-      ByteString imgBytes = ByteString.copyFrom(data);
-
-      // Builds the image annotation request
+      // Build the image annotation request
       List<AnnotateImageRequest> requests = new ArrayList<>();
       Image img = Image.newBuilder().setContent(imgBytes).build();
       Feature feat = Feature.newBuilder().setType(Type.LABEL_DETECTION).build();
@@ -77,10 +82,4 @@ public class VisionServlet extends HttpServlet {
       }
     }
   }
-  /* Returns parameter value given its name */
-  private String getParameter(HttpServletRequest request, String name, String defaultValue) {
-    String value = request.getParameter(name);
-    return value;
-  }
 }
-
