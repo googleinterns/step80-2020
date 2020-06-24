@@ -38,6 +38,11 @@
       <artifactId>google-cloud-language</artifactId>
       <version>1.55.0</version>
     </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.core</groupId>
+      <artifactId>jersey-client</artifactId>
+      <version>2.25.1</version>
+    </dependency>
   </dependencies>
 
   <build>
