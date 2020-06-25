@@ -55,3 +55,7 @@ handlers:
   script: unused
   login: optional
   secure: optional
+- url: /dishId
+  script: unused
+  login: optional
+  secure: optional

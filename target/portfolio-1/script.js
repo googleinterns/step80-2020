@@ -12,6 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/* Slideshow that rotates through different background images */
+function startSlideshow() {
+    var images = new Array('/images/redbgr.jpg','/images/greenbgr.jpg','/images/yellowbgr.jpg', '/images/purplebgr.jpg', '/images/orangebgr.jpg');
+    var count = images.length;
+    document.body.style.backgroundImage = 'url("' + images[Math.floor(Math.random() * count)] + '")';
+    setTimeout(startSlideshow, 5000);
+}
+
 /* Opens form for user to submit image of dish for anlysis on home page */
 function openImageForm() {
   document.getElementById("popup").style.display = "block";
@@ -34,3 +42,5 @@ function preview(input) {
     reader.readAsDataURL(input.files[0]);
   }
 }
+
+/* Function that calls Spoonacular API with appropriate query string as classified by Vision API */
