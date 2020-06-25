@@ -64,14 +64,14 @@ function postProfile() {
     if (message.error != null) {
       alert(message.error);
     } else {
-      profileStatusElement.innerHTML = "saved";
+      profileStatusElement.style.display = "block";
     }
   });
 }
 
 function clearSavedProfileStatus() {
   const profileStatusElement = document.getElementById('saved-profile-status');
-  profileStatusElement.innerHTML = "";
+  profileStatusElement.style.display = "none";
 }
 
 /**
@@ -111,4 +111,81 @@ function getLoginStatus() {
     }
   });
 
+}
+
+// test function for displaying recipes
+function hardCodedRecipeCard() {
+  const displayRecipeElement = document.getElementById('display-recipes');
+  displayRecipeElement.innerHTML = "";
+  displayRecipeElement.appendChild(createRecipeElement());
+}
+
+/** Creates an element that represents a recipe */
+// currently only has hardcoded values
+function createRecipeElement() {
+  const recipeElement = document.createElement('div');
+  recipeElement.className = 'recipe-card';
+
+  const titleElement = document.createElement('p');
+  titleElement.innerText = "Title";
+  recipeElement.appendChild(titleElement);
+
+  const infoElements = document.createElement('div');
+  infoElements.className = 'recipe-card-block';
+
+  const imageElement = document.createElement('img');
+  imageElement.src = "/images/salad.jpeg";
+  infoElements.appendChild(imageElement);
+
+  const linkElement = document.createElement('a');
+  linkElement.href = "https://www.w3schools.com/jsref/dom_obj_image.asp";
+  linkElement.innerHTML = "<br/>random link";
+  infoElements.appendChild(linkElement);
+
+  recipeElement.appendChild(infoElements);
+
+  const alertElements = document.createElement('div');
+  alertElements.className = 'recipe-card-block';
+
+  const dietaryAlertElement = document.createElement('p');
+  dietaryAlertElement.className = 'dietary-alert';
+  dietaryAlertElement.innerText = "Dietary Alert";
+  alertElements.appendChild(dietaryAlertElement);
+
+  const allergiesAlertElement = document.createElement('p');
+  allergiesAlertElement.className = 'allergies-alert';
+  allergiesAlertElement.innerText = "Allergies Alert";
+  alertElements.appendChild(allergiesAlertElement);
+
+  recipeElement.appendChild(alertElements);
+
+  const breakElement = document.createElement('br');
+  recipeElement.appendChild(breakElement);
+
+  recipeElement.appendChild(createTagElement("Favorite"));
+  recipeElement.appendChild(createTagElement("Dinner"));
+
+  return recipeElement;
+}
+
+/** Creates an element that represents a tag. */
+// currently does not do post request to server
+function createTagElement(tag) {
+  const tagElement = document.createElement('div');
+  tagElement.className = 'recipe-tag';
+
+  const titleElement = document.createElement('span');
+  titleElement.innerText = tag;
+
+  const deleteButtonElement = document.createElement('button');
+  deleteButtonElement.innerText = 'X';
+  deleteButtonElement.className = "delete-tag-button";
+  deleteButtonElement.addEventListener('click', () => {
+    // Remove the tag from the DOM.
+    tagElement.remove();
+  });
+
+  tagElement.appendChild(titleElement);
+  tagElement.appendChild(deleteButtonElement);
+  return tagElement;
 }
