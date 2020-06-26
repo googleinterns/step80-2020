@@ -90,30 +90,36 @@
 }
 
 .recipe-card {
+  background-image: url("/images/recipe-card-background.jpg");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
   border: solid 2px black;
   margin: 5px;
-  padding: 20px;
+  padding: 110px 40px 20px 40px;
+  position: relative;
+}
+
+.recipe-card-title {
+  font-size: 40px;
+  margin-left: 130px;
+  position: absolute;
+  top: 20px;
 }
 
 .recipe-card-block {
-  border: solid 2px green;
   height: 100%;
   margin: auto;
   width: 45%;
 }
 
 .recipe-card-table {
-  border: solid 2px orange;
   display: flex;
 }
 
-.dietary-alert {
-  background: red;
-  padding: 10px;
-}
-
-.allergies-alert {
-  background: yellow;
+.recipe-alert {
+  background: none;
+  display: flex;
+  margin: auto;
   padding: 10px;
 }
 
@@ -121,7 +127,7 @@
   background: #88b7d5;
   border: 4px solid #c2e1f5;
   display: inline-block;
-  margin: 10px 20px 10px 20px;
+  margin: 0px 20px 0px 20px;
   padding: 5px 10px;
   position: relative;
   width: auto;

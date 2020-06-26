@@ -117,18 +117,19 @@ function getLoginStatus() {
 function hardCodedRecipeCard() {
   const displayRecipeElement = document.getElementById('display-recipes');
   displayRecipeElement.innerHTML = "";
-  displayRecipeElement.appendChild(createRecipeElement());
-  displayRecipeElement.appendChild(createRecipeElement());
+  // recipes.forEach(recipe => displayRecipeElement.appendChild(createRecipeElement(recipe)));
+  displayRecipeElement.appendChild(createRecipeElement("Placeholder for recipe json"));
 }
 
 /** Creates an element that represents a recipe card */
 // currently only has hardcoded values
-function createRecipeElement() {
+function createRecipeElement(recipe) {
   const recipeElement = document.createElement('div');
   recipeElement.className = 'recipe-card';
 
   const titleElement = document.createElement('p');
-  titleElement.innerText = "Title";
+  titleElement.innerText = "Title"; // replace with recipe title
+  titleElement.className = "recipe-card-title";
   recipeElement.appendChild(titleElement);
 
   const recipeTableElement = document.createElement('p');
@@ -138,31 +139,20 @@ function createRecipeElement() {
   infoElements.className = 'recipe-card-block';
 
   const imageElement = document.createElement('img');
-  imageElement.src = "/images/salad.jpeg";
+  imageElement.src = "/images/salad.jpeg"; // replace with recipe image url
   infoElements.appendChild(imageElement);
 
   const linkElement = document.createElement('a');
-  linkElement.href = "https://www.w3schools.com/jsref/dom_obj_image.asp";
+  linkElement.href = "https://www.w3schools.com/jsref/dom_obj_image.asp"; // replace with recipe instructions url
   linkElement.innerHTML = "<br/>random link";
   infoElements.appendChild(linkElement);
 
   recipeTableElement.appendChild(infoElements);
 
-  const alertElements = document.createElement('div');
-  alertElements.className = 'recipe-card-block';
-
-  // change to loop through alerts
-  // add icons
-  alertElements.appendChild(createAlertElement('dietary-alert', "Dietary Alert"));
-  alertElements.appendChild(createAlertElement('allergies-alert', "Allergies Alert"))
-
-  recipeTableElement.appendChild(alertElements);
+  recipeTableElement.appendChild(createRecipeCardAlerts(recipe));
   recipeElement.append(recipeTableElement);
   
-  // will eventually have get request for recipe tags
-  const tagElements = document.createElement('div');
-  tagElements.appendChild(createTagElement("Favorite"));
-  tagElements.appendChild(createTagElement("Dinner"));
+  const tagElements = createRecipeCardTags(recipe);
   recipeElement.append(tagElements);
 
   const tagTableElement = document.createElement('p');
@@ -175,9 +165,9 @@ function createRecipeElement() {
   addTagElement.innerText = '+';
   addTagElement.className = "add-tag-button";
   addTagElement.addEventListener('click', () => {
-    const newTagName = tagTextElement.value;
+    const newTagName = (tagTextElement.value).trim();
     if (newTagName != "") {
-      // will eventually have post request to add tags
+      // TODO: will eventually have post request to add tags
       tagElements.appendChild(createTagElement(newTagName));
     }
   });
@@ -187,16 +177,60 @@ function createRecipeElement() {
   return recipeElement;
 }
 
+/** Get profile information to determine which alerts to create */
+function createRecipeCardAlerts(recipe) {
+  const alertElements = document.createElement('div');
+  alertElements.className = 'recipe-card-block';
+  
+  fetch('/profile').then(response => response.json()).then((message) => {
+
+    if (message.hasProfile) {
+      const profile = message.profile;
+      // TODO: need comparisons against recipe json
+      // profile.vegetarian
+      // profile.vegan
+      // profile.glutenFree
+      // profile.dairyFree
+      // profile.allergies
+
+      alertElements.appendChild(createAlertElement("icon-warning-sign", "Dietary Alert"));
+      alertElements.appendChild(createAlertElement("icon-exclamation", "Dietary Alert"));
+      alertElements.appendChild(createAlertElement("icon-leaf", "Non-Vegetarian Alert"));
+      alertElements.appendChild(createAlertElement("icon-coffee", "Non-DairyFree Alert"));
+      alertElements.appendChild(createAlertElement("icon-food", "Allergies Alert"));
+    }
+  });
+  return alertElements;
+}
+
 /** Creates an element that represents an alert */
-function createAlertElement(className, innerText) {
+function createAlertElement(iconName, innerText) {
   const alertElement = document.createElement('p');
-  alertElement.className = className;
-  alertElement.innerText = innerText;
+  alertElement.className = 'recipe-alert';
+
+  const iconElement = document.createElement('i');
+  iconElement.className = iconName;
+  alertElement.appendChild(iconElement);
+
+  const textElement = document.createElement('div');
+  textElement.innerText = innerText;
+  alertElement.appendChild(textElement);
+  
   return alertElement;
 }
 
+/** Get user's tags for recipe */
+function createRecipeCardTags(recipe) {
+  // TODO: Will eventually have get request to server
+  const tagElements = document.createElement('div');
+  tagElements.className = "recipe-card-tags";
+  tagElements.appendChild(createTagElement("Favorite"));
+  tagElements.appendChild(createTagElement("Dinner"));
+  return tagElements;
+}
+
 /** Creates an element that represents a tag. */
-// will eventually incldue recipe id as parameter for tag deletion
+// TODO: will eventually incldue recipe id as parameter for tag deletion
 function createTagElement(tag) {
   const tagElement = document.createElement('div');
   tagElement.className = 'recipe-tag';
@@ -210,10 +244,20 @@ function createTagElement(tag) {
   deleteButtonElement.addEventListener('click', () => {
     // Remove the tag from the DOM.
     tagElement.remove();
-    // will eventually have post request to delete tags
+    // TODO: will eventually have post request to delete tags
   });
 
   tagElement.appendChild(titleElement);
   tagElement.appendChild(deleteButtonElement);
   return tagElement;
+}
+
+/** Add new tag associated with recipe to datastore */
+function addTagForRecipe() {
+  // TODO
+}
+
+/** Delete tag associated with recipe in datastore */
+function deleteTagForRecipe() {
+  // TODO
 }
