@@ -12,6 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
+function getRecipeInfo() {
+  const request = new Request('/dishAnalysis', {method: "POST"});
+  fetch(request).then(response => response.json()).then(recipeListInfoJson) => {
+    const displayRecipeElement = document.getElementById('display-recipes');
+    displayRecipeElement.innerHTML = "";
+    recipeListInfoJson.forEach(recipe => displayRecipeElement.appendChild(createRecipeElement(recipe)));
+  }
+}
+
 /* Slideshow that rotates through different background images */
 function startSlideshow() {
     var images = new Array('/images/redbgr.jpg','/images/greenbgr.jpg','/images/yellowbgr.jpg', '/images/purplebgr.jpg', '/images/orangebgr.jpg');
