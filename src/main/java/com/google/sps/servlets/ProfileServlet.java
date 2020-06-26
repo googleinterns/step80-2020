@@ -78,7 +78,7 @@ public class ProfileServlet extends HttpServlet {
         if (dairyFree) {
           profileObjectBuilder.setDairyFree(dairyFree);
         }
-        if (allergies != null && allergies.length > 0) {
+        if (allergies != null && allergies.size() > 0) {
           profileObjectBuilder.setAllergies(allergies);
         }
 
@@ -91,7 +91,7 @@ public class ProfileServlet extends HttpServlet {
       String errorMessage = "User needs to log in to see profile.";
       responseMap.put("error", errorMessage);
     }
-
+    System.out.println(responseMap);
     Gson gson = new Gson();   
     String json = gson.toJson(responseMap);
     response.setContentType("application");
@@ -119,14 +119,14 @@ public class ProfileServlet extends HttpServlet {
         entity.setProperty("userName", request.getParameter("userName"));
         entity.setProperty("vegetarian", Boolean.parseBoolean(request.getParameter("vegetarian")));
         entity.setProperty("vegan", Boolean.parseBoolean(request.getParameter("vegan")));
-        entity.setProperty("glutenFree", Boolean.parseBoolean(request.getParameter("glutenFree"));
+        entity.setProperty("glutenFree", Boolean.parseBoolean(request.getParameter("glutenFree")));
         entity.setProperty("dairyFree", Boolean.parseBoolean(request.getParameter("dairyFree")));
         
         String[] allergies = request.getParameterValues("allergies");
         if (allergies == null) {
-          allergies = [];
+          allergies = new String[0];
         }
-        entity.setProperty("allergies", allergies);
+        entity.setProperty("allergies", Arrays.asList(allergies));
       
         // The put() function automatically inserts new data or updates existing data based on id
         datastore.put(entity);
