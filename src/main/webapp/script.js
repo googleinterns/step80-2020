@@ -118,9 +118,10 @@ function hardCodedRecipeCard() {
   const displayRecipeElement = document.getElementById('display-recipes');
   displayRecipeElement.innerHTML = "";
   displayRecipeElement.appendChild(createRecipeElement());
+  displayRecipeElement.appendChild(createRecipeElement());
 }
 
-/** Creates an element that represents a recipe */
+/** Creates an element that represents a recipe card */
 // currently only has hardcoded values
 function createRecipeElement() {
   const recipeElement = document.createElement('div');
@@ -129,6 +130,9 @@ function createRecipeElement() {
   const titleElement = document.createElement('p');
   titleElement.innerText = "Title";
   recipeElement.appendChild(titleElement);
+
+  const recipeTableElement = document.createElement('p');
+  recipeTableElement.className = "recipe-card-table";
 
   const infoElements = document.createElement('div');
   infoElements.className = 'recipe-card-block';
@@ -142,34 +146,57 @@ function createRecipeElement() {
   linkElement.innerHTML = "<br/>random link";
   infoElements.appendChild(linkElement);
 
-  recipeElement.appendChild(infoElements);
+  recipeTableElement.appendChild(infoElements);
 
   const alertElements = document.createElement('div');
   alertElements.className = 'recipe-card-block';
 
-  const dietaryAlertElement = document.createElement('p');
-  dietaryAlertElement.className = 'dietary-alert';
-  dietaryAlertElement.innerText = "Dietary Alert";
-  alertElements.appendChild(dietaryAlertElement);
+  // change to loop through alerts
+  // add icons
+  alertElements.appendChild(createAlertElement('dietary-alert', "Dietary Alert"));
+  alertElements.appendChild(createAlertElement('allergies-alert', "Allergies Alert"))
 
-  const allergiesAlertElement = document.createElement('p');
-  allergiesAlertElement.className = 'allergies-alert';
-  allergiesAlertElement.innerText = "Allergies Alert";
-  alertElements.appendChild(allergiesAlertElement);
+  recipeTableElement.appendChild(alertElements);
+  recipeElement.append(recipeTableElement);
+  
+  // will eventually have get request for recipe tags
+  const tagElements = document.createElement('div');
+  tagElements.appendChild(createTagElement("Favorite"));
+  tagElements.appendChild(createTagElement("Dinner"));
+  recipeElement.append(tagElements);
 
-  recipeElement.appendChild(alertElements);
+  const tagTableElement = document.createElement('p');
+  tagTableElement.className = "recipe-card-table";
 
-  const breakElement = document.createElement('br');
-  recipeElement.appendChild(breakElement);
+  const tagTextElement = document.createElement('textarea');
+  tagTableElement.appendChild(tagTextElement);
 
-  recipeElement.appendChild(createTagElement("Favorite"));
-  recipeElement.appendChild(createTagElement("Dinner"));
+  const addTagElement = document.createElement('button');
+  addTagElement.innerText = '+';
+  addTagElement.className = "add-tag-button";
+  addTagElement.addEventListener('click', () => {
+    const newTagName = tagTextElement.value;
+    if (newTagName != "") {
+      // will eventually have post request to add tags
+      tagElements.appendChild(createTagElement(newTagName));
+    }
+  });
+  tagTableElement.append(addTagElement);
+  recipeElement.appendChild(tagTableElement);
 
   return recipeElement;
 }
 
+/** Creates an element that represents an alert */
+function createAlertElement(className, innerText) {
+  const alertElement = document.createElement('p');
+  alertElement.className = className;
+  alertElement.innerText = innerText;
+  return alertElement;
+}
+
 /** Creates an element that represents a tag. */
-// currently does not do post request to server
+// will eventually incldue recipe id as parameter for tag deletion
 function createTagElement(tag) {
   const tagElement = document.createElement('div');
   tagElement.className = 'recipe-tag';
@@ -183,6 +210,7 @@ function createTagElement(tag) {
   deleteButtonElement.addEventListener('click', () => {
     // Remove the tag from the DOM.
     tagElement.remove();
+    // will eventually have post request to delete tags
   });
 
   tagElement.appendChild(titleElement);

@@ -97,8 +97,14 @@
 
 .recipe-card-block {
   border: solid 2px green;
-  display: inline-block;
-  width: 40%;
+  height: 100%;
+  margin: auto;
+  width: 45%;
+}
+
+.recipe-card-table {
+  border: solid 2px orange;
+  display: flex;
 }
 
 .dietary-alert {
