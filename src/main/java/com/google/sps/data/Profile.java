@@ -20,7 +20,7 @@ import java.util.ArrayList;
  */
 public class Profile {
   // required
-  private long id;
+  private String id;
   private String userName;
 
   // optional
@@ -28,7 +28,7 @@ public class Profile {
   private boolean vegan;
   private boolean glutenFree;
   private boolean dairyFree;
-  private String[] allergies;
+  private ArrayList<String> allergies;
 
   /**
     * @param id The unique id of the profile.

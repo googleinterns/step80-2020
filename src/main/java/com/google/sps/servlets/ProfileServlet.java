@@ -35,6 +35,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject;
 
+import java.util.Arrays;
+import java.util.ArrayList;
+
 /** Servlet that posts and gets user profiles in Datastore */
 @WebServlet("/profile")
 public class ProfileServlet extends HttpServlet {
@@ -54,13 +57,13 @@ public class ProfileServlet extends HttpServlet {
       if (entity == null) {
         responseMap.put("hasProfile", false);
       } else {
-        long id = (long) entity.getProperty("id");
+        String id = (String) entity.getProperty("id");
         String userName = (String) entity.getProperty("userName");
         boolean vegetarian = (boolean) entity.getProperty("vegetarian");
         boolean vegan = (boolean) entity.getProperty("vegan");
         boolean glutenFree = (boolean) entity.getProperty("glutenFree");
         boolean dairyFree = (boolean) entity.getProperty("dairyFree");
-        String[] allergies = (String[]) entity.getProperty("allergies");
+        ArrayList<String> allergies = (ArrayList<String>) entity.getProperty("allergies");
 
         ProfileBuilder profileObjectBuilder = new ProfileBuilder(id, userName);
         if (vegetarian) {
