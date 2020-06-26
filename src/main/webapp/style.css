@@ -106,7 +106,7 @@ h3 {
   text-decoration: none;
 }
 
-a:hover {
+.navbar-item a:hover {
   color: orange;
 }
 
