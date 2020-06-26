@@ -15,11 +15,11 @@
 // Fetches information returned from Spoonacular (after the image has been classified appropriately)
 function getRecipeInfo() {
   const request = new Request('/dishAnalysis', {method: "POST"});
-  fetch(request).then(response => response.json()).then(recipeListInfoJson) => {
+  fetch(request).then(response => response.json()).then((recipeListInfoJson) => {
     const displayRecipeElement = document.getElementById('display-recipes');
     displayRecipeElement.innerHTML = "";
     recipeListInfoJson.forEach(recipe => displayRecipeElement.appendChild(createRecipeElement(recipe)));
-  }
+  });
 }
 
 /* Slideshow that rotates through different background images */
