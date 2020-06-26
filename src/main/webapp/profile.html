@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Your Profile</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+  </head>
+
+  <body onload="getProfile()"> 
+    <h2>Profile</h2>
+    <form action="javascript:postProfile()" method="POST">
+      <p>Username</p>
+      <textarea id="name-entry" required="true" placeholder="Place your username here..." name="name-input"></textarea>
+      <br/><input id="vegetarian-checkbox" type="checkbox"/><span>Vegetarian</span>
+      <br/><input id="vegan-checkbox" type="checkbox"/><span>Vegan</span>
+      <br/><input id="gluten-checkbox" type="checkbox"/><span>Gluten Free</span>
+      <br/><input id="dairy-checkbox" type="checkbox"/><span>Dairy Free</span>
+      <br/><textarea id="allergies-entry" placeholder="Separate allergies using commas.." name="allergy-input"></textarea>
+      <br/><input id="profile-submit-button" type="submit" />
+    </form>
+  </body>
+</html>
