@@ -36,8 +36,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that uses VisionAPI to analyze uploaded images */
-@WebServlet("/vision")
-public class VisionServlet extends HttpServlet {
+@WebServlet("/dishAnalysis")
+public class DishAnalysisServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {

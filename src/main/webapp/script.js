@@ -25,13 +25,13 @@ function closeImageForm() {
 }
 
 /* Generates a preview of the user's uploaded image */
-function preview(input) {
+function previewImage(input) {
   if(input.files && input.files[0]) {
-      var reader = new FileReader();
-      reader.onload = function (e) {
-        document.getElementById("image-preview").src = e.target.result;
-      };
-      reader.readAsDataURL(input.files[0]);
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      document.getElementById("image-preview").src = e.target.result;
+    };
+    reader.readAsDataURL(input.files[0]);
   }
 
   /** Fetches profile from server and displays the information to user */

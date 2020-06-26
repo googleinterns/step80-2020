@@ -1,6 +1,10 @@
 /* Homepage general formatting */
-.body {
+.home-body {
   background-image: 
+}
+
+.hidden {
+        display: none;
 }
 
 /* Form to upload image of dish */
@@ -49,7 +53,6 @@
 .form-container .btn:hover, .open-button:hover {
   opacity: 1;
 }
-
 
 .image-preview {
   max-width: 200px;
