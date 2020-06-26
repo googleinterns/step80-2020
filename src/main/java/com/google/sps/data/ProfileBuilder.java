@@ -13,12 +13,9 @@
 // limitations under the License.
 
 package com.google.sps.data;
-import java.util.ArrayList;
 
-/**
- * Class representing user profile
- */
-public class Profile {
+/** class to build profile */
+public class ProfileBuilder {
   // required
   private long id;
   private String userName;
@@ -30,19 +27,33 @@ public class Profile {
   private boolean dairyFree;
   private String[] allergies;
 
-  /**
-    * @param id The unique id of the profile.
-    * @param userName The name of the user that the profile belongs to.
-    * @param allergies The allergies of the user
-    * @param vegetarian @param vegan @param glutenFree @param diaryFree The user's dietary options
-    */
-  public Profile(ProfileBuilder builder) {
-    this.id = builder.id;
-    this.userName = builder.userName;
-    this.vegetarian = builder.vegetarian;
-    this.vegan = builder.vegan;
-    this.glutenFree = builder.glutenFree;
-    this.dairyFree = builder.dairyFree;
-    this.allergies = builder.allergies;
+  public ProfileBuilder(long id, String userName) {
+    this.id = id;
+    this.userName = userName;
+  }
+
+  public setVegetarian(boolean vegetarian) {
+    this.vegetarian = vegetarian;
+  }
+
+  public setVegan(boolean vegan) {
+    this.vegan = vegan;
+  }
+
+  public setGlutenFree(boolean glutenFree) {
+    this.glutenFree = glutenFree;
+  }
+
+  public setDairyFree(boolean dairyFree) {
+    this.dairyFree = dairyFree;
+  }
+
+  public setAllergies(String[] allergies) {
+    this.allergies = allergies;
+  }
+
+  public Profile build() {
+    Profile profile = new Profile(this);
+    return profile;
   }
 }
