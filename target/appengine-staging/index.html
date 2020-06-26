@@ -17,7 +17,7 @@
         <a class="navbar-title" href="index.html">Forked</a>
         <div class="navbar-menu-container">
           <ul class="navbar-menu">
-            <li><a href="index.html">Profile</a></li>
+            <li class="navbar-item"><a href="index.html">Profile</a></li>
           </ul>
         </div>
       </div>
@@ -32,7 +32,7 @@
         <button id="popup-button" class="open-button" onclick="openImageForm()">Analyze Your Dish</button>
       </div>
       <div class="form-popup" class="hidden" id="popup">
-        <form method="POST" action="/vision" id="form" class="form-container" enctype="multipart/form-data">
+        <form method="POST" action="getRecipeInfo()" id="form" class="form-container" enctype="multipart/form-data">
           <input type="file" id="image" name="image" multiple="false" onchange="preview(this);">
           <img class="image-preview" id="image-preview" >
           <br>

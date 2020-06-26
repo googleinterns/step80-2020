@@ -89,18 +89,15 @@ h3 {
   float: right;
   font-family: 'Massenet', helvetica, sans-serif;
   font-size: 25px;
+  list-style-type: none;
   margin-right: 30px;
 }
 
-ul {
-  list-style-type: none;
-}
-
-.fa {
+.icon-double-angle-down {
   color: black;
 }
 
-li a {
+.navbar-item {
   color:black;
   float: left;
   margin-right: 1em;
