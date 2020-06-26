@@ -37,12 +37,12 @@ public class Profile {
     * @param vegetarian @param vegan @param glutenFree @param diaryFree The user's dietary options
     */
   public Profile(ProfileBuilder builder) {
-    this.id = builder.id;
-    this.userName = builder.userName;
-    this.vegetarian = builder.vegetarian;
-    this.vegan = builder.vegan;
-    this.glutenFree = builder.glutenFree;
-    this.dairyFree = builder.dairyFree;
-    this.allergies = builder.allergies;
+    this.id = builder.getId();
+    this.userName = builder.getUserName();
+    this.vegetarian = builder.getVegetarian();
+    this.vegan = builder.getVegan();
+    this.glutenFree = builder.getGlutenFree();
+    this.dairyFree = builder.getDairyFree();
+    this.allergies = builder.getAllergies();
   }
 }
