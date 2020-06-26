@@ -15,6 +15,7 @@
 package com.google.sps.servlets;
 
 import com.google.sps.data.Profile;
+import com.google.sps.data.ProfileBuilder;
 import com.google.gson.Gson;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -23,7 +24,6 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.SortDirection;
 
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
@@ -65,7 +65,24 @@ public class ProfileServlet extends HttpServlet {
         boolean dairyFree = (boolean) entity.getProperty("dairyFree");
         ArrayList<String> allergies = (ArrayList<String>) entity.getProperty("allergies");
 
-        Profile profileObject = new Profile(id, userName, vegetarian, vegan, glutenFree, dairyFree, allergies);
+        ProfileBuilder profileObjectBuilder = new ProfileBuilder(id, userName);
+        if (vegetarian) {
+          profileObjectBuilder.setVegetarian(vegetarian);
+        }
+        if (vegan) {
+          profileObjectBuilder.setVegan(vegan);
+        }
+        if (glutenFree) {
+          profileObjectBuilder.setGlutenFree(glutenFree);
+        }
+        if (dairyFree) {
+          profileObjectBuilder.setDairyFree(dairyFree);
+        }
+        if (allergies != null && allergies.length > 0) {
+          profileObjectBuilder.setAllergies(allergies);
+        }
+
+        Profile profileObject = profileObjectBuilder.build();
         responseMap.put("profile", profileObject);
         responseMap.put("hasProfile", true);
       }
@@ -92,26 +109,31 @@ public class ProfileServlet extends HttpServlet {
       responseMap.put("error", errorMessage);
       
     } else {
-      String id = userService.getCurrentUser().getUserId();
-      String userName = request.getParameter("userName");
-      boolean vegetarian = Boolean.parseBoolean(request.getParameter("vegetarian"));
-      boolean vegan = Boolean.parseBoolean(request.getParameter("vegan"));
-      boolean glutenFree = Boolean.parseBoolean(request.getParameter("glutenFree"));
-      boolean dairyFree = Boolean.parseBoolean(request.getParameter("dairyFree"));
-      String[] allergies = request.getParameterValues("allergies");
-      
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      String id = userService.getCurrentUser().getUserId();
       Entity entity = new Entity("Profile", id);
       entity.setProperty("id", id);
-      entity.setProperty("userName", userName);
-      entity.setProperty("vegetarian", vegetarian);
-      entity.setProperty("vegan", vegan);
-      entity.setProperty("glutenFree", glutenFree);
-      entity.setProperty("dairyFree", dairyFree);
-      entity.setProperty("allergies", Arrays.asList(allergies));
       
-      // The put() function automatically inserts new data or updates existing data based on id
-      datastore.put(entity);
+      String userName = request.getParameter("userName");
+      if (userName != null) {
+        entity.setProperty("userName", request.getParameter("userName"));
+        entity.setProperty("vegetarian", Boolean.parseBoolean(request.getParameter("vegetarian")));
+        entity.setProperty("vegan", Boolean.parseBoolean(request.getParameter("vegan")));
+        entity.setProperty("glutenFree", Boolean.parseBoolean(request.getParameter("glutenFree"));
+        entity.setProperty("dairyFree", Boolean.parseBoolean(request.getParameter("dairyFree")));
+        
+        String[] allergies = request.getParameterValues("allergies");
+        if (allergies == null) {
+          allergies = [];
+        }
+        entity.setProperty("allergies", allergies);
+      
+        // The put() function automatically inserts new data or updates existing data based on id
+        datastore.put(entity);
+      } else {
+        String errorMessage = "User needs to input username.";
+      responseMap.put("error", errorMessage);
+      }
     }
 
     Gson gson = new Gson();   

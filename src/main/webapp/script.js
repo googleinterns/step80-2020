@@ -79,7 +79,7 @@ function clearSavedProfileStatus() {
   * Display corresponding text and url in login section if login is true/false.
   */
 function getLoginStatus() {
-  fetch('/user').then(response => response.json()).then((userInfo) => {
+  fetch('/login').then(response => response.json()).then((userInfo) => {
     const loginStatusElement = document.getElementById('login-section');
     loginStatusElement.innerHTML = "";
 
@@ -92,7 +92,7 @@ function getLoginStatus() {
       if (userInfo.hasProfile) {
         textElement.innerHTML = "Welcome, <strong>" + userInfo.userName + "</strong>";
       } else {
-        textElement.innerHTML = "Welcome! Remember to set a profile!";
+        textElement.innerHTML = "Welcome! Remember to create a profile!";
       }
 
       loginStatusElement.appendChild(logoutElement);
