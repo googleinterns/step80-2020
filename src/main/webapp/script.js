@@ -27,7 +27,7 @@ function postProfile() {
   * Display corresponding text and url in login section if login is true/false.
   */
 function getLoginStatus() {
-  fetch('/user').then(response => response.json()).then((userInfo) => {
+  fetch('/login').then(response => response.json()).then((userInfo) => {
     const loginStatusElement = document.getElementById('login-section');
     loginStatusElement.innerHTML = "";
 

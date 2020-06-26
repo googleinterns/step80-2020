@@ -88,26 +88,31 @@ public class ProfileServlet extends HttpServlet {
       responseMap.put("error", errorMessage);
       
     } else {
-      String id = userService.getCurrentUser().getUserId();
-      String userName = request.getParameter("userName");
-      boolean vegetarian = Boolean.parseBoolean(request.getParameter("vegetarian"));
-      boolean vegan = Boolean.parseBoolean(request.getParameter("vegan"));
-      boolean glutenFree = Boolean.parseBoolean(request.getParameter("glutenFree"));
-      boolean dairyFree = Boolean.parseBoolean(request.getParameter("dairyFree"));
-      String[] allergies = request.getParameterValues("allergies");
-
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      String id = userService.getCurrentUser().getUserId();
       Entity entity = new Entity("Profile", id);
       entity.setProperty("id", id);
-      entity.setProperty("userName", userName);
-      entity.setProperty("vegetarian", vegetarian);
-      entity.setProperty("vegan", vegan);
-      entity.setProperty("glutenFree", glutenFree);
-      entity.setProperty("dairyFree", dairyFree);
-      entity.setProperty("allergies", allergies);
       
-      // The put() function automatically inserts new data or updates existing data based on id
-      datastore.put(entity);
+      String userName = request.getParameter("userName");
+      if (userName != null) {
+        entity.setProperty("userName", request.getParameter("userName"));
+        entity.setProperty("vegetarian", Boolean.parseBoolean(request.getParameter("vegetarian")));
+        entity.setProperty("vegan", Boolean.parseBoolean(request.getParameter("vegan")));
+        entity.setProperty("glutenFree", Boolean.parseBoolean(request.getParameter("glutenFree"));
+        entity.setProperty("dairyFree", Boolean.parseBoolean(request.getParameter("dairyFree")));
+        
+        String[] allergies = request.getParameterValues("allergies");
+        if (allergies == null) {
+          allergies = [];
+        }
+        entity.setProperty("allergies", allergies);
+      
+        // The put() function automatically inserts new data or updates existing data based on id
+        datastore.put(entity);
+      } else {
+        String errorMessage = "User needs to input username.";
+      responseMap.put("error", errorMessage);
+      }
     }
 
     Gson gson = new Gson();   

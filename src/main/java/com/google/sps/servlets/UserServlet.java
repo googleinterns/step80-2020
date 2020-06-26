@@ -33,7 +33,7 @@ import org.json.simple.JSONObject;
 import com.google.gson.Gson;
 
 /** Servlet that deals with login and logout requests */
-@WebServlet("/user")
+@WebServlet("/login")
 public class UserServlet extends HttpServlet {
 
   @Override
