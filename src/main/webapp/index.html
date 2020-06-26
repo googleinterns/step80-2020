@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body class="home-body">
+  <body class="home-body" onload="getLoginStatus()">
     <h2>Popup Form</h2>
     <button id="popup-button" class="open-button" onclick="openImageForm()">Analyze Your Dish</button>
     <div class="form-popup" id="popup">
@@ -17,6 +17,7 @@
         <button type="submit" class="btn">Upload</button>
         <button type="submit" class="btn cancel" onclick="closeImageForm()">Cancel</button>
       </form>
+      <div id="login-section"> </div>
     </div>
   </body>
 </html>
