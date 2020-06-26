@@ -2,14 +2,22 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Insert cool name here</title>
+    <title>Image Upload</title>
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-
-  <body onload="getLoginStatus()"> 
-    <h1>Hello there</h1>
-
-    <div id="login-section"> </div>
+  <body class="home-body" onload="getLoginStatus()">
+    <h2>Popup Form</h2>
+    <button id="popup-button" class="open-button" onclick="openImageForm()">Analyze Your Dish</button>
+    <div class="form-popup" id="popup">
+      <form action="/vision" method="POST" class="form-container">
+        <input type="file" id="image" name="image" accept="image/png, image/jpeg" multiple="false" onchange="preview(this);">
+        <img class="image-preview" id="image-preview" >
+        <br>
+        <button type="submit" class="btn">Upload</button>
+        <button type="submit" class="btn cancel" onclick="closeImageForm()">Cancel</button>
+      </form>
+      <div id="login-section"> </div>
+    </div>
   </body>
 </html>
