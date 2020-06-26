@@ -97,7 +97,11 @@ h3 {
   color: black;
 }
 
+<<<<<<< HEAD
 .navbar-item {
+=======
+.navbar-item a {
+>>>>>>> Fetches POST request and sets up call to Alisa's createRecipeElement function
   color:black;
   float: left;
   margin-right: 1em;
@@ -106,7 +110,11 @@ h3 {
   text-decoration: none;
 }
 
+<<<<<<< HEAD
 a:hover {
+=======
+.navbar-item a:hover {
+>>>>>>> Fetches POST request and sets up call to Alisa's createRecipeElement function
   color: orange;
 }
 
@@ -156,6 +164,7 @@ h1 {
 
 /* About Box */
 #about {
+<<<<<<< HEAD
   position: relative;
   text-align: center;
   top: 1000px;
@@ -166,10 +175,24 @@ h1 {
   left: 50%;
   position: relative;
   top: -275px;
+=======
+  left: 50%;
+  position: relative;
+  text-align: center;
+  transform: translateX(-50%);
+  top: 1500px;
+  width: 70%;
+}
+
+.about-container {
+  position: relative;
+  top: -400px;
+>>>>>>> Fetches POST request and sets up call to Alisa's createRecipeElement function
 }
 
 /* Form to upload image of dish */
 .open-button {
+<<<<<<< HEAD
   background-color: grey;
   bottom: 23px;
   color: white;
@@ -180,6 +203,16 @@ h1 {
   padding: 16px 20px;
   position: fixed;
   top: 65%;
+=======
+  background-color: orange;
+  color: white;
+  cursor: pointer;
+  font-family: 'Massenet', helvetica, sans-serif;
+  font-size: 25px;
+  height: 60px;
+  opacity: 0.6;
+  padding: 16px 20px;
+>>>>>>> Fetches POST request and sets up call to Alisa's createRecipeElement function
 }
 
 .form-popup {

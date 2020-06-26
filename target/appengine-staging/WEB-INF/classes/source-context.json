@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"git": {"url": "https:\/\/github.com\/googleinterns\/step80-2020.git", "revisionId": "9b94e690e7d59d2d32b91361de126351feb55bc0"}}
+=======
+{"git": {"url": "https:\/\/github.com\/googleinterns\/step80-2020.git", "revisionId": "2c828d9e90746ba89adf7b414d47b0f8f3bd13ef"}}
+>>>>>>> Fetches POST request and sets up call to Alisa's createRecipeElement function

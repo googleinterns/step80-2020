@@ -255,7 +255,7 @@ h3 {
 }
 
 .icon-double-angle-down {
-  color: black;
+  color: wheat;
 }
 
 .navbar-item a {
@@ -280,7 +280,7 @@ a:hover {
 }
 
 .scroller {
-  bottom: 155px;
+  bottom: 130px;
   color: orange;
   cursor: pointer;
   position: absolute;
@@ -317,30 +317,29 @@ h1 {
 
 /* About Box */
 #about {
+  left: 50%;
   position: relative;
   text-align: center;
-  top: 1000px;
-  width: 600px;
+  transform: translateX(-50%);
+  top: 1500px;
+  width: 70%;
 }
 
 .about-container {
-  left: 50%;
   position: relative;
-  top: -275px;
+  top: -300px;
 }
 
 /* Form to upload image of dish */
 .open-button {
-  background-color: grey;
-  bottom: 23px;
+  background-color: orange;
   color: white;
   cursor: pointer;
+  font-family: 'Massenet', helvetica, sans-serif;
+  font-size: 25px;
   height: 60px;
-  left: 50%;
-  opacity: 0.8;
+  opacity: 0.6;
   padding: 16px 20px;
-  position: fixed;
-  top: 65%;
 }
 
 .form-popup {

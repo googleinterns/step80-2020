@@ -32,7 +32,7 @@
         <button id="popup-button" class="open-button" onclick="openImageForm()">Analyze Your Dish</button>
       </div>
       <div class="form-popup" class="hidden" id="popup">
-        <form method="POST" action="getRecipeInfo()" id="form" class="form-container" enctype="multipart/form-data">
+        <form action="getRecipeInfo()" id="form" class="form-container" enctype="multipart/form-data">
           <input type="file" id="image" name="image" multiple="false" onchange="preview(this);">
           <img class="image-preview" id="image-preview" >
           <br>
