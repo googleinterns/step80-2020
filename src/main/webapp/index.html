@@ -10,8 +10,8 @@
     <h2>Popup Form</h2>
     <button id="popup-button" class="open-button" onclick="openImageForm()">Analyze Your Dish</button>
     <div class="form-popup" class="hidden" id="popup">
-      <form method="POST" action="/vision" id="form" class="form-container" enctype="multipart/form-data">
-        <input type="file" id="image" name="image" multiple="false" onchange="preview(this);">
+      <form method="POST" action="/dishAnalysis" id="form" class="form-container" enctype="multipart/form-data">
+        <input type="file" id="image" name="image" multiple="false" onchange="previewImage(this);">
         <img class="image-preview" id="image-preview" >
         <br>
         <button type="submit" class="btn">Upload</button>
