@@ -12,7 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** Fetches profile from server and displays the information to user */
+
+/* Opens form for user to submit image of dish for anlysis on home page */
+function openImageForm() {
+  document.getElementById("popup").style.display = "block";
+  document.getElementById("popup-button").style.display = "none";
+}
+
+/* Closes form for user to submit image of dish */
+function closeImageForm() {
+  document.getElementById("popup").style.display = "none";
+  document.getElementById("popup-button").style.display = "block";
+}
+
+/* Generates a preview of the user's uploaded image */
+function previewImage(input) {
+  if(input.files && input.files[0]) {
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      document.getElementById("image-preview").src = e.target.result;
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+
+  /** Fetches profile from server and displays the information to user */
 function getProfile() {
   fetch('/profile').then(response => response.json()).then((message) => {
     if (message.error == null) {
@@ -72,6 +95,27 @@ function postProfile() {
 function clearSavedProfileStatus() {
   const profileStatusElement = document.getElementById('saved-profile-status');
   profileStatusElement.style.display = "none";
+}
+  /** Gets recipe information from recipe id*/
+  function getRecipe(){
+  var numRecipe = document.getElementById("num-recipe").value;
+  fetch('/recipe?numRecipe='+numRecipe).then(response => response.json()).then((recipeInfo) => {
+    recipeInf = JSON.parse(recipeInfo);
+    const recipeDisplayElement = document.getElementById('recipe-info');
+    console.log(recipeInfo);
+    recipeDisplayElement.innerText = recipeInf["title"];
+  });
+}
+
+/** Gets recipe id list from query string */
+function getRecipeId(){
+  var dishName = document.getElementById("dish-name").value;
+  fetch('/dishId?dishName='+dishName).then(response => response.json()).then((recipeId) => {
+    recipe = JSON.parse(recipeId);
+    const recipeIdDisplayElement = document.getElementById('recipe-id-info');
+    console.log(recipeId);
+    recipeIdDisplayElement.innerText = recipe["results"];
+  });
 }
 
 /**
