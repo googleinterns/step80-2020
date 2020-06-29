@@ -44,12 +44,12 @@ public class SpoonacularCombinedServlet extends HttpServlet {
       JSONObject recipeJson = new JSONObject(recipeListJSONString);
       JSONArray recipeListJson = new JSONArray(recipeJson.get("results").toString());
       String recipeList = "";
-      int i = 0;
+      Boolean isFirstinList = true;
       for(Object recipeInfoObject: recipeListJson){
         JSONObject recipeInfoJson = (JSONObject)recipeInfoObject;
-        if(i == 0) {
+        if(isFirstinList) {
           recipeList = recipeList + recipeInfoJson.get("id"); 
-          i = 1;
+          isFirstinList = false;
         } else {
           recipeList = recipeList + "," + recipeInfoJson.get("id"); 
         }
