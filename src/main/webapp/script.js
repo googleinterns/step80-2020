@@ -12,22 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/* Function gets recipe information from user input ID and displays the title on the page **/
 function getRecipe(){
   var numRecipe = document.getElementById("num-recipe").value;
-  fetch('/recipe?numRecipe='+numRecipe).then(response => response.json()).then((recipeInfo) => {
+  fetch('/recipeInfo?numRecipe='+numRecipe).then(response => response.json()).then((recipeInfo) => {
     recipeInf = JSON.parse(recipeInfo);
     const recipeDisplayElement = document.getElementById('recipe-info');
-    console.log(recipeInfo);
     recipeDisplayElement.innerText = recipeInf["title"];
   });
 }
 
+/* Function gets recipe list from user input dish and displays the title of the first returned result on the page **/
 function getRecipeId(){
   var dishName = document.getElementById("dish-name").value;
-  fetch('/dishId?dishName='+dishName).then(response => response.json()).then((recipeId) => {
+  fetch('/recipeInfo?dishName='+dishName).then(response => response.json()).then((recipeId) => {
     recipe = JSON.parse(recipeId);
     const recipeIdDisplayElement = document.getElementById('recipe-id-info');
-    console.log(recipeId);
-    recipeIdDisplayElement.innerText = recipe["results"];
+    recipeIdDisplayElement.innerText = recipe[0]["title"] + "\n" + recipe[1]["title"];
   });
 }
