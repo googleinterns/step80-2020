@@ -14,11 +14,17 @@
 
 // Fetches information returned from Spoonacular (after the image has been classified appropriately)
 function getRecipeInfo() {
-  const request = new Request('/dishAnalysis', {method: "POST"});
+  const image = document.getElementById('image').files[0];
+  const params = new FormData();
+  params.append('image', image);
+  const request = new Request('/dishAnalysis', {method: "POST", body: params});
   fetch(request).then(response => response.json()).then((recipeListInfoJson) => {
+    var recipeList = JSON.parse(JSON.parse(recipeListInfoJson));
     const displayRecipeElement = document.getElementById('display-recipes');
     displayRecipeElement.innerHTML = "";
-    recipeListInfoJson.forEach(recipe => displayRecipeElement.appendChild(createRecipeElement(recipe)));
+    for (recipe of recipeList) {
+      displayRecipeElement.appendChild(createRecipeElement(recipe));
+    }
   });
 }
 
@@ -165,22 +171,14 @@ function getLoginStatus() {
 
 }
 
-// test function for displaying recipes
-function hardCodedRecipeCard() {
-  const displayRecipeElement = document.getElementById('display-recipes');
-  displayRecipeElement.innerHTML = "";
-  // recipes.forEach(recipe => displayRecipeElement.appendChild(createRecipeElement(recipe)));
-  displayRecipeElement.appendChild(createRecipeElement("Placeholder for recipe json"));
-}
-
 /** Creates an element that represents a recipe card */
-// currently only has hardcoded values
+// TODO: will change to use html template element
 function createRecipeElement(recipe) {
   const recipeElement = document.createElement('div');
   recipeElement.className = 'recipe-card';
 
   const titleElement = document.createElement('p');
-  titleElement.innerText = "Title"; // replace with recipe title
+  titleElement.innerText = recipe["title"];
   titleElement.className = "recipe-card-title";
   recipeElement.appendChild(titleElement);
 
@@ -191,12 +189,12 @@ function createRecipeElement(recipe) {
   infoElements.className = 'recipe-card-block';
 
   const imageElement = document.createElement('img');
-  imageElement.src = "/images/salad.jpeg"; // replace with recipe image url
+  imageElement.src = recipe["image"];
   infoElements.appendChild(imageElement);
 
   const linkElement = document.createElement('a');
-  linkElement.href = "https://www.w3schools.com/jsref/dom_obj_image.asp"; // replace with recipe instructions url
-  linkElement.innerHTML = "<br/>random link";
+  linkElement.href = recipe["sourceUrl"];
+  linkElement.innerHTML = "<br/>" + recipe["sourceUrl"];
   infoElements.appendChild(linkElement);
 
   recipeTableElement.appendChild(infoElements);
@@ -233,25 +231,29 @@ function createRecipeElement(recipe) {
 function createRecipeCardAlerts(recipe) {
   const alertElements = document.createElement('div');
   alertElements.className = 'recipe-card-block';
-  
-  fetch('/profile').then(response => response.json()).then((message) => {
+  alertElements.appendChild(createAlertElement("icon-warning-sign", "Dietary Alert"));
+  alertElements.appendChild(createAlertElement("icon-exclamation", "Dietary Alert"));
+  alertElements.appendChild(createAlertElement("icon-leaf", "Non-Vegetarian Alert"));
+  alertElements.appendChild(createAlertElement("icon-coffee", "Non-DairyFree Alert"));
+  alertElements.appendChild(createAlertElement("icon-food", "Allergies Alert"));
+  //   //fetch('/profile').then(response => response.json()).then((message) => {
 
-    if (message.hasProfile) {
-      const profile = message.profile;
-      // TODO: need comparisons against recipe json
-      // profile.vegetarian
-      // profile.vegan
-      // profile.glutenFree
-      // profile.dairyFree
-      // profile.allergies
+  //     if (message.hasProfile) {
+  //       const profile = message.profile;
+  //       // TODO: need comparisons against recipe json
+  //       // profile.vegetarian
+  //       // profile.vegan
+  //       // profile.glutenFree
+  //       // profile.dairyFree
+  //       // profile.allergies
 
-      alertElements.appendChild(createAlertElement("icon-warning-sign", "Dietary Alert"));
-      alertElements.appendChild(createAlertElement("icon-exclamation", "Dietary Alert"));
-      alertElements.appendChild(createAlertElement("icon-leaf", "Non-Vegetarian Alert"));
-      alertElements.appendChild(createAlertElement("icon-coffee", "Non-DairyFree Alert"));
-      alertElements.appendChild(createAlertElement("icon-food", "Allergies Alert"));
-    }
-  });
+  //       alertElements.appendChild(createAlertElement("icon-warning-sign", "Dietary Alert"));
+  //       alertElements.appendChild(createAlertElement("icon-exclamation", "Dietary Alert"));
+  //       alertElements.appendChild(createAlertElement("icon-leaf", "Non-Vegetarian Alert"));
+  //       alertElements.appendChild(createAlertElement("icon-coffee", "Non-DairyFree Alert"));
+  //       alertElements.appendChild(createAlertElement("icon-food", "Allergies Alert"));
+  //     }
+  //   });
   return alertElements;
 }
 
