@@ -34,8 +34,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-<<<<<<< HEAD:src/main/java/com/google/sps/servlets/DishAnalysisServlet.java
-=======
 import javax.servlet.http.Part;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -43,7 +41,6 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType; 
 import com.google.gson.Gson;
 
->>>>>>> Creates GET request to Spoonacular Server after detemining which label is most likely classification. Also adds lots of web design to home page:src/main/java/com/google/sps/servlets/VisionServlet.java
 
 /** Servlet that uses VisionAPI to analyze uploaded images */
 @WebServlet("/dishAnalysis")
@@ -53,6 +50,7 @@ public class DishAnalysisServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Initialize client used to send requests.
     try (ImageAnnotatorClient vision = ImageAnnotatorClient.create()) {
+      int maxResults = 7;
       // Get the file path from the form.
       String fileName = getParameter(request, "image", "");
 
@@ -64,7 +62,7 @@ public class DishAnalysisServlet extends HttpServlet {
       // Builds the image annotation request
       List<AnnotateImageRequest> requests = new ArrayList<>();
       Image img = Image.newBuilder().setContent(imgBytes).build();
-      Feature feat = Feature.newBuilder().setType(Type.LABEL_DETECTION).setMaxResults(7).build();
+      Feature feat = Feature.newBuilder().setType(Type.LABEL_DETECTION).setMaxResults(maxResults).build();
       AnnotateImageRequest new_request =
           AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
       requests.add(new_request);
@@ -72,6 +70,10 @@ public class DishAnalysisServlet extends HttpServlet {
       // Performs label detection on the image file
       BatchAnnotateImagesResponse new_response = vision.batchAnnotateImages(requests);
       List<AnnotateImageResponse> responses = new_response.getResponsesList();
+
+      // Initialize blocked catagories
+      Set<String> blockedCatagories = new HashSet<String>;
+      blockedCatagories = new HashSet<String>(Arrays.asList("Cuisine", "Dish", "Food", "Ingredient", "Salad", "Fried food"));
 
       //Save and sort the descriptors
       List<String> descriptors = new ArrayList<>();
@@ -83,7 +85,7 @@ public class DishAnalysisServlet extends HttpServlet {
 
         for (EntityAnnotation annotation : res.getLabelAnnotationsList()) {
           String label = annotation.getDescription();
-          if (!label.equals("Cuisine") && !label.equals("Dish") && !label.equals("Food") && !label.equals("Ingredient") && !label.equals("Fried food")) {
+          if (!blockedCatagories.contains(label)) {
             descriptors.add(annotation.getDescription());
           }
         }
@@ -91,16 +93,15 @@ public class DishAnalysisServlet extends HttpServlet {
       
       // Make Spoonacular 'GET' request
       String query = descriptors.get(0);
-      Client c = ClientBuilder.newClient();
-      WebTarget target = c.target("https://recipe-search-step-2020.appspot.com/recipeInfo?dishName=" + query);
+      Client client = ClientBuilder.newClient();
+      WebTarget target = client.target("https://recipe-search-step-2020.appspot.com/recipeInfo?dishName=" + query);
 
       try {
         String recipeInfo = target.request(MediaType.APPLICATION_JSON).get(String.class);
         Gson gson = new Gson();
         response.setContentType("application/json");
         response.getWriter().println(gson.toJson(recipeInfo));
-      }
-      catch(Exception e){
+      } catch(Exception e){
         System.out.println(e);
       }
     }
