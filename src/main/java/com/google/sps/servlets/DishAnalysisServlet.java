@@ -42,6 +42,7 @@ import javax.ws.rs.core.MediaType;
 import com.google.gson.Gson;
 
 
+<<<<<<< HEAD:src/main/java/com/google/sps/servlets/DishAnalysisServlet.java
 /** Servlet that uses VisionAPI to analyze uploaded images */
 @WebServlet("/dishAnalysis")
 public class DishAnalysisServlet extends HttpServlet {

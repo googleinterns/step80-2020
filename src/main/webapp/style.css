@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #profile-background {
   background-image: url("/images/fancy-silverware.jpg");
   background-repeat: no-repeat;
@@ -159,6 +160,8 @@
   margin-left: 5px;
 }
 
+=======
+>>>>>>> 414976acdb89ecfe1834a85ae85da9610ef4cd46
 /* Texts */
 h3 {
   color:orange;
@@ -309,6 +312,7 @@ h1 {
   position: absolute;
   top: 75%;
   transform: translate(-50%, -50%);
+<<<<<<< HEAD
 }
 
 .paint-stroke {
@@ -325,6 +329,24 @@ h1 {
   width: 70%;
 }
 
+=======
+}
+
+.paint-stroke {
+  height: 350px;
+}
+
+/* About Box */
+#about {
+  left: 50%;
+  position: relative;
+  text-align: center;
+  transform: translateX(-50%);
+  top: 1500px;
+  width: 70%;
+}
+
+>>>>>>> 414976acdb89ecfe1834a85ae85da9610ef4cd46
 .about-container {
   position: relative;
   top: -300px;
