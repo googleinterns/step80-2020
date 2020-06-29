@@ -1,3 +1,152 @@
+#profile-background {
+  background-image: url("/images/fancy-silverware.jpg");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.content {
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+  width: 800px;
+}
+
+#profile-form {
+  background: none;
+  border-top: solid 5px orange;
+  width: 350px;
+}
+
+#profile-submit-button {
+  background: rgb(252, 145, 83);
+  border: solid 1px black;
+  padding: 5px 10px;
+  position: relative;
+  transition-duration: 0.4s;
+}
+
+#center-profile-button {
+  height: 50px;
+  text-align: center;
+}
+
+#profile-submit-button:hover {
+  background: orange;
+  cursor: pointer;
+  padding: 10px 15px;
+}
+
+#saved-profile-status {
+  background: orange;
+  display: none;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 5px;
+  text-align: center;
+  width: 250px;
+}
+
+#dietary-checkbox-section {
+  margin: 10px 1px 20px 30px;
+}
+
+.entry-box {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.entry-name {
+  display: block;
+  padding-right: 10px;
+  position: absolute;
+  text-align: right;
+  top: 0;
+  width: 50px;
+}
+
+#name-entry {
+  height: 20px;
+  width: 200px;
+}
+
+#allergies-entry {
+  height: 100px;
+  width: 250px;
+}
+
+.text-box {
+  border: solid 1px black;
+  display: inline-block;
+  margin-left: 80px;
+  padding: 10px;
+}
+
+.profile-checkbox {
+  margin-right: 10px;
+}
+
+#profile-header {
+  text-align: center;
+}
+
+.recipe-card {
+  border: solid 2px black;
+  margin: 5px;
+  padding: 20px;
+}
+
+.recipe-card-block {
+  border: solid 2px green;
+  display: inline-block;
+  width: 40%;
+}
+
+.dietary-alert {
+  background: red;
+  padding: 10px;
+}
+
+.allergies-alert {
+  background: yellow;
+  padding: 10px;
+}
+
+.recipe-tag {
+  background: #88b7d5;
+  border: 4px solid #c2e1f5;
+  display: inline-block;
+  margin: 10px 20px 10px 20px;
+  padding: 5px 10px;
+  position: relative;
+  width: auto;
+}
+
+.recipe-tag:after, .recipe-tag:before {
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  width: 0;
+}
+
+.recipe-tag:after {
+  border-right-color: #88b7d5;
+  border-width: 14px;
+  margin-top: -14px;
+}
+
+.recipe-tag:before {
+  border-right-color: #c2e1f5;
+  border-width: 21px;
+  margin-top: -21px;
+}
+
+.delete-tag-button {
+  margin-left: 5px;
+}
+
 /* Homepage general formatting */
 .home-body {
   background-image: 
