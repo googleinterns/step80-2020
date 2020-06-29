@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Your Profile</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+  </head>
+
+  <body id="profile-background" onload="getProfile()"> 
+    <div class="content">
+      <h2 id="profile-header">Profile</h2>
+      <form class="content" id="profile-form" action="javascript:postProfile()" method="POST" onchange="clearSavedProfileStatus()">
+        <p id="saved-profile-status">saved</p>
+        <div class="entry-box">
+          <span class="entry-name"><strong>Username</strong></span>
+          <textarea class="text-box" id="name-entry" required="true" placeholder="Place your username here..." name="name-input"></textarea>
+        </div>
+        <span id="dietary-needs-text"><strong>Dietary Needs</strong></span>
+        <div id="dietary-checkbox-section">
+          <input class="profile-checkbox" id="vegetarian-checkbox" type="checkbox"/>Vegetarian<br/>
+          <input class="profile-checkbox" id="vegan-checkbox" type="checkbox"/>Vegan<br/>
+          <input class="profile-checkbox" id="gluten-checkbox" type="checkbox"/>Gluten Free<br/>
+          <input class="profile-checkbox" id="dairy-checkbox" type="checkbox"/>Dairy Free<br/>
+        </div>
+        <div class="entry-box">
+          <span class="entry-name"><strong>Allergies</strong></span>
+          <textarea class="text-box" id="allergies-entry" placeholder="Separate allergies using commas.." name="allergy-input"></textarea>
+        </div>
+        <div id="center-profile-button"><input id="profile-submit-button" type="submit" /></div>
+      </form>
+    </div>
+  </body>
+</html>
