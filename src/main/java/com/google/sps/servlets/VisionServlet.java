@@ -83,7 +83,7 @@ public class VisionServlet extends HttpServlet {
 
         for (EntityAnnotation annotation : res.getLabelAnnotationsList()) {
           String label = annotation.getDescription();
-          if (!label.equals("Cuisine") && !label.equals("Dish") && !label.equals("Food") && !label.equals("Ingredient") && !label.equals("Fried food")) {
+          if (!label.equals("Cuisine") && !label.equals("Dish") && !label.equals("Food") && !label.equals("Ingredient") && !label.equals("Salad") && !label.equals("Fried food")) {
             descriptors.add(annotation.getDescription());
           }
         }

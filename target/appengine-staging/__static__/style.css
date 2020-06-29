@@ -94,7 +94,7 @@ h3 {
 }
 
 .icon-double-angle-down {
-  color: black;
+  color: wheat;
 }
 
 .navbar-item a {
@@ -106,7 +106,7 @@ h3 {
   text-decoration: none;
 }
 
-.navbar-item a:hover {
+a:hover {
   color: orange;
 }
 
@@ -119,7 +119,7 @@ h3 {
 }
 
 .scroller {
-  bottom: 155px;
+  bottom: 130px;
   color: orange;
   cursor: pointer;
   position: absolute;
@@ -166,7 +166,7 @@ h1 {
 
 .about-container {
   position: relative;
-  top: -400px;
+  top: -300px;
 }
 
 /* Form to upload image of dish */
@@ -182,18 +182,36 @@ h1 {
 }
 
 .form-popup {
-  border: 3px solid #f1f1f1;
-  display: none;
+  font-family: 'Massenet', helvetica, sans-serif;
   height: 200px;
-  left: 45%;
-  position: absolute;
-  top: 25%
+  position: relative;
+  top: -200px
 }
 
 .form-container {
-  background-color: white;
-  max-width: 300px;
   padding: 10px;
+}
+
+.file-container {
+  background: #99ccff;
+  border-radius: .5em;
+  overflow: hidden;
+  padding: 20px;
+  position: relative;
+}
+
+.file-container [type=file] {
+  cursor: pointer;
+  display: block;
+  font-size: 999px;
+  filter: alpha(opacity=0);
+  min-height: 100%;
+  min-width: 100%;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  text-align: right;
+  top: 0;
 }
 
 .form-container .btn {

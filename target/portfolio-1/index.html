@@ -32,8 +32,11 @@
         <button id="popup-button" class="open-button" onclick="openImageForm()">Analyze Your Dish</button>
       </div>
       <div class="form-popup" class="hidden" id="popup">
-        <form method="POST" action="getRecipeInfo()" id="form" class="form-container" enctype="multipart/form-data">
-          <input type="file" id="image" name="image" multiple="false" onchange="preview(this);">
+        <form action="getRecipeInfo()" id="form" class="form-container" enctype="multipart/form-data">
+          <label class="file-container">
+            Click here to trigger the file uploader!
+            <input type="file" id="file" class="input-file"/>
+          </label>          
           <img class="image-preview" id="image-preview" >
           <br>
           <button type="submit" class="btn">Upload</button>
