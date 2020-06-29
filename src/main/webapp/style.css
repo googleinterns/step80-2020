@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #profile-background {
   background-image: url("/images/fancy-silverware.jpg");
   background-repeat: no-repeat;
@@ -90,24 +91,36 @@
 }
 
 .recipe-card {
+  background-image: url("/images/recipe-card-background.jpg");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
   border: solid 2px black;
   margin: 5px;
-  padding: 20px;
+  padding: 110px 40px 20px 40px;
+  position: relative;
+}
+
+.recipe-card-title {
+  font-size: 40px;
+  margin-left: 130px;
+  position: absolute;
+  top: 20px;
 }
 
 .recipe-card-block {
-  border: solid 2px green;
-  display: inline-block;
-  width: 40%;
+  height: 100%;
+  margin: auto;
+  width: 45%;
 }
 
-.dietary-alert {
-  background: red;
-  padding: 10px;
+.recipe-card-table {
+  display: flex;
 }
 
-.allergies-alert {
-  background: yellow;
+.recipe-alert {
+  background: none;
+  display: flex;
+  margin: auto;
   padding: 10px;
 }
 
@@ -115,7 +128,7 @@
   background: #88b7d5;
   border: 4px solid #c2e1f5;
   display: inline-block;
-  margin: 10px 20px 10px 20px;
+  margin: 0px 20px 0px 20px;
   padding: 5px 10px;
   position: relative;
   width: auto;
@@ -147,27 +160,208 @@
   margin-left: 5px;
 }
 
-/* Homepage general formatting */
-.home-body {
-  background-image: 
+=======
+>>>>>>> 414976acdb89ecfe1834a85ae85da9610ef4cd46
+/* Texts */
+h3 {
+  color:orange;
+  font-family: 'Massenet', helvetica, sans-serif;
+  font-size: 40px;
+  letter-spacing: 3px;
+  text-decoration: underline;
+  text-transform: uppercase;
 }
 
-.hidden {
-        display: none;
+.about-text {
+  color: black;
+  font-size: 24px;
+}
+
+/* Frame */
+.frame {
+  background-color: white;
+  position: fixed;
+  z-index: 990;
+}
+
+#frame-top {
+  height: 15px;
+  left: 0;
+  top: 0;
+  width: 100%;
+}
+
+#frame-right {
+  bottom: 0;
+  right: 0;
+  top: 0;
+  width: 15px;
+}
+
+#frame-bottom {
+  bottom: 0;
+  left: 0;
+  height: 15px;
+  width: 100%;
+}
+
+#frame-left {
+  bottom: 0;
+  left: 0;
+  top: 0;
+  width: 15px;
+}
+
+/* Navigation Bar */
+.navbar {
+  background: white;
+  height: 138px;
+  left: 0;
+  margin-bottom: 20px;
+  position: fixed;
+  right: 0;
+  top: 0;
+}
+
+.navbar .container {
+  padding-left: 75px;
+  padding-right: 15px;
+  padding-top: 50px;
+  position: relative;
+}
+
+.navbar-title {
+  float: left;
+  font-family: 'Massenet', helvetica, sans-serif;
+  font-size: 50px;
+  color: black;
+  position: static;
+  text-decoration: none;
+  top: auto;
+  transform: none;
+  width: 220px;
+}
+
+.navbar-menu-container {
+  box-sizing: border-box;
+  display: block;
+  overflow: visible;
+}
+
+.navbar-menu {
+  display: block;
+  float: right;
+  font-family: 'Massenet', helvetica, sans-serif;
+  font-size: 25px;
+  list-style-type: none;
+  margin-right: 30px;
+}
+
+.icon-double-angle-down {
+  color: wheat;
+}
+
+.navbar-item a {
+  color:black;
+  float: left;
+  margin-right: 1em;
+  padding-left: 0;
+  position: relative;
+  text-decoration: none;
+}
+
+a:hover {
+  color: orange;
+}
+
+/* Homepage general formatting */
+.home-body {
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 100%;
+  overflow: auto;
+}
+
+.scroller {
+  bottom: 130px;
+  color: orange;
+  cursor: pointer;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  -webkit-animation-duration: 2.5s;
+  animation-duration: 2.5s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-timing-function: linear;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  -webkit-animation-iteration-count: infinite;
+}
+
+.title {
+  font-family: 'Massenet', helvetica, sans-serif;
+  font-size: 80px;
+  padding-top: 50%;
+  text-align: center;
+  transform: translateY(-50%);
+}
+
+h1 {
+  left: 50%;
+  position: absolute;
+  top: 75%;
+  transform: translate(-50%, -50%);
+<<<<<<< HEAD
+}
+
+.paint-stroke {
+  height: 350px;
+}
+
+/* About Box */
+#about {
+  left: 50%;
+  position: relative;
+  text-align: center;
+  transform: translateX(-50%);
+  top: 1500px;
+  width: 70%;
+}
+
+=======
+}
+
+.paint-stroke {
+  height: 350px;
+}
+
+/* About Box */
+#about {
+  left: 50%;
+  position: relative;
+  text-align: center;
+  transform: translateX(-50%);
+  top: 1500px;
+  width: 70%;
+}
+
+>>>>>>> 414976acdb89ecfe1834a85ae85da9610ef4cd46
+.about-container {
+  position: relative;
+  top: -300px;
 }
 
 /* Form to upload image of dish */
 .open-button {
-  background-color: grey;
-  bottom: 23px;
+  background-color: orange;
   color: white;
   cursor: pointer;
+  font-family: 'Massenet', helvetica, sans-serif;
+  font-size: 25px;
   height: 60px;
-  left: 50%;
-  opacity: 0.8;
+  opacity: 0.6;
   padding: 16px 20px;
-  position: fixed;
-  top: 65%;
 }
 
 .form-popup {
@@ -205,4 +399,27 @@
 
 .image-preview {
   max-width: 200px;
+}
+
+/* Fonts and animations */
+@font-face {
+  font-family: 'Massenet';
+  font-style: normal;
+  font-weight: normal;
+  src: url('massenet.otf');
+}
+
+@-webkit-keyframes bounce {
+  0%, 20%, 40%, 60%, 80%, 100% {-webkit-transform: translateY(0);}
+  50% {-webkit-transform: translateY(-5px);}
+} 
+
+@keyframes bounce { 
+  0%, 20%, 40%, 60%, 80%, 100% {transform: translateY(0);}
+  50% {transform: translateY(-5px);}
+} 
+
+.bounce { 
+  -webkit-animation-name: bounce;
+  animation-name: bounce;
 }
