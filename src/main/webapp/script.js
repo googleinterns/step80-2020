@@ -12,6 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Fetches information returned from Spoonacular (after the image has been classified appropriately)
+function getRecipeInfo() {
+  const request = new Request('/dishAnalysis', {method: "POST"});
+  fetch(request).then(response => response.json()).then((recipeListInfoJson) => {
+    const displayRecipeElement = document.getElementById('display-recipes');
+    displayRecipeElement.innerHTML = "";
+    recipeListInfoJson.forEach(recipe => displayRecipeElement.appendChild(createRecipeElement(recipe)));
+  });
+}
+
+/* Slideshow that rotates through different background images */
+function startSlideshow() {
+    var images = new Array('/images/redbgr.jpg','/images/greenbgr.jpg','/images/yellowbgr.jpg', '/images/purplebgr.jpg', '/images/orangebgr.jpg');
+    var count = images.length;
+    document.body.style.backgroundImage = 'url("' + images[Math.floor(Math.random() * count)] + '")';
+    setTimeout(startSlideshow, 5000);
+}
 
 /* Opens form for user to submit image of dish for anlysis on home page */
 function openImageForm() {
@@ -34,8 +51,9 @@ function previewImage(input) {
     };
     reader.readAsDataURL(input.files[0]);
   }
+}
 
-  /** Fetches profile from server and displays the information to user */
+/** Fetches profile from server and displays the information to user */
 function getProfile() {
   fetch('/profile').then(response => response.json()).then((message) => {
     if (message.error == null) {
@@ -95,16 +113,6 @@ function postProfile() {
 function clearSavedProfileStatus() {
   const profileStatusElement = document.getElementById('saved-profile-status');
   profileStatusElement.style.display = "none";
-}
-  /** Gets recipe information from recipe id*/
-  function getRecipe(){
-  var numRecipe = document.getElementById("num-recipe").value;
-  fetch('/recipe?numRecipe='+numRecipe).then(response => response.json()).then((recipeInfo) => {
-    recipeInf = JSON.parse(recipeInfo);
-    const recipeDisplayElement = document.getElementById('recipe-info');
-    console.log(recipeInfo);
-    recipeDisplayElement.innerText = recipeInf["title"];
-  });
 }
 
 /** Gets recipe id list from query string */
