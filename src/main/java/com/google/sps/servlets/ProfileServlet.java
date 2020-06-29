@@ -91,7 +91,7 @@ public class ProfileServlet extends HttpServlet {
       String errorMessage = "User needs to log in to see profile.";
       responseMap.put("error", errorMessage);
     }
-    System.out.println(responseMap);
+    
     Gson gson = new Gson();   
     String json = gson.toJson(responseMap);
     response.setContentType("application");
