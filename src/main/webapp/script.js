@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Fetches information returned from Spoonacular (after the image has been classified appropriately)
+/** Fetches information returned from Spoonacular (after the image has been classified appropriately) */
 function getRecipeInfo() {
   const image = document.getElementById('image').files[0];
   const params = new FormData();
@@ -28,7 +28,7 @@ function getRecipeInfo() {
   });
 }
 
-/* Slideshow that rotates through different background images */
+/** Slideshow that rotates through different background images */
 function startSlideshow() {
   var images = new Array('/images/redbgr.jpg','/images/greenbgr.jpg','/images/yellowbgr.jpg', '/images/purplebgr.jpg', '/images/orangebgr.jpg');
   var count = images.length;
@@ -36,24 +36,29 @@ function startSlideshow() {
   setTimeout(startSlideshow, 5000);
 }
 
-/* Opens form for user to submit image of dish for anlysis on home page */
+/** Opens form for user to submit image of dish for anlysis on home page */
 function openImageForm() {
   document.getElementById("popup").style.display = "block";
   document.getElementById("popup-button").style.display = "none";
+  document.getElementById("upload").style.display = "none";
+  document.getElementById("image-preview").style.display = "none";
 }
 
-/* Closes form for user to submit image of dish */
+/** Closes form for user to submit image of dish */
 function closeImageForm() {
   document.getElementById("popup").style.display = "none";
-  document.getElementById("popup-button").style.display = "block";
+  document.getElementById("popup-button").style.display = "inline-block";
 }
 
-/* Generates a preview of the user's uploaded image */
+/** Generates a preview of the user's uploaded image */
 function previewImage(input) {
   if(input.files && input.files[0]) {
+    preview = document.getElementById("image-preview")
     var reader = new FileReader();
     reader.onload = function (e) {
-      document.getElementById("image-preview").src = e.target.result;
+      preview.src = e.target.result;
+      preview.style.display = "inline-block";
+      document.getElementById("upload").style.display = "inline-block";
     };
     reader.readAsDataURL(input.files[0]);
   }

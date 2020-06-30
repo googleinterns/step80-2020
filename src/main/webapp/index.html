@@ -33,14 +33,17 @@
       </div>
       <div class="form-popup" class="hidden" id="popup">
         <form action="javascript:getRecipeInfo()" id="form" class="form-container" enctype="multipart/form-data">
-          <input type="file" id="image" name="image" multiple="false" onchange="previewImage(this);">
+          <label class="file-container">
+            Choose File
+            <i class="icon-upload-alt"></i>
+            <input type="file" id="image" class-"input-file" name="image" multiple="false" onchange="previewImage(this);"/>
+          </label> 
+          <i onclick="closeImageForm()" class="icon-remove-sign icon-2x"></i>
           <img class="image-preview" id="image-preview" >
           <br>
-          <button type="submit" class="btn">Upload</button>
-          <button type="submit" class="btn cancel" onclick="closeImageForm()">Cancel</button>
+          <button type="submit" id="upload" class="upload">Upload</button>
         </form>
       </div>
     </div>
-    <div id="display-recipes"> </div>
   </body>
 </html>
