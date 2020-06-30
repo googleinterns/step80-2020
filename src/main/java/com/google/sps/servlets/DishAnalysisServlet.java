@@ -47,16 +47,23 @@ import java.util.Arrays;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 
-/** Servlet that uses VisionAPI to analyze uploaded images */
+/**
+* Servlet that completes a post request by accepting image input, classifying that image using 
+* the Vision API, and then returns json recipe/nutritional data through the Spoonacular API
+*/
+
 @MultipartConfig
 @WebServlet("/dishAnalysis")
 public class DishAnalysisServlet extends HttpServlet {
+  
+  // Initialize blocked catagories
+  private final int MAX_RESULT = 7;
+  private final Set<String> BLOCKED_CATAGORIES = new HashSet<String>(Arrays.asList("Cuisine", "Dish", "Food", "Ingredient", "Salad", "Fried food"));
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     // Initialize client used to send requests.
     try (ImageAnnotatorClient vision = ImageAnnotatorClient.create()) {
-      int maxResults = 7;
       // Get the image file
       Part filePart = request.getPart("image");
       InputStream fileContent = filePart.getInputStream();
@@ -65,7 +72,7 @@ public class DishAnalysisServlet extends HttpServlet {
       // Builds the image annotation request
       List<AnnotateImageRequest> requests = new ArrayList<>();
       Image img = Image.newBuilder().setContent(imgBytes).build();
-      Feature feat = Feature.newBuilder().setType(Type.LABEL_DETECTION).setMaxResults(maxResults).build();
+      Feature feat = Feature.newBuilder().setType(Type.LABEL_DETECTION).setMaxResults(MAX_RESULT).build();
       AnnotateImageRequest new_request =
           AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
       requests.add(new_request);
@@ -74,20 +81,17 @@ public class DishAnalysisServlet extends HttpServlet {
       BatchAnnotateImagesResponse new_response = vision.batchAnnotateImages(requests);
       List<AnnotateImageResponse> responses = new_response.getResponsesList();
 
-      // Initialize blocked catagories
-      Set<String> blockedCatagories = new HashSet<String>(Arrays.asList("Cuisine", "Dish", "Food", "Ingredient", "Salad", "Fried food"));
-
       //Save and sort the descriptors
       List<String> descriptors = new ArrayList<>();
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
           System.out.format("Error: %s%n", res.getError().getMessage());
-          return;
+          continue;
         }
 
         for (EntityAnnotation annotation : res.getLabelAnnotationsList()) {
           String label = annotation.getDescription();
-          if (!blockedCatagories.contains(label)) {
+          if (!BLOCKED_CATAGORIES.contains(label)) {
             descriptors.add(annotation.getDescription());
           }
         }

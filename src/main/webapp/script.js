@@ -30,10 +30,10 @@ function getRecipeInfo() {
 
 /* Slideshow that rotates through different background images */
 function startSlideshow() {
-    var images = new Array('/images/redbgr.jpg','/images/greenbgr.jpg','/images/yellowbgr.jpg', '/images/purplebgr.jpg', '/images/orangebgr.jpg');
-    var count = images.length;
-    document.body.style.backgroundImage = 'url("' + images[Math.floor(Math.random() * count)] + '")';
-    setTimeout(startSlideshow, 5000);
+  var images = new Array('/images/redbgr.jpg','/images/greenbgr.jpg','/images/yellowbgr.jpg', '/images/purplebgr.jpg', '/images/orangebgr.jpg');
+  var count = images.length;
+  document.body.style.backgroundImage = 'url("' + images[Math.floor(Math.random() * count)] + '")';
+  setTimeout(startSlideshow, 5000);
 }
 
 /* Opens form for user to submit image of dish for anlysis on home page */
@@ -124,7 +124,7 @@ function clearSavedProfileStatus() {
 /** Gets recipe id list from query string */
 function getRecipeId(){
   var dishName = document.getElementById("dish-name").value;
-  fetch('/dishId?dishName='+dishName).then(response => response.json()).then((recipeId) => {
+  fetch('/dishId?dishName='+dishName).then(response => response.json()).then(recipeId => {
     recipe = JSON.parse(recipeId);
     const recipeIdDisplayElement = document.getElementById('recipe-id-info');
     console.log(recipeId);
