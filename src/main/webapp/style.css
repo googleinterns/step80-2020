@@ -403,16 +403,19 @@ h1 {
   min-width: 100px;
 }
 
-
 .txt-rotate {
   color:black;
   font-family: 'TypeWriter', helvetica, sans-serif;
-  font-size:80px;
+  font-size:50px;
+  left: 50%;
   letter-spacing: 3px;
-  padding-top: 20%;
+  padding-top: 40%;
   position: absolute;
   text-align: center;
+  text-decoration: underline;
   text-transform: uppercase;
+  transform: translate(-50%, -50%);
+
 }
 
 /* Fonts and animations */
