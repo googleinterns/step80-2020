@@ -24,6 +24,74 @@ function getRecipeInfo() {
   });
 }
 
+/** Fetches and then populates nutrition information section of display page with average fat, calories, etc. */
+function createNutritionElements() {
+  fetch('/dishNutrition?dishName='+dishName).then(response => response.json()).then((dish) => {
+    title.setAttribute("data-rotate", dishName);
+
+    var nutritionElement = document.querySelector(".nutrition-info");
+    Object.keys(dish).forEach(function(key) {
+      var node = document.createElement('div');
+      node.className = 'nutrition-element';
+      node.innerText = 'Average' + key + ': ' + dish[key]['value'] + ' ' + dish[key]['units'];
+      nutritionElement.appendChild(node);
+    });
+  });
+}
+
+/** Creates text typing animation */
+window.onload = function() {
+  var text_element = document.getElementById('dish');
+  var toRotate = text_element.getAttribute('data-rotate');
+  console.log("---1.----" + toRotate);
+  var period = text_element.getAttribute('data-period');
+  if (toRotate != null) {
+    new TxtRotate(text_element, toRotate, period);
+  }
+}
+
+var TxtRotate = function(el, toRotate, period) {
+  this.toRotate = toRotate;
+  this.el = el;
+  this.loopNum = 0;
+  this.period = parseInt(period, 10) || 2000;
+  this.txt = '';
+  this.tick();
+  this.isDeleting = false;
+};
+
+/* Print, wait the period, then delete */
+TxtRotate.prototype.tick = function() {
+  var i = this.loopNum % this.toRotate.length;
+  var fullTxt = this.toRotate;
+
+  if (this.isDeleting) {
+    this.txt = fullTxt.substring(0, this.txt.length - 1);
+  } else {
+    this.txt = fullTxt.substring(0, this.txt.length + 1);
+  }
+
+  this.el.innerHTML = '<span class="wrap">' + this.txt + '</span>';
+
+  var that = this;
+  var delta = 300 - Math.random() * 100;
+
+  if (this.isDeleting) { delta /= 2; }
+
+  if (!this.isDeleting && this.txt === fullTxt) {
+    delta = this.period;
+    this.isDeleting = true;
+  } else if (this.isDeleting && this.txt === '') {
+    this.isDeleting = false;
+    this.loopNum++;
+    delta = 400;
+  }
+
+  setTimeout(function() {
+    that.tick();
+  }, delta);
+}
+
 /** at display.html onload, display recipeList json stored in session storage */
 function displayRecipes() {
   var recipeList = JSON.parse(sessionStorage.recipeList);

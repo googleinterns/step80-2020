@@ -399,7 +399,20 @@ h1 {
 }
 
 .image-preview {
-  max-width: 200px;
+  max-width: 250px;
+  min-width: 100px;
+}
+
+
+.txt-rotate {
+  color:black;
+  font-family: 'TypeWriter', helvetica, sans-serif;
+  font-size:80px;
+  letter-spacing: 3px;
+  padding-top: 20%;
+  position: absolute;
+  text-align: center;
+  text-transform: uppercase;
 }
 
 /* Fonts and animations */
@@ -408,6 +421,13 @@ h1 {
   font-style: normal;
   font-weight: normal;
   src: url('massenet.otf');
+}
+
+@font-face {
+  font-family: 'TypeWriter';
+  font-style: normal;
+  font-weight: normal;
+  src: url('texgyrecursor-regular.otf');
 }
 
 @-webkit-keyframes bounce {
