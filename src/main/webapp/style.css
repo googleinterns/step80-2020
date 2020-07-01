@@ -332,6 +332,7 @@ h1 {
   transform: translateX(-50%);
   top: 1500px;
   width: 70%;
+  z-index: -1;
 }
 
 .paint-stroke {
@@ -415,7 +416,6 @@ h1 {
   text-decoration: underline;
   text-transform: uppercase;
   transform: translate(-50%, -50%);
-
 }
 
 /* Fonts and animations */
