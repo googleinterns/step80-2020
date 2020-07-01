@@ -27,7 +27,28 @@ function getRecipeInfo() {
 /** at display.html onload, display recipeList json stored in session storage */
 function displayRecipes() {
   var recipeList = JSON.parse(sessionStorage.recipeList);
+  appendToDisplayElement(recipeList);
+}
 
+/** display saved recipes by tag name */
+function savedRecipes() {
+  const tagName = document.getElementById('tag-name').value.trim();
+  
+  fetch('/tag?tagName=' + tagName).then(response => response.json()).then((tagList) => {
+    const tempDisplayTagJson = document.getElementById("temp-display-tags-json");
+    
+    // TODO: replace with get request to spoonacular to get json for recipeIds
+    const recipeIdList = tagList.map(tag => tag.recipeId);
+    tempDisplayTagJson.innerHTML = JSON.stringify(tagList);
+
+    // use json to display recipe cards
+    // appendToDisplayElement(recipeList);
+  });
+}
+
+/** Helper function to display recipe cards in display-recipes element */
+function appendToDisplayElement(recipeList) {
+  // switch id="display-recipes" to class="display-recipes"?
   const displayRecipeElement = document.getElementById('display-recipes');
   displayRecipeElement.innerHTML = "";
   for (recipe of recipeList) {
@@ -190,6 +211,14 @@ function hardCodedRecipeCard() {
   recipe['sourceUrl'] = "https://css-tricks.com/snippets/css/a-guide-to-flexbox/";
   recipe['vegetarian'] = true;
   displayRecipeElement.appendChild(createRecipeElement(recipe));
+
+  const recipe1 = {};
+  recipe1['id'] = 2;
+  recipe1['title'] = "Title 1";
+  recipe1['image'] = "/images/salad.jpeg";
+  recipe1['sourceUrl'] = "https://css-tricks.com/snippets/css/a-guide-to-flexbox/";
+  recipe1['vegan'] = true;
+  displayRecipeElement.appendChild(createRecipeElement(recipe1));
 }
 
 /** Creates an element that represents a recipe card */
@@ -211,7 +240,7 @@ function createRecipeElement(recipe) {
   createRecipeCardAlerts(recipe, alertElements);
   
   const tagElements = clone.querySelector(".recipe-card-tags");
-  createRecipeCardTags(recipe, tagElements);
+  createRecipeCardTags(recipe['id'], tagElements);
 
   const tagTextElement = clone.querySelector("textarea");
 
@@ -219,8 +248,14 @@ function createRecipeElement(recipe) {
   addTagElement.addEventListener('click', () => {
     const newTagName = (tagTextElement.value).trim();
     if (newTagName != "") {
-      // TODO: will eventually have post request to add tags
-      tagElements.appendChild(createTagElement(newTagName));
+      const params = new URLSearchParams();
+      params.append('tag-name', newTagName);
+      params.append('recipe-id', recipe['id']);
+
+      fetch('/tag', {method: 'POST', body: params}).then(response => response.json()).then((tagList) => {
+        tagElements.innerHTML = "";
+        createRecipeCardTags(recipe['id'], tagElements);
+      });
     }
   });
 
@@ -286,14 +321,13 @@ function createAlertElement(iconName, innerText) {
 }
 
 /** Get user's tags for recipe */
-function createRecipeCardTags(recipe, tagElements) {
-  // TODO: Will eventually have get request to server
-  tagElements.appendChild(createTagElement("Favorite"));
-  tagElements.appendChild(createTagElement("Dinner"));
+function createRecipeCardTags(recipeId, tagElements) {
+  fetch('/tag?recipeId=' + recipeId).then(response => response.json()).then((tagList) => {
+    tagList.forEach(tag => tagElements.appendChild(createTagElement(tag)));
+  });
 }
 
 /** Creates an element that represents a tag. */
-// TODO: will eventually incldue recipe id as parameter for tag deletion
 function createTagElement(tag) {
   var temp = document.querySelector("#tag-template");;
   var clone = temp.content.cloneNode(true);
@@ -301,24 +335,18 @@ function createTagElement(tag) {
   const tagElement = clone.querySelector(".recipe-tag");
   
   const titleElement = clone.querySelector('span');
-  titleElement.innerText = tag;
+  titleElement.innerText = tag.tagName;
 
   const deleteButtonElement = clone.querySelector('button');
   deleteButtonElement.addEventListener('click', () => {
-    // Remove the tag from the DOM.
-    tagElement.remove();
-    // TODO: will eventually have post request to delete tags
+    const params = new URLSearchParams();
+    params.append('tag-id', tag.tagId);
+
+    fetch('/delete-tag', {method: 'POST', body: params}).then(() => {
+      // Remove the tag from the DOM.
+      tagElement.remove();
+    });
   });
 
   return clone;
-}
-
-/** Add new tag associated with recipe to datastore */
-function addTagForRecipe() {
-  // TODO
-}
-
-/** Delete tag associated with recipe in datastore */
-function deleteTagForRecipe() {
-  // TODO
 }
