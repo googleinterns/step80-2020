@@ -26,9 +26,12 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;  
 import com.google.gson.Gson;
 
-/** Returns recipe id from dish name */
-@WebServlet("/dishId")
-public class SpoonacularDishIdServlet extends HttpServlet {
+import org.json.JSONObject;
+import org.json.JSONArray;
+
+/** Servlet to take in dish name and return bulk recipe infomation */
+@WebServlet("/recipeInfo")
+public class SpoonacularCombinedServlet extends HttpServlet {
   static String spoonacularPrefix = "https://api.spoonacular.com/recipes";
   static String spoonacularAPIKey = "cd2269d31cb94065ad1e73ce292374a5";
   @Override
@@ -36,12 +39,26 @@ public class SpoonacularDishIdServlet extends HttpServlet {
     String query = request.getParameter("dishName");
     Client client = ClientBuilder.newClient();
     WebTarget target = client.target(spoonacularPrefix + "/search?query=" + query + "&number=2&apiKey=" + spoonacularAPIKey);
-
     try {
-      String recipeInfo = target.request(MediaType.APPLICATION_JSON).get(String.class);
+      String recipeListJSONString = target.request(MediaType.APPLICATION_JSON).get(String.class);
+      JSONObject recipeJson = new JSONObject(recipeListJSONString);
+      JSONArray recipeListJson = new JSONArray(recipeJson.get("results").toString());
+      String recipeList = "";
+      Boolean isFirstinList = true;
+      for(Object recipeInfoObject: recipeListJson){
+        JSONObject recipeInfoJson = (JSONObject)recipeInfoObject;
+        if(isFirstinList) {
+          recipeList = recipeList + recipeInfoJson.get("id"); 
+          isFirstinList = false;
+        } else {
+          recipeList = recipeList + "," + recipeInfoJson.get("id"); 
+        }
+      }
+      target = client.target(spoonacularPrefix + "/informationBulk?number=2&apiKey=" + spoonacularAPIKey + "&ids=" + recipeList);
+      String recipeInformationString = target.request(MediaType.APPLICATION_JSON).get(String.class);
       Gson gson = new Gson();
       response.setContentType("application/json");
-      response.getWriter().println(gson.toJson(recipeInfo));
+      response.getWriter().println(gson.toJson(recipeInformationString));
     } catch(Exception e){
       System.out.println(e);
     }
