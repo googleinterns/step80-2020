@@ -26,22 +26,24 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;  
 import com.google.gson.Gson;
 
-/** Keeping this servlet so it can be reused for formatting */
+/** Returns recipe information from recipe id */
 @WebServlet("/recipe")
 public class SpoonacularRecipeServlet extends HttpServlet {
+  static String spoonacularPrefix = "https://api.spoonacular.com/recipes";
+  static String spoonacularAPIKey = "cd2269d31cb94065ad1e73ce292374a5";
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String numRecipe = request.getParameter("numRecipe");
-    Client c = ClientBuilder.newClient();
-    WebTarget target = c.target("https://api.spoonacular.com/recipes/" + numRecipe + "/information?apiKey=cd2269d31cb94065ad1e73ce292374a5&includeNutrition=true");
+    Client client = ClientBuilder.newClient();
+    WebTarget target = client.target(spoonacularPrefix + "/" + numRecipe + "/information?apiKey=" + spoonacularAPIKey + "&includeNutrition=true");
 
     try {
       String recipeInfo = target.request(MediaType.APPLICATION_JSON).get(String.class);
       Gson gson = new Gson();
       response.setContentType("application/json");
       response.getWriter().println(gson.toJson(recipeInfo));
-    }
-    catch(Exception e){
+    } catch(Exception e){
       System.out.println(e);
     }
   }
