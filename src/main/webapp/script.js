@@ -17,16 +17,22 @@ function getRecipeInfo() {
   const image = document.getElementById('image').files[0];
   const params = new FormData();
   params.append('image', image);
-  //window.location.href = "/display.html";
   const request = new Request('/dishAnalysis', {method: "POST", body: params});
   fetch(request).then(response => response.json()).then((recipeListInfoJson) => {
-    var recipeList = JSON.parse(JSON.parse(recipeListInfoJson));
-    const displayRecipeElement = document.getElementById('display-recipes');
-    displayRecipeElement.innerHTML = "";
-    for (recipe of recipeList) {
-      displayRecipeElement.appendChild(createRecipeElement(recipe));
-    }
+    sessionStorage.recipeList = JSON.parse(recipeListInfoJson);
+    window.location.href = "/display.html";
   });
+}
+
+/** at display.html onload, display recipeList json stored in session storage */
+function displayRecipes() {
+  var recipeList = JSON.parse(sessionStorage.recipeList);
+
+  const displayRecipeElement = document.getElementById('display-recipes');
+  displayRecipeElement.innerHTML = "";
+  for (recipe of recipeList) {
+    displayRecipeElement.appendChild(createRecipeElement(recipe));
+  }
 }
 
 /* Slideshow that rotates through different background images */
@@ -91,15 +97,14 @@ function getProfile() {
 
 /** Posts profile information from form to server */
 function postProfile() {
-  const userName = document.getElementById('name-entry').value;
+  const userName = document.getElementById('name-entry').value.trim();
   const vegetarian = document.getElementById("vegetarian-checkbox").checked;
   const vegan = document.getElementById("vegan-checkbox").checked;
   const glutenFree = document.getElementById("gluten-checkbox").checked;
   const dairyFree = document.getElementById("dairy-checkbox").checked;
 
   const allergiesString = document.getElementById("allergies-entry").value;
-  const allergies = allergiesString.split(",").map(allergy => allergy.trim());
-
+  const allergies = allergiesString.split(",").map(allergy => allergy.toLowerCase().trim());
   const params = new URLSearchParams();
   params.append('userName', userName);
   params.append('vegetarian', vegetarian);
@@ -177,16 +182,17 @@ function getLoginStatus() {
 function hardCodedRecipeCard() {
   const displayRecipeElement = document.getElementById('display-recipes');
   displayRecipeElement.innerHTML = "";
-  // recipes.forEach(recipe => displayRecipeElement.appendChild(createRecipeElement(recipe)));
+  
   const recipe = {}
+  recipe['id'] = 1;
   recipe['title'] = "Title";
   recipe['image'] = "/images/salad.jpeg";
   recipe['sourceUrl'] = "https://css-tricks.com/snippets/css/a-guide-to-flexbox/";
+  recipe['vegetarian'] = true;
   displayRecipeElement.appendChild(createRecipeElement(recipe));
 }
 
 /** Creates an element that represents a recipe card */
-// TODO: will change to use html template element
 function createRecipeElement(recipe) {
   var temp = document.querySelector("#recipe-template");;
   var clone = temp.content.cloneNode(true);
@@ -223,29 +229,43 @@ function createRecipeElement(recipe) {
 
 /** Get profile information to determine which alerts to create */
 function createRecipeCardAlerts(recipe, alertElements) {
-  alertElements.appendChild(createAlertElement("icon-warning-sign", "Dietary Alert"));
-  alertElements.appendChild(createAlertElement("icon-exclamation", "Dietary Alert"));
-  alertElements.appendChild(createAlertElement("icon-leaf", "Non-Vegetarian Alert"));
-  alertElements.appendChild(createAlertElement("icon-coffee", "Non-DairyFree Alert"));
-  alertElements.appendChild(createAlertElement("icon-food", "Allergies Alert"));
-  //   //fetch('/profile').then(response => response.json()).then((message) => {
+  fetch('/profile').then(response => response.json()).then((message) => {
 
-  //     if (message.hasProfile) {
-  //       const profile = message.profile;
-  //       // TODO: need comparisons against recipe json
-  //       // profile.vegetarian
-  //       // profile.vegan
-  //       // profile.glutenFree
-  //       // profile.dairyFree
-  //       // profile.allergies
+    if (message.hasProfile) {
+      const profile = message.profile;
+      if (profile.vegetarian && !recipe["vegetarian"]) {
+        alertElements.appendChild(createAlertElement("icon-leaf", "Non-Vegetarian Alert"));
+      }
+      if (profile.vegan && !recipe["vegan"]) {
+        alertElements.appendChild(createAlertElement("icon-exclamation", "Non-Vegan Alert"));
+      }
+      if (profile.glutenFree && !recipe["glutenFree"]) {
+        alertElements.appendChild(createAlertElement("icon-warning-sign", "Non-GlutenFree Alert"));
+      }
+      if (profile.dairyFree && !recipe["dairyFree"]) {
+        alertElements.appendChild(createAlertElement("icon-coffee", "Non-DairyFree Alert"));
+      }
 
-  //       alertElements.appendChild(createAlertElement("icon-warning-sign", "Dietary Alert"));
-  //       alertElements.appendChild(createAlertElement("icon-exclamation", "Dietary Alert"));
-  //       alertElements.appendChild(createAlertElement("icon-leaf", "Non-Vegetarian Alert"));
-  //       alertElements.appendChild(createAlertElement("icon-coffee", "Non-DairyFree Alert"));
-  //       alertElements.appendChild(createAlertElement("icon-food", "Allergies Alert"));
-  //     }
-  //   });
+      const allergyList = allergyAlertList(recipe['extendedIngredients'], profile.allergies);
+      if (allergyList.length > 0) {
+        alertElements.appendChild(createAlertElement("icon-food", "The following allergies have been seen: " + allergyList.join(", "))); 
+      }
+    }
+  });
+}
+
+// Loop through recipe ingredients to find food allergies
+function allergyAlertList(ingredients, allergies) {
+  var allergyList = [];
+  for (allergy of allergies) {
+    for (ingredient of ingredients) {
+      if (ingredient['name'].includes(allergy)) {
+        allergyList.push(allergy);
+        break;
+      }
+    }
+  }
+  return allergyList;
 }
 
 /** Creates an element that represents an alert */
