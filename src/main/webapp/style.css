@@ -357,14 +357,12 @@ h1 {
 }
 
 .file-container {
-  color: #fc6404;
+  color: darkorange;
   font-size: 25px;
-  font-style: italic;
   height: 6%;
-  left: 15%;
+  left: 6%;
   position: absolute;
-  text-decoration: underline;
-  top: 13%;
+  top: 7%;
   width: 30%;
 }
 
@@ -380,11 +378,11 @@ h1 {
 }
 
 .form-popup {
-  background-image: url("/images/border.png");
+  background-image: url("/images/border2.png");
   background-repeat: no-repeat;
   background-size: contain;
   display: none;
-  font-family: 'Massenet', helvetica, sans-serif;
+  font-family: 'TypeWriterBold', helvetica, sans-serif;
   height: 0;
   padding-top: 100%;
   position: relative;
@@ -412,10 +410,10 @@ h1 {
 
 .icon-remove-sign {
   cursor: pointer;
-  color: red;
+  color: #e81111;
   position: absolute;
-  right: 10%;
-  top: 10%;
+  right: 5%;
+  top: 5%;
 }
 
 .form-container .upload:hover, .open-button:hover {
@@ -423,10 +421,13 @@ h1 {
 }
 
 .image-preview {
-  border: 2px solid #fc6404;
-  max-width: 200px;
+  border: 3px solid darkorange;
+  left: 45%;
+  margin-left: -45px;
+  max-height: 350px;
+  max-width: 400px;
   position: absolute;
-  top: 20%;
+  top: 15%;
 }
 
 /* Fonts and animations */
@@ -435,6 +436,13 @@ h1 {
   font-style: normal;
   font-weight: normal;
   src: url('massenet.otf');
+}
+
+@font-face {
+  font-family: 'TypeWriterBold';
+  font-style: normal;
+  font-weight: normal;
+  src: url('texgyrecursor-bolditalic.otf');
 }
 
 @font-face {
