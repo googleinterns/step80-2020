@@ -14,39 +14,40 @@
 
 package com.google.sps.data;
 import com.google.auto.value.AutoValue;
-import java.util.ArrayList;
-
 /**
- * Abstract class representing user profile
+ * Abstract class representing saved recipe
  */
 @AutoValue
-public abstract class Profile {
-  public abstract String getId();
-  public abstract String getUserName();
+public abstract class SavedRecipe {
+  public abstract long getRecipeId();
+  public abstract String getTitle();
+  public abstract String getImage();
+  public abstract String getSource();
   public abstract boolean getVegetarian();
   public abstract boolean getVegan();
   public abstract boolean getGlutenFree();
   public abstract boolean getDairyFree();
-  public abstract ArrayList<String> getAllergies();
   public static Builder builder() {
-    return new AutoValue_Profile.Builder();
+    return new AutoValue_SavedRecipe.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
     /**
-      * @param id The unique id of the profile.
-      * @param userName The name of the user that the profile belongs to.
-      * @param allergies The allergies of the user
+      * @param recipeId The ids of the recipe that the tag is attached to
+      * @param title The title of the recipe
+      * @param imageUrl The url of the recipe image
+      * @param sourceUrl The url of the recipe source
       * @param vegetarian @param vegan @param glutenFree @param diaryFree The user's dietary options
       */
-    public abstract Builder setId(String id);
-    public abstract Builder setUserName(String userName);
+    public abstract Builder setRecipeId(long recipeId);
+    public abstract Builder setTitle(String title);
+    public abstract Builder setImage(String imageUrl);
+    public abstract Builder setSource(String sourceUrl);
     public abstract Builder setVegetarian(boolean vegetarian);
     public abstract Builder setVegan(boolean vegan);
-    public abstract Builder setGlutenFree(boolean glutenFree);
+    public abstract Builder setGlutenFree(boolean GlutenFree);
     public abstract Builder setDairyFree(boolean dairyFree);
-    public abstract Builder setAllergies(ArrayList<String> allergies);
-    public abstract Profile build();
-  } 
+    public abstract SavedRecipe build();
+  }
 }

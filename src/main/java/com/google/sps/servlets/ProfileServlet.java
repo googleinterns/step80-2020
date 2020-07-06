@@ -15,7 +15,6 @@
 package com.google.sps.servlets;
 
 import com.google.sps.data.Profile;
-import com.google.sps.data.ProfileBuilder;
 import com.google.gson.Gson;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -65,24 +64,10 @@ public class ProfileServlet extends HttpServlet {
         boolean dairyFree = (boolean) entity.getProperty("dairyFree");
         ArrayList<String> allergies = (ArrayList<String>) entity.getProperty("allergies");
 
-        ProfileBuilder profileObjectBuilder = new ProfileBuilder(id, userName);
-        if (vegetarian) {
-          profileObjectBuilder.setVegetarian(vegetarian);
-        }
-        if (vegan) {
-          profileObjectBuilder.setVegan(vegan);
-        }
-        if (glutenFree) {
-          profileObjectBuilder.setGlutenFree(glutenFree);
-        }
-        if (dairyFree) {
-          profileObjectBuilder.setDairyFree(dairyFree);
-        }
-        if (allergies != null && allergies.size() > 0) {
-          profileObjectBuilder.setAllergies(allergies);
-        }
-
-        Profile profileObject = profileObjectBuilder.build();
+        Profile profileObject = Profile.builder().setId(id).setUserName(userName).
+          setVegetarian(vegetarian).setVegan(vegan).setGlutenFree(glutenFree).setDairyFree(dairyFree).
+          setAllergies(allergies).build();
+        
         responseMap.put("profile", profileObject);
         responseMap.put("hasProfile", true);
       }
