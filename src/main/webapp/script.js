@@ -27,9 +27,14 @@ function getRecipeInfo() {
 /** Fetches and then populates nutrition information section of display page with average fat, calories, etc. */
 function createNutritionElements() {
   fetch('/dishNutrition?dishName='+dishName).then(response => response.json()).then((dish) => {
-    title.setAttribute("data-rotate", dishName);
+    // Get dish name
+    var dishName = document.forms.dishFitChoice.elements.labelFitChoice.value;
+    if (dishName != null) {
+      title.setAttribute("data-rotate", dishName);
+    }
 
-    var nutritionElement = document.querySelector(".nutrition-info");
+    // Populate nutrition element
+    var nutritionElement = document.getElementById(".nutrition-info");
     Object.keys(dish).forEach(function(key) {
       var node = document.createElement('div');
       node.className = 'nutrition-element';
