@@ -361,9 +361,15 @@ h1 {
   font-size: 25px;
   height: 6%;
   left: 6%;
+  opacity: 0.7;
   position: absolute;
+  text-decoration: underline;
   top: 7%;
   width: 30%;
+}
+
+.file-container:hover {
+  opacity: 1;
 }
 
 
@@ -398,13 +404,14 @@ h1 {
   background-color: #4CAF50;
   color: white;
   cursor: pointer;
-  font-family: 'Massenet', helvetica, sans-serif;
-  left: 100px;
+  font-family: 'TypeWriterBold', helvetica, sans-serif;
+  left: 50%;
   margin-bottom:10px;
+  margin-left: -50px;
   opacity: 0.8;
   position: absolute;
-  padding: 16px 20px;
-  top: 350px;
+  padding: 10px 10px;
+  top: 65%;
   width: 100px;
 }
 
@@ -422,8 +429,8 @@ h1 {
 
 .image-preview {
   border: 3px solid darkorange;
-  left: 45%;
-  margin-left: -45px;
+  left: 40%;
+  margin-left: -40px;
   max-height: 350px;
   max-width: 400px;
   position: absolute;
