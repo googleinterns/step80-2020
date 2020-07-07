@@ -27,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,24 +41,30 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType; 
 import com.google.gson.Gson;
-
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Arrays;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
+import com.google.common.collect.ImmutableSet;
 
 /** Servlet that uses VisionAPI to analyze uploaded images */
+@MultipartConfig
 @WebServlet("/dishAnalysis")
 public class DishAnalysisServlet extends HttpServlet {
+
+  // Initialize blocked catagories
+  private static Set<String> blockedCatagories = ImmutableSet.copyOf(new HashSet<String>(Arrays.asList("Cuisine", "Dish", "Food", "Ingredient", "Salad", "Fried food")));
   
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     // Initialize client used to send requests.
     try (ImageAnnotatorClient vision = ImageAnnotatorClient.create()) {
       int maxResults = 7;
-      // Get the file path from the form.
-      String fileName = getParameter(request, "image", "");
-
-      // Reads the image file into memory
-      Path path = Paths.get(fileName);
-      byte[] data = Files.readAllBytes(path);
-      ByteString imgBytes = ByteString.copyFrom(data);
+      // Get the image file
+      Part filePart = request.getPart("image");
+      InputStream fileContent = filePart.getInputStream();
+      ByteString imgBytes = ByteString.readFrom(fileContent);
 
       // Builds the image annotation request
       List<AnnotateImageRequest> requests = new ArrayList<>();
@@ -70,10 +77,6 @@ public class DishAnalysisServlet extends HttpServlet {
       // Performs label detection on the image file
       BatchAnnotateImagesResponse new_response = vision.batchAnnotateImages(requests);
       List<AnnotateImageResponse> responses = new_response.getResponsesList();
-
-      // Initialize blocked catagories
-      Set<String> blockedCatagories = new HashSet<String>();
-      blockedCatagories = new HashSet<String>(Arrays.asList("Cuisine", "Dish", "Food", "Ingredient", "Salad", "Fried food"));
 
       //Save and sort the descriptors
       List<String> descriptors = new ArrayList<>();
