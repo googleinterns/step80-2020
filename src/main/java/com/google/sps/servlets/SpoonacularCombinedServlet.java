@@ -63,4 +63,4 @@ public class SpoonacularCombinedServlet extends HttpServlet {
       System.out.println(e);
     }
   }
-} 
+}
