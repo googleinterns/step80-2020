@@ -23,6 +23,7 @@ import com.google.cloud.vision.v1.Feature.Type;
 import com.google.cloud.vision.v1.Image;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.google.protobuf.ByteString;
+import com.google.common.collect.ImmutableSet;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -48,10 +49,18 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import com.google.common.collect.ImmutableSet;
 
-/** Servlet that uses VisionAPI to analyze uploaded images */
+/**
+* Servlet that completes a post request by accepting image input, classifying that image using 
+* the Vision API, and then returns json recipe/nutritional data through the Spoonacular API
+*/
+
 @MultipartConfig
 @WebServlet("/dishAnalysis")
 public class DishAnalysisServlet extends HttpServlet {
+  
+  // Initialize blocked catagories
+  private static final MAX_RESULT = 7;
+  private final ImmutableSet<String> BLOCKED_CATAGORIES = ImmutableSet.of("Cuisine", "Dish", "Food", "Ingredient", "Salad", "Fried food");
 
   // Initialize blocked catagories
   private static Set<String> blockedCatagories = ImmutableSet.copyOf(new HashSet<String>(Arrays.asList("Cuisine", "Dish", "Food", "Ingredient", "Salad", "Fried food")));
@@ -60,7 +69,6 @@ public class DishAnalysisServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     // Initialize client used to send requests.
     try (ImageAnnotatorClient vision = ImageAnnotatorClient.create()) {
-      int maxResults = 7;
       // Get the image file
       Part filePart = request.getPart("image");
       InputStream fileContent = filePart.getInputStream();
@@ -69,7 +77,7 @@ public class DishAnalysisServlet extends HttpServlet {
       // Builds the image annotation request
       List<AnnotateImageRequest> requests = new ArrayList<>();
       Image img = Image.newBuilder().setContent(imgBytes).build();
-      Feature feat = Feature.newBuilder().setType(Type.LABEL_DETECTION).setMaxResults(maxResults).build();
+      Feature feat = Feature.newBuilder().setType(Type.LABEL_DETECTION).setMaxResults(MAX_RESULT).build();
       AnnotateImageRequest new_request =
           AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
       requests.add(new_request);
@@ -83,12 +91,12 @@ public class DishAnalysisServlet extends HttpServlet {
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
           System.out.format("Error: %s%n", res.getError().getMessage());
-          return;
+          continue;
         }
 
         for (EntityAnnotation annotation : res.getLabelAnnotationsList()) {
           String label = annotation.getDescription();
-          if (!blockedCatagories.contains(label)) {
+          if (!BLOCKED_CATAGORIES.contains(label)) {
             descriptors.add(annotation.getDescription());
           }
         }
