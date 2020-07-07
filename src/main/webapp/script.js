@@ -61,6 +61,7 @@ function previewImage(input) {
 
 /** Fetches profile from server and displays the information to user */
 function getProfile() {
+  getLoginStatus();
   fetch('/profile').then(response => response.json()).then((message) => {
     if (message.error == null) {
       if (message.hasProfile) {
@@ -180,49 +181,42 @@ function getLoginStatus() {
 
 }
 
+// test function for displaying recipes
+function hardCodedRecipeCard() {
+  const displayRecipeElement = document.getElementById('display-recipes');
+  displayRecipeElement.innerHTML = "";
+  const recipe = {}
+  recipe['title'] = "Title";
+  recipe['image'] = "/images/salad.jpeg";
+  recipe['sourceUrl'] = "https://css-tricks.com/snippets/css/a-guide-to-flexbox/";
+  displayRecipeElement.appendChild(createRecipeElement(recipe));
+}
+
 /** Creates an element that represents a recipe card */
 // TODO: will change to use html template element
 function createRecipeElement(recipe) {
-  const recipeElement = document.createElement('div');
-  recipeElement.className = 'recipe-card';
-
-  const titleElement = document.createElement('p');
-  titleElement.innerText = recipe["title"];
-  titleElement.className = "recipe-card-title";
-  recipeElement.appendChild(titleElement);
-
-  const recipeTableElement = document.createElement('p');
-  recipeTableElement.className = "recipe-card-table";
-
-  const infoElements = document.createElement('div');
-  infoElements.className = 'recipe-card-block';
-
-  const imageElement = document.createElement('img');
-  imageElement.src = recipe["image"];
-  infoElements.appendChild(imageElement);
-
-  const linkElement = document.createElement('a');
-  linkElement.href = recipe["sourceUrl"];
-  linkElement.innerHTML = "<br/>" + recipe["sourceUrl"];
-  infoElements.appendChild(linkElement);
-
-  recipeTableElement.appendChild(infoElements);
-
-  recipeTableElement.appendChild(createRecipeCardAlerts(recipe));
-  recipeElement.append(recipeTableElement);
+  var temp = document.querySelector("#recipe-template");;
+  var clone = temp.content.cloneNode(true);
   
-  const tagElements = createRecipeCardTags(recipe);
-  recipeElement.append(tagElements);
+  const titleElement = clone.querySelector(".recipe-card-title");
+  titleElement.innerText = recipe["title"];
 
-  const tagTableElement = document.createElement('p');
-  tagTableElement.className = "recipe-card-table";
+  const imageElement = clone.querySelector(".recipe-image");
+  imageElement.src = recipe["image"];
 
-  const tagTextElement = document.createElement('textarea');
-  tagTableElement.appendChild(tagTextElement);
+  const linkElement = clone.querySelector('a');
+  linkElement.href = recipe["sourceUrl"];
+  linkElement.innerHTML = recipe["sourceUrl"];
 
-  const addTagElement = document.createElement('button');
-  addTagElement.innerText = '+';
-  addTagElement.className = "add-tag-button";
+  const alertElements = clone.querySelectorAll(".recipe-card-block")[1];
+  createRecipeCardAlerts(recipe, alertElements);
+  
+  const tagElements = clone.querySelector(".recipe-card-tags");
+  createRecipeCardTags(recipe, tagElements);
+
+  const tagTextElement = clone.querySelector("textarea");
+
+  const addTagElement = clone.querySelector(".add-tag-button");
   addTagElement.addEventListener('click', () => {
     const newTagName = (tagTextElement.value).trim();
     if (newTagName != "") {
@@ -230,16 +224,12 @@ function createRecipeElement(recipe) {
       tagElements.appendChild(createTagElement(newTagName));
     }
   });
-  tagTableElement.append(addTagElement);
-  recipeElement.appendChild(tagTableElement);
 
-  return recipeElement;
+  return clone;
 }
 
 /** Get profile information to determine which alerts to create */
-function createRecipeCardAlerts(recipe) {
-  const alertElements = document.createElement('div');
-  alertElements.className = 'recipe-card-block';
+function createRecipeCardAlerts(recipe, alertElements) {
   alertElements.appendChild(createAlertElement("icon-warning-sign", "Dietary Alert"));
   alertElements.appendChild(createAlertElement("icon-exclamation", "Dietary Alert"));
   alertElements.appendChild(createAlertElement("icon-leaf", "Non-Vegetarian Alert"));
@@ -263,56 +253,51 @@ function createRecipeCardAlerts(recipe) {
   //       alertElements.appendChild(createAlertElement("icon-food", "Allergies Alert"));
   //     }
   //   });
-  return alertElements;
 }
 
 /** Creates an element that represents an alert */
 function createAlertElement(iconName, innerText) {
-  const alertElement = document.createElement('p');
-  alertElement.className = 'recipe-alert';
+  var temp = document.querySelector("#alert-template");;
+  var clone = temp.content.cloneNode(true);
+
+  const alertElement = clone.querySelector(".recipe-alert");
+
+  const textElement = clone.querySelector('.alert-text');
+  textElement.innerText = innerText;
 
   const iconElement = document.createElement('i');
   iconElement.className = iconName;
-  alertElement.appendChild(iconElement);
-
-  const textElement = document.createElement('div');
-  textElement.innerText = innerText;
-  alertElement.appendChild(textElement);
+  alertElement.insertBefore(iconElement, textElement);
   
-  return alertElement;
+  return clone;
 }
 
 /** Get user's tags for recipe */
-function createRecipeCardTags(recipe) {
+function createRecipeCardTags(recipe, tagElements) {
   // TODO: Will eventually have get request to server
-  const tagElements = document.createElement('div');
-  tagElements.className = "recipe-card-tags";
   tagElements.appendChild(createTagElement("Favorite"));
   tagElements.appendChild(createTagElement("Dinner"));
-  return tagElements;
 }
 
 /** Creates an element that represents a tag. */
 // TODO: will eventually incldue recipe id as parameter for tag deletion
 function createTagElement(tag) {
-  const tagElement = document.createElement('div');
-  tagElement.className = 'recipe-tag';
+  var temp = document.querySelector("#tag-template");;
+  var clone = temp.content.cloneNode(true);
 
-  const titleElement = document.createElement('span');
+  const tagElement = clone.querySelector(".recipe-tag");
+  
+  const titleElement = clone.querySelector('span');
   titleElement.innerText = tag;
 
-  const deleteButtonElement = document.createElement('button');
-  deleteButtonElement.innerText = 'X';
-  deleteButtonElement.className = "delete-tag-button";
+  const deleteButtonElement = clone.querySelector('button');
   deleteButtonElement.addEventListener('click', () => {
     // Remove the tag from the DOM.
     tagElement.remove();
     // TODO: will eventually have post request to delete tags
   });
 
-  tagElement.appendChild(titleElement);
-  tagElement.appendChild(deleteButtonElement);
-  return tagElement;
+  return clone;
 }
 
 /** Add new tag associated with recipe to datastore */
