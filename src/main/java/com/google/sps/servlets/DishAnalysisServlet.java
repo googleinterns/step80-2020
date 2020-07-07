@@ -47,6 +47,7 @@ import java.util.HashSet;
 import java.util.Arrays;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
+import com.google.common.collect.ImmutableSet;
 
 /**
 * Servlet that completes a post request by accepting image input, classifying that image using 
@@ -61,6 +62,9 @@ public class DishAnalysisServlet extends HttpServlet {
   private static final MAX_RESULT = 7;
   private final ImmutableSet<String> BLOCKED_CATAGORIES = ImmutableSet.of("Cuisine", "Dish", "Food", "Ingredient", "Salad", "Fried food");
 
+  // Initialize blocked catagories
+  private static Set<String> blockedCatagories = ImmutableSet.copyOf(new HashSet<String>(Arrays.asList("Cuisine", "Dish", "Food", "Ingredient", "Salad", "Fried food")));
+  
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     // Initialize client used to send requests.
