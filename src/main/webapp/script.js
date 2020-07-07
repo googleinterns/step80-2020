@@ -17,7 +17,6 @@ function getRecipeInfo() {
   const image = document.getElementById('image').files[0];
   const params = new FormData();
   params.append('image', image);
-  //window.location.href = "/display.html";
   const request = new Request('/dishAnalysis', {method: "POST", body: params});
   fetch(request).then(response => response.json()).then((recipeListInfoJson) => {
     var recipeList = JSON.parse(JSON.parse(recipeListInfoJson));
@@ -177,7 +176,6 @@ function getLoginStatus() {
 function hardCodedRecipeCard() {
   const displayRecipeElement = document.getElementById('display-recipes');
   displayRecipeElement.innerHTML = "";
-  // recipes.forEach(recipe => displayRecipeElement.appendChild(createRecipeElement(recipe)));
   const recipe = {}
   recipe['title'] = "Title";
   recipe['image'] = "/images/salad.jpeg";
