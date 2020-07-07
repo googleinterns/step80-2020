@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Fetches information returned from Spoonacular (after the image has been classified appropriately)
+/** Fetches information returned from Spoonacular (after the image has been classified appropriately) */
 function getRecipeInfo() {
   const image = document.getElementById('image').files[0];
   const params = new FormData();
@@ -22,6 +22,77 @@ function getRecipeInfo() {
     sessionStorage.recipeList = JSON.parse(recipeListInfoJson);
     window.location.href = "/display.html";
   });
+}
+
+/** Fetches and then populates nutrition information section of display page with average fat, calories, etc. */
+function createNutritionElements() {
+  fetch('/dishNutrition?dishName='+dishName).then(response => response.json()).then((dish) => {
+    // Get dish name
+    var dishName = document.forms.dishFitChoice.elements.labelFitChoice.value;
+    if (dishName != null) {
+      title.setAttribute("data-rotate", dishName);
+    }
+
+    // Populate nutrition element
+    var nutritionElement = document.getElementById(".nutrition-info");
+    Object.keys(dish).forEach(function(key) {
+      var node = document.createElement('div');
+      node.className = 'nutrition-element';
+      node.innerText = 'Average' + key + ': ' + dish[key]['value'] + ' ' + dish[key]['units'];
+      nutritionElement.appendChild(node);
+    });
+  });
+}
+
+/** Creates text typing animation */
+window.onload = function() {
+  var text_element = document.getElementById('dish');
+  var toRotate = text_element.getAttribute('data-rotate');
+  console.log("---1.----" + toRotate);
+  var period = text_element.getAttribute('data-period');
+  if (toRotate != null) {
+    new TxtRotate(text_element, toRotate, period);
+  }
+}
+
+var TxtRotate = function(el, toRotate, period) {
+  this.toRotate = toRotate;
+  this.el = el;
+  this.loopNum = 0;
+  this.period = parseInt(period, 10) || 2000;
+  this.txt = '';
+  this.tick();
+  this.isDeleting = false;
+};
+
+TxtRotate.prototype.tick = function() {
+  var i = this.loopNum % this.toRotate.length;
+  var fullTxt = this.toRotate;
+
+  if (this.isDeleting) {
+    this.txt = fullTxt.substring(0, this.txt.length - 1);
+  } else {
+    this.txt = fullTxt.substring(0, this.txt.length + 1);
+  }
+
+  this.el.innerHTML = '<span class="wrap">' + this.txt + '</span>';
+
+  var delta = 300 - Math.random() * 100;
+
+  if (this.isDeleting) { delta /= 2; }
+
+  if (!this.isDeleting && this.txt === fullTxt) {
+    delta = this.period;
+    this.isDeleting = true;
+  } else if (this.isDeleting && this.txt === '') {
+    this.isDeleting = false;
+    this.loopNum++;
+    delta = 400;
+  }
+
+  setTimeout(function() {
+    this.tick();
+  }, delta);
 }
 
 /** at display.html onload, display recipeList json stored in session storage */
@@ -40,9 +111,6 @@ function savedRecipes() {
     // TODO: replace with get request to spoonacular to get json for recipeIds
     const recipeIdList = tagList.map(tag => tag.recipeId);
     tempDisplayTagJson.innerHTML = JSON.stringify(tagList);
-
-    // use json to display recipe cards
-    // appendToDisplayElement(recipeList);
   });
 }
 
@@ -52,36 +120,62 @@ function appendToDisplayElement(recipeList) {
   const displayRecipeElement = document.getElementById('display-recipes');
   displayRecipeElement.innerHTML = "";
   for (recipe of recipeList) {
-    displayRecipeElement.appendChild(createRecipeElement(recipe));
+    var recipeCard = createRecipeElement(recipe);
+    recipeCard.className ='dish-recipe';
+    receipeCard.style.display = 'none';
+
+    var pictureWrap = document.createElement('div');
+    pictureWrap.className = 'dish-image-wrap';
+
+    var picture = document.createElement('img');
+    picture.className = 'dish-image';
+    picture.src = recipe["image"];
+
+    var pictureText = document.createElement('button');
+    pictureText.className = 'dish-image-text';
+    pictureText.innerHTML = recipe["title"];
+    pictureText.onclick = function() {
+      recipeCard.style.display = "block";
+    }
+
+    displayRecipeElement.appendChild(pictureWrap);
+    pictureWrap.appendChild(picture);
+    pictureWrap.appendChild(pictureText);
+    pictureWrap.appendChild(recipeCard);
   }
 }
 
 /* Slideshow that rotates through different background images */
 function startSlideshow() {
-    var images = new Array('/images/redbgr.jpg','/images/greenbgr.jpg','/images/yellowbgr.jpg', '/images/purplebgr.jpg', '/images/orangebgr.jpg');
-    var count = images.length;
-    document.body.style.backgroundImage = 'url("' + images[Math.floor(Math.random() * count)] + '")';
-    setTimeout(startSlideshow, 5000);
+  var images = new Array('/images/redbgr.jpg','/images/greenbgr.jpg','/images/yellowbgr.jpg', '/images/purplebgr.jpg', '/images/orangebgr.jpg');
+  var count = images.length;
+  document.body.style.backgroundImage = 'url("' + images[Math.floor(Math.random() * count)] + '")';
+  setTimeout(startSlideshow, 5000);
 }
 
-/* Opens form for user to submit image of dish for anlysis on home page */
+/** Opens form for user to submit image of dish for anlysis on home page */
 function openImageForm() {
   document.getElementById("popup").style.display = "block";
   document.getElementById("popup-button").style.display = "none";
+  document.getElementById("upload").style.display = "none";
+  document.getElementById("image-preview").style.display = "none";
 }
 
-/* Closes form for user to submit image of dish */
+/** Closes form for user to submit image of dish */
 function closeImageForm() {
   document.getElementById("popup").style.display = "none";
-  document.getElementById("popup-button").style.display = "block";
+  document.getElementById("popup-button").style.display = "inline-block";
 }
 
-/* Generates a preview of the user's uploaded image */
+/** Generates a preview of the user's uploaded image */
 function previewImage(input) {
   if(input.files && input.files[0]) {
+    preview = document.getElementById("image-preview")
     var reader = new FileReader();
     reader.onload = function (e) {
-      document.getElementById("image-preview").src = e.target.result;
+      preview.src = e.target.result;
+      preview.style.display = "inline-block";
+      document.getElementById("upload").style.display = "inline-block";
     };
     reader.readAsDataURL(input.files[0]);
   }
@@ -171,14 +265,23 @@ function clearSavedProfileStatus() {
   profileStatusElement.style.display = "none";
 }
 
-/** Gets recipe id list from query string */
+
+function getRecipe(){
+  /** Function gets recipe information from user input ID and displays the title on the page */
+  var numRecipe = document.getElementById("num-recipe").value;
+  fetch('/recipeInfo?numRecipe='+numRecipe).then(response => response.json()).then((recipeInfo) => {
+    recipeInf = JSON.parse(recipeInfo);
+    const recipeDisplayElement = document.getElementById('recipe-info');
+    recipeDisplayElement.innerText = recipeInf["title"];
+  });
+}
+/* Function gets recipe list from user input dish and displays the title of the first two returned results on the page **/
 function getRecipeId(){
   var dishName = document.getElementById("dish-name").value;
-  fetch('/dishId?dishName='+dishName).then(response => response.json()).then((recipeId) => {
+  fetch('/dishId?dishName='+dishName).then(response => response.json()).then(recipeId => {
     recipe = JSON.parse(recipeId);
     const recipeIdDisplayElement = document.getElementById('recipe-id-info');
-    console.log(recipeId);
-    recipeIdDisplayElement.innerText = recipe["results"];
+    recipeIdDisplayElement.innerText = recipe[0]["title"] + "\n" + recipe[1]["title"];
   });
 }
 
@@ -225,7 +328,7 @@ function getLoginStatus() {
 function hardCodedRecipeCard() {
   const displayRecipeElement = document.getElementById('display-recipes');
   displayRecipeElement.innerHTML = "";
-  
+
   const recipe = {}
   recipe['id'] = 1;
   recipe['title'] = "Title";
@@ -286,8 +389,21 @@ function createRecipeElement(recipe) {
 
 /** Get profile information to determine which alerts to create */
 function createRecipeCardAlerts(recipe, alertElements) {
+  const dietList = ['vegetarian', 'vegan', 'glutenFree', 'dairyFree'];
+  const iconMap = {
+    'vegetarian': 'icon-leaf',
+    'vegan': 'icon-exclamation',
+    'glutenFree': 'icon-warning-sign',
+    'dairyFree': 'icon-coffee'
+  };
+  const warningMap = {
+    'vegetarian': 'Non-Vegetarian Alert',
+    'vegan': 'Non-Vegan Alert',
+    'glutenFree': 'Non-GlutenFree Alert',
+    'dairyFree': 'Non-DairyFree Alert'
+  };
+  
   fetch('/profile').then(response => response.json()).then((message) => {
-
     if (message.hasProfile) {
       const profile = message.profile;
       const dietaryNeeds = profile.dietaryNeeds;
@@ -295,22 +411,22 @@ function createRecipeCardAlerts(recipe, alertElements) {
         switch(dietaryNeed) {
           case "VEGETARIAN":
             if (!recipe["vegetarian"]) {
-              alertElements.appendChild(createAlertElement("icon-leaf", "Non-Vegetarian Alert"));
+              alertElements.appendChild(createAlertElement(iconMap['vegetarian'], warningMap['vegetarian']));
             }
             break;
           case "VEGAN":
             if (!recipe["vegan"]) {
-              alertElements.appendChild(createAlertElement("icon-exclamation", "Non-Vegan Alert"));
+              alertElements.appendChild(createAlertElement(iconMap['vegan'], warningMap['vegan']));
             }
             break;
           case "GLUTENFREE":
             if (!recipe["glutenFree"]) {
-              alertElements.appendChild(createAlertElement("icon-warning-sign", "Non-GlutenFree Alert"));
+              alertElements.appendChild(createAlertElement(iconMap['glutenFree'], warningMap['glutenFree']));
             }
             break;
           case "DAIRYFREE":
             if (!recipe["dairyFree"]) {
-              alertElements.appendChild(createAlertElement("icon-coffee", "Non-DairyFree Alert"));
+              alertElements.appendChild(createAlertElement(iconMap['dairyFree'], warningMap['dairyFree']));
             }
             break;
           default: 
