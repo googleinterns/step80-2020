@@ -122,7 +122,7 @@ public class ProfileServlet extends HttpServlet {
         entity.setProperty("glutenFree", Boolean.parseBoolean(request.getParameter("glutenFree")));
         entity.setProperty("dairyFree", Boolean.parseBoolean(request.getParameter("dairyFree")));
         
-        String[] allergies = request.getParameterValues("allergies");
+        String[] allergies = request.getParameter("allergies").split(",");
         if (allergies == null) {
           allergies = new String[0];
         }
