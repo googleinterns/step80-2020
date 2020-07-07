@@ -42,11 +42,10 @@ import javax.ws.rs.core.MediaType;
 import com.google.gson.Gson;
 
 
-<<<<<<< HEAD:src/main/java/com/google/sps/servlets/DishAnalysisServlet.java
 /** Servlet that uses VisionAPI to analyze uploaded images */
 @WebServlet("/dishAnalysis")
 public class DishAnalysisServlet extends HttpServlet {
-
+  
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Initialize client used to send requests.
@@ -73,7 +72,7 @@ public class DishAnalysisServlet extends HttpServlet {
       List<AnnotateImageResponse> responses = new_response.getResponsesList();
 
       // Initialize blocked catagories
-      Set<String> blockedCatagories = new HashSet<String>;
+      Set<String> blockedCatagories = new HashSet<String>();
       blockedCatagories = new HashSet<String>(Arrays.asList("Cuisine", "Dish", "Food", "Ingredient", "Salad", "Fried food"));
 
       //Save and sort the descriptors
