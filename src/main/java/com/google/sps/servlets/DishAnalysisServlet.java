@@ -43,11 +43,15 @@ import com.google.gson.Gson;
 
 
 /** Servlet that uses VisionAPI to analyze uploaded images */
+
 @WebServlet("/dishAnalysis")
 public class DishAnalysisServlet extends HttpServlet {
   
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    int i = 1;
+    System.out.println(i);
+    /*
     // Initialize client used to send requests.
     try (ImageAnnotatorClient vision = ImageAnnotatorClient.create()) {
       int maxResults = 7;
@@ -90,7 +94,12 @@ public class DishAnalysisServlet extends HttpServlet {
           }
         }
       }
-      
+
+      Gson gson = new Gson();
+      response.setContentType("application/json");
+      response.getWriter().println(gson.toJson(descriptors));
+      //Saving this block just in case - should be replaced with a fetch in js
+      /*
       // Make Spoonacular 'GET' request
       String query = descriptors.get(0);
       Client client = ClientBuilder.newClient();
@@ -104,12 +113,14 @@ public class DishAnalysisServlet extends HttpServlet {
       } catch(Exception e){
         System.out.println(e);
       }
+      
     }
+    */
   }
+
   /* Returns parameter value given its name */
   private String getParameter(HttpServletRequest request, String name, String defaultValue) {
     String value = request.getParameter(name);
     return value;
   }
 }
-

@@ -14,11 +14,18 @@
 
 // Fetches information returned from Spoonacular (after the image has been classified appropriately)
 function getRecipeInfo() {
-  const request = new Request('/dishAnalysis', {method: "POST"});
-  fetch(request).then(response => response.json()).then((recipeListInfoJson) => {
+  fetch('/dishAnalysis').then(response => response.json()).then((recipeListInfoJson) => {
+    //set top options to radio buttons and reaveal them
+    console.log(recipeListInfoJson[0]);
+    document.getElementById("first-option-label").innerText = recipeListInfoJson[0];
+    document.getElementById("second-option-label").innerText = recipeListInfoJson[1];
+
+    //keeping this in here just in case
+    /*
     const displayRecipeElement = document.getElementById('display-recipes');
     displayRecipeElement.innerHTML = "";
     recipeListInfoJson.forEach(recipe => displayRecipeElement.appendChild(createRecipeElement(recipe)));
+    */
   });
 }
 
@@ -125,6 +132,7 @@ function getRecipe(){
     recipeDisplayElement.innerText = recipeInf["title"];
   });
 }
+
 /* Function gets recipe list from user input dish and displays the title of the first two returned results on the page **/
 function getRecipeId(){
   var dishName = document.getElementById("dish-name").value;
@@ -321,4 +329,11 @@ function addTagForRecipe() {
 /** Delete tag associated with recipe in datastore */
 function deleteTagForRecipe() {
   // TODO
+}
+
+function readOption(){
+  var dishName = document.forms.dishFitChoice.elements.labelFitChoice.value;
+  console.log(dishName);
+  document.getElementById("first-option-label").innerText = dishName;
+  //replace with Coco's function
 }

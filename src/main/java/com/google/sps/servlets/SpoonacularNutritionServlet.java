@@ -34,11 +34,14 @@ import org.json.JSONArray;
 public class SpoonacularNutritionServlet extends HttpServlet {
   static String spoonacularPrefix = "https://api.spoonacular.com/recipes/guessNutrition";
   static String spoonacularAPIKey = "cd2269d31cb94065ad1e73ce292374a5";
+
+  /** Takes in dishName parameter and uses spoonacular's guess nutrition to return nutrition information about the dish*/
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String title = request.getParameter("dishName");
     Client client = ClientBuilder.newClient();
-    WebTarget target = client.target(spoonacularPrefix + "?title=" + title + "&apiKey=" + spoonacularAPIKey);
+    System.out.println(String.format("%s?title=%s&apikey=%s", spoonacularPrefix, title, spoonacularAPIKey));
+    WebTarget target = client.target(String.format("%s?title=%s&apiKey=%s", spoonacularPrefix, title, spoonacularAPIKey));
     try {
       String recipeListJSONString = target.request(MediaType.APPLICATION_JSON).get(String.class);
       Gson gson = new Gson();
