@@ -37,10 +37,12 @@ import java.util.List;
 import java.util.HashMap;
 import org.json.simple.JSONObject;
 
-/** Servlet that returns all tags and saves tags in Datastore */
+/** Servlet that returns and adds tags in Datastore */
 @WebServlet("/tag")
 public class TagServlet extends HttpServlet {
+  private static final String AUTHORIZATION_ERROR = "User needs to login";
   
+  /** Return all tags filtered by tagName and/or recipeId */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
@@ -50,12 +52,16 @@ public class TagServlet extends HttpServlet {
     String json;
 
     String inputTagName = request.getParameter("tagName");
-    Integer inputRecipeId = Integer.parseInt(request.getParameter("recipeId"));
+    String recipeIdString = request.getParameter("recipeId");
+    Integer inputRecipeId = null;
+    if (recipeIdString != null) {
+      inputRecipeId = Integer.parseInt(recipeIdString);
+    }
     
     if (userService.isUserLoggedIn()) {
       Query query = new Query("TagRecipePair")
         .setFilter(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userService.getCurrentUser().getUserId()));
-      if (inputTagName != null) {
+      if (inputTagName != null && !inputTagName.equals("")) {
         query.setFilter(new Query.FilterPredicate("tagName", Query.FilterOperator.EQUAL, inputTagName));
       }
       if (inputRecipeId != null) {
@@ -64,13 +70,14 @@ public class TagServlet extends HttpServlet {
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       PreparedQuery results = datastore.prepare(query);
 
-      ArrayList<TagRecipePair> tagList = new ArrayList<TagRecipePair>();
+      ArrayList<TagRecipePair> tagList = new ArrayList<>();
       for (Entity entity : results.asIterable()) {
+        long tagId = entity.getKey().getId();
         String userId = (String) entity.getProperty("userId");
         String tagName = (String) entity.getProperty("tagName");
-        int recipeId = (int) entity.getProperty("recipeId");
+        long recipeId = (long) entity.getProperty("recipeId");
 
-        TagRecipePair tagObject = new TagRecipePair(userId, tagName, recipeId);
+        TagRecipePair tagObject = new TagRecipePair(tagId, userId, tagName, recipeId);
         tagList.add(tagObject);
       }
     
@@ -78,8 +85,7 @@ public class TagServlet extends HttpServlet {
       response.setContentType("application/json");
 
     } else {
-      String errorMessage = "User needs to log in to see tags.";
-      responseMap.put("error", errorMessage); 
+      responseMap.put("error", AUTHORIZATION_ERROR); 
       json = gson.toJson(responseMap);
     }
     
@@ -87,6 +93,7 @@ public class TagServlet extends HttpServlet {
     response.getWriter().println(json);
   }
 
+  /** Add a TagRecipePair to datastore which represents a user's tag on a recipe */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
@@ -94,19 +101,17 @@ public class TagServlet extends HttpServlet {
     JSONObject responseMap = new JSONObject();
 
     if (!userService.isUserLoggedIn()) {
-      String errorMessage = "User needs to log in to add tag.";
-      responseMap.put("error", errorMessage);
-      
+      responseMap.put("error", AUTHORIZATION_ERROR);
     } else {
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-      String id = userService.getCurrentUser().getUserId();
+      String userId = userService.getCurrentUser().getUserId();
       Entity entity = new Entity("TagRecipePair"); // also want to get key of entity if it exists
-      entity.setProperty("id", id);
+      entity.setProperty("userId", userId);
       
       String tagName = request.getParameter("tag-name");
       entity.setProperty("tagName", tagName);
 
-      int recipeId = Integer.parseInt(request.getParameter("recipe-id"));
+      long recipeId = Long.parseLong(request.getParameter("recipe-id"));
       entity.setProperty("recipeId", recipeId);
       
       datastore.put(entity);

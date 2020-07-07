@@ -19,16 +19,19 @@ import java.util.ArrayList;
  * Class representing recipe tag
  */
 public class TagRecipePair {
+  private long tagId;
   private String userId;
   private String tagName;
-  private int recipeId;
+  private long recipeId;
 
   /**
+    * @param tagId The unique id of the tag
     * @param userId The unique id of the profile.
     * @param tagName The name of the tag.
     * @param recipeId The ids of the recipe that the tag is attached to
     */
-  public TagRecipePair(String userId, String tagName, int recipeId) {
+  public TagRecipePair(long tagId, String userId, String tagName, long recipeId) {
+    this.tagId = tagId;
     this.userId = userId;
     this.tagName = tagName;
     this.recipeId = recipeId;

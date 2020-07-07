@@ -33,42 +33,17 @@
       </div>
       <div class="form-popup" class="hidden" id="popup">
         <form action="javascript:getRecipeInfo()" id="form" class="form-container" enctype="multipart/form-data">
-          <input type="file" id="image" name="image" multiple="false" onchange="previewImage(this);">
+          <label class="file-container">
+            Choose File
+            <i class="icon-upload-alt"></i>
+            <input type="file" id="image" class="input-file" name="image" multiple="false" onchange="previewImage(this);"/>
+          </label> 
+          <i onclick="closeImageForm()" class="icon-remove-sign icon-2x"></i>
           <img class="image-preview" id="image-preview" >
           <br>
-          <button type="submit" class="btn">Upload</button>
-          <button type="submit" class="btn cancel" onclick="closeImageForm()">Cancel</button>
+          <button type="submit" id="upload" class="upload">Upload</button>
         </form>
       </div>
     </div>
-    <div id="display-recipes"> </div>
-    <template id="recipe-template">
-      <div class="recipe-card">
-        <p class="recipe-card-title"></p>
-        <div class="recipe-card-table">
-          <div class="recipe-card-block">
-            <img class="recipe-image"></img>
-            <br/><a></a>
-          </div>
-          <div class="recipe-card-block"> </div>
-        </div>
-        <div class="recipe-card-tags"></div>
-        <div class="recipe-card-table">
-          <textarea></textarea>
-          <button class="add-tag-button">+</button>
-        </div>
-      </div>
-    </template>
-    <template id="alert-template">
-      <div class="recipe-alert">
-        <div class="alert-text"></div>
-      </div>
-    </template>
-    <template id="tag-template">
-      <div class="recipe-tag">
-        <span></span>
-        <button class="delete-tag-button">X</button>
-      </div>
-    </template>
   </body>
 </html>
