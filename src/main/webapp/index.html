@@ -17,7 +17,7 @@
         <a class="navbar-title" href="index.html">Forked</a>
         <div class="navbar-menu-container">
           <ul class="navbar-menu">
-            <li class="navbar-item"><a href="index.html">Profile</a></li>
+            <li class="navbar-item"><a href="profile.html">Profile</a></li>
           </ul>
         </div>
       </div>
@@ -42,11 +42,15 @@
       </div>
       <div class="form-popup" class="hidden" id="popup">
         <form action="javascript:getRecipeInfo()" id="form" class="form-container" enctype="multipart/form-data">
-          <input type="file" id="image" name="image" multiple="false" onchange="preview(this);">
+          <label class="file-container">
+            Choose File
+            <i class="icon-upload-alt"></i>
+            <input type="file" id="image" class="input-file" name="image" multiple="false" onchange="previewImage(this);"/>
+          </label> 
+          <i onclick="closeImageForm()" class="icon-remove-sign icon-2x"></i>
           <img class="image-preview" id="image-preview" >
           <br>
-          <button type="submit" class="btn">Upload</button>
-          <button type="submit" class="btn cancel" onclick="closeImageForm()">Cancel</button>
+          <button type="submit" id="upload" class="upload">Upload</button>
         </form>
       </div>
     </div>

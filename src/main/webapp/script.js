@@ -12,49 +12,171 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Fetches information returned from Spoonacular (after the image has been classified appropriately)
+/** Fetches information returned from Spoonacular (after the image has been classified appropriately) */
 function getRecipeInfo() {
-  fetch('/dishAnalysis').then(response => response.json()).then((recipeListInfoJson) => {
-    //set top options to radio buttons and reaveal them
-    console.log(recipeListInfoJson[0]);
+  const image = document.getElementById('image').files[0];
+  const params = new FormData();
+  params.append('image', image);
+  const request = new Request('/dishAnalysis', {method: "POST", body: params});
+  fetch(request).then(response => response.json()).then((recipeListInfoJson) => {
+    //set top options to radio buttons and reveal them
     document.getElementById("first-option-label").innerText = recipeListInfoJson[0];
     document.getElementById("second-option-label").innerText = recipeListInfoJson[1];
+    //set radio button values
 
-    //keeping this in here just in case
-    /*
-    const displayRecipeElement = document.getElementById('display-recipes');
-    displayRecipeElement.innerHTML = "";
-    recipeListInfoJson.forEach(recipe => displayRecipeElement.appendChild(createRecipeElement(recipe)));
-    */
+    sessionStorage.recipeList = JSON.parse(recipeListInfoJson);
+    window.location.href = "/display.html";
   });
+}
+
+/** Fetches and then populates nutrition information section of display page with average fat, calories, etc. */
+function createNutritionElements(dishName) {
+  fetch('/dishNutrition?dishName='+dishName).then(response => response.json()).then((dish) => {
+
+    // Populate nutrition element
+    var nutritionElement = document.getElementById(".nutrition-info");
+    Object.keys(dish).forEach(function(key) {
+      var node = document.createElement('div');
+      node.className = 'nutrition-element';
+      node.innerText = 'Average' + key + ': ' + dish[key]['value'] + ' ' + dish[key]['units'];
+      nutritionElement.appendChild(node);
+    });
+  });
+}
+
+/** Creates text typing animation */
+window.onload = function() {
+  var text_element = document.getElementById('dish');
+  var toRotate = text_element.getAttribute('data-rotate');
+  console.log("---1.----" + toRotate);
+  var period = text_element.getAttribute('data-period');
+  if (toRotate != null) {
+    new TxtRotate(text_element, toRotate, period);
+  }
+}
+
+var TxtRotate = function(el, toRotate, period) {
+  this.toRotate = toRotate;
+  this.el = el;
+  this.loopNum = 0;
+  this.period = parseInt(period, 10) || 2000;
+  this.txt = '';
+  this.tick();
+  this.isDeleting = false;
+};
+
+TxtRotate.prototype.tick = function() {
+  var i = this.loopNum % this.toRotate.length;
+  var fullTxt = this.toRotate;
+
+  if (this.isDeleting) {
+    this.txt = fullTxt.substring(0, this.txt.length - 1);
+  } else {
+    this.txt = fullTxt.substring(0, this.txt.length + 1);
+  }
+
+  this.el.innerHTML = '<span class="wrap">' + this.txt + '</span>';
+
+  var that = this;
+  var delta = 300 - Math.random() * 100;
+
+  if (this.isDeleting) { delta /= 2; }
+
+  if (!this.isDeleting && this.txt === fullTxt) {
+    delta = this.period;
+    this.isDeleting = true;
+  } else if (this.isDeleting && this.txt === '') {
+    this.isDeleting = false;
+    this.loopNum++;
+    delta = 400;
+  }
+
+  setTimeout(function() {
+    that.tick();
+  }, delta);
+}
+
+/** at display.html onload, display recipeList json stored in session storage */
+function displayRecipes() {
+  var recipeList = JSON.parse(sessionStorage.recipeList);
+  appendToDisplayElement(recipeList);
+}
+
+/** display saved recipes by tag name */
+function savedRecipes() {
+  const tagName = document.getElementById('tag-name').value.trim();
+  
+  fetch('/tag?tagName=' + tagName).then(response => response.json()).then((tagList) => {
+    const tempDisplayTagJson = document.getElementById("temp-display-tags-json");
+    
+    // TODO: replace with get request to spoonacular to get json for recipeIds
+    const recipeIdList = tagList.map(tag => tag.recipeId);
+    tempDisplayTagJson.innerHTML = JSON.stringify(tagList);
+  });
+}
+
+/** Helper function to display recipe cards in display-recipes element */
+function appendToDisplayElement(recipeList) {
+  // switch id="display-recipes" to class="display-recipes"?
+  const displayRecipeElement = document.getElementById('display-recipes');
+  displayRecipeElement.innerHTML = "";
+  for (recipe of recipeList) {
+    var recipeCard = createRecipeElement(recipe);
+    recipeCard.className ='dish-recipe';
+    receipeCard.style.display = 'none';
+
+    var pictureWrap = document.createElement('div');
+    pictureWrap.className = 'dish-image-wrap';
+
+    var picture = document.createElement('img');
+    picture.className = 'dish-image';
+    picture.src = recipe["image"];
+
+    var pictureText = document.createElement('button');
+    pictureText.className = 'dish-image-text';
+    pictureText.innerHTML = recipe["title"];
+    pictureText.onclick = function() {
+      recipeCard.style.display = "block";
+    }
+
+    displayRecipeElement.appendChild(pictureWrap);
+    pictureWrap.appendChild(picture);
+    pictureWrap.appendChild(pictureText);
+    pictureWrap.appendChild(recipeCard);
+  }
 }
 
 /* Slideshow that rotates through different background images */
 function startSlideshow() {
-    var images = new Array('/images/redbgr.jpg','/images/greenbgr.jpg','/images/yellowbgr.jpg', '/images/purplebgr.jpg', '/images/orangebgr.jpg');
-    var count = images.length;
-    document.body.style.backgroundImage = 'url("' + images[Math.floor(Math.random() * count)] + '")';
-    setTimeout(startSlideshow, 5000);
+  var images = new Array('/images/redbgr.jpg','/images/greenbgr.jpg','/images/yellowbgr.jpg', '/images/purplebgr.jpg', '/images/orangebgr.jpg');
+  var count = images.length;
+  document.body.style.backgroundImage = 'url("' + images[Math.floor(Math.random() * count)] + '")';
+  setTimeout(startSlideshow, 5000);
 }
 
-/* Opens form for user to submit image of dish for anlysis on home page */
+/** Opens form for user to submit image of dish for anlysis on home page */
 function openImageForm() {
   document.getElementById("popup").style.display = "block";
   document.getElementById("popup-button").style.display = "none";
+  document.getElementById("upload").style.display = "none";
+  document.getElementById("image-preview").style.display = "none";
 }
 
-/* Closes form for user to submit image of dish */
+/** Closes form for user to submit image of dish */
 function closeImageForm() {
   document.getElementById("popup").style.display = "none";
-  document.getElementById("popup-button").style.display = "block";
+  document.getElementById("popup-button").style.display = "inline-block";
 }
 
-/* Generates a preview of the user's uploaded image */
+/** Generates a preview of the user's uploaded image */
 function previewImage(input) {
   if(input.files && input.files[0]) {
+    preview = document.getElementById("image-preview")
     var reader = new FileReader();
     reader.onload = function (e) {
-      document.getElementById("image-preview").src = e.target.result;
+      preview.src = e.target.result;
+      preview.style.display = "inline-block";
+      document.getElementById("upload").style.display = "inline-block";
     };
     reader.readAsDataURL(input.files[0]);
   }
@@ -62,11 +184,11 @@ function previewImage(input) {
 
 /** Fetches profile from server and displays the information to user */
 function getProfile() {
+  getLoginStatus();
   fetch('/profile').then(response => response.json()).then((message) => {
     if (message.error == null) {
       if (message.hasProfile) {
         const profile = message.profile;
-
         const userNameElement = document.getElementById('name-entry');
         const vegetarianElement = document.getElementById("vegetarian-checkbox");
         const veganElement = document.getElementById("vegan-checkbox");
@@ -74,11 +196,26 @@ function getProfile() {
         const dairyFreeElement = document.getElementById("dairy-checkbox");
         const allergiesStringElement = document.getElementById("allergies-entry");
 
+        const dietaryNeeds = profile.dietaryNeeds;
+        dietaryNeeds.forEach(dietaryNeed => {
+          switch(dietaryNeed) {
+            case "VEGETARIAN":
+              vegetarianElement.checked = true;
+              break;
+            case "VEGAN":
+              veganElement.checked = true;
+              break;
+            case "GLUTENFREE":
+              glutenFreeElement.checked = true;
+              break;
+            case "DAIRYFREE":
+              dairyFreeElement.checked = true;
+              break;
+            default: 
+              break;
+          }
+        });
         userNameElement.value = profile.userName;
-        vegetarianElement.checked = profile.vegetarian;
-        veganElement.checked = profile.vegan;
-        glutenFreeElement.checked = profile.glutenFree;
-        dairyFreeElement.checked = profile.dairyFree;
         allergiesStringElement.value = (profile.allergies).join(", ");
       }
       
@@ -90,21 +227,28 @@ function getProfile() {
 
 /** Posts profile information from form to server */
 function postProfile() {
-  const userName = document.getElementById('name-entry').value;
+  const userName = document.getElementById('name-entry').value.trim();
   const vegetarian = document.getElementById("vegetarian-checkbox").checked;
   const vegan = document.getElementById("vegan-checkbox").checked;
   const glutenFree = document.getElementById("gluten-checkbox").checked;
   const dairyFree = document.getElementById("dairy-checkbox").checked;
 
   const allergiesString = document.getElementById("allergies-entry").value;
-  const allergies = allergiesString.split(",").map(allergy => allergy.trim());
-
+  const allergies = allergiesString.split(",").map(allergy => allergy.toLowerCase().trim());
   const params = new URLSearchParams();
   params.append('userName', userName);
-  params.append('vegetarian', vegetarian);
-  params.append('vegan', vegan);
-  params.append('glutenFree', glutenFree);
-  params.append('dairyFree', dairyFree);
+  if (vegetarian) {
+    params.append('dietary-needs', "VEGETARIAN");
+  }
+  if (vegan) {
+    params.append('dietary-needs', "VEGAN");
+  }
+  if (glutenFree) {
+    params.append('dietary-needs', "GLUTENFREE");
+  }
+  if (dairyFree) {
+    params.append('dietary-needs', "DAIRYFREE");
+  }
   params.append('allergies', allergies);
 
   fetch('/profile', {method: 'POST', body: params}).then(response => response.json()).then((message) => {
@@ -136,7 +280,7 @@ function getRecipe(){
 /* Function gets recipe list from user input dish and displays the title of the first two returned results on the page **/
 function getRecipeId(){
   var dishName = document.getElementById("dish-name").value;
-  fetch('/recipeInfo?dishName='+dishName).then(response => response.json()).then((recipeId) => {
+  fetch('/dishId?dishName='+dishName).then(response => response.json()).then(recipeId => {
     recipe = JSON.parse(recipeId);
     const recipeIdDisplayElement = document.getElementById('recipe-id-info');
     recipeIdDisplayElement.innerText = recipe[0]["title"] + "\n" + recipe[1]["title"];
@@ -186,154 +330,186 @@ function getLoginStatus() {
 function hardCodedRecipeCard() {
   const displayRecipeElement = document.getElementById('display-recipes');
   displayRecipeElement.innerHTML = "";
-  // recipes.forEach(recipe => displayRecipeElement.appendChild(createRecipeElement(recipe)));
-  displayRecipeElement.appendChild(createRecipeElement("Placeholder for recipe json"));
+
+  const recipe = {}
+  recipe['id'] = 1;
+  recipe['title'] = "Title";
+  recipe['image'] = "/images/salad.jpeg";
+  recipe['sourceUrl'] = "https://css-tricks.com/snippets/css/a-guide-to-flexbox/";
+  recipe['vegetarian'] = true;
+  displayRecipeElement.appendChild(createRecipeElement(recipe));
+
+  const recipe1 = {};
+  recipe1['id'] = 2;
+  recipe1['title'] = "Title 1";
+  recipe1['image'] = "/images/salad.jpeg";
+  recipe1['sourceUrl'] = "https://css-tricks.com/snippets/css/a-guide-to-flexbox/";
+  recipe1['vegan'] = true;
+  displayRecipeElement.appendChild(createRecipeElement(recipe1));
 }
 
 /** Creates an element that represents a recipe card */
-// currently only has hardcoded values
 function createRecipeElement(recipe) {
-  const recipeElement = document.createElement('div');
-  recipeElement.className = 'recipe-card';
-
-  const titleElement = document.createElement('p');
-  titleElement.innerText = "Title"; // replace with recipe title
-  titleElement.className = "recipe-card-title";
-  recipeElement.appendChild(titleElement);
-
-  const recipeTableElement = document.createElement('p');
-  recipeTableElement.className = "recipe-card-table";
-
-  const infoElements = document.createElement('div');
-  infoElements.className = 'recipe-card-block';
-
-  const imageElement = document.createElement('img');
-  imageElement.src = "/images/salad.jpeg"; // replace with recipe image url
-  infoElements.appendChild(imageElement);
-
-  const linkElement = document.createElement('a');
-  linkElement.href = "https://www.w3schools.com/jsref/dom_obj_image.asp"; // replace with recipe instructions url
-  linkElement.innerHTML = "<br/>random link";
-  infoElements.appendChild(linkElement);
-
-  recipeTableElement.appendChild(infoElements);
-
-  recipeTableElement.appendChild(createRecipeCardAlerts(recipe));
-  recipeElement.append(recipeTableElement);
+  var temp = document.querySelector("#recipe-template");;
+  var clone = temp.content.cloneNode(true);
   
-  const tagElements = createRecipeCardTags(recipe);
-  recipeElement.append(tagElements);
+  const titleElement = clone.querySelector(".recipe-card-title");
+  titleElement.innerText = recipe["title"];
 
-  const tagTableElement = document.createElement('p');
-  tagTableElement.className = "recipe-card-table";
+  const imageElement = clone.querySelector(".recipe-image");
+  imageElement.src = recipe["image"];
 
-  const tagTextElement = document.createElement('textarea');
-  tagTableElement.appendChild(tagTextElement);
+  const linkElement = clone.querySelector('a');
+  linkElement.href = recipe["sourceUrl"];
+  linkElement.innerHTML = recipe["sourceUrl"];
 
-  const addTagElement = document.createElement('button');
-  addTagElement.innerText = '+';
-  addTagElement.className = "add-tag-button";
+  const alertElements = clone.querySelectorAll(".recipe-card-block")[1];
+  createRecipeCardAlerts(recipe, alertElements);
+  
+  const tagElements = clone.querySelector(".recipe-card-tags");
+  createRecipeCardTags(recipe['id'], tagElements);
+
+  const tagTextElement = clone.querySelector("textarea");
+
+  const addTagElement = clone.querySelector(".add-tag-button");
   addTagElement.addEventListener('click', () => {
     const newTagName = (tagTextElement.value).trim();
     if (newTagName != "") {
-      // TODO: will eventually have post request to add tags
-      tagElements.appendChild(createTagElement(newTagName));
+      const params = new URLSearchParams();
+      params.append('tag-name', newTagName);
+      params.append('recipe-id', recipe['id']);
+
+      fetch('/tag', {method: 'POST', body: params}).then(response => response.json()).then((tagList) => {
+        tagElements.innerHTML = "";
+        createRecipeCardTags(recipe['id'], tagElements);
+      });
     }
   });
-  tagTableElement.append(addTagElement);
-  recipeElement.appendChild(tagTableElement);
 
-  return recipeElement;
+  return clone;
 }
 
 /** Get profile information to determine which alerts to create */
-function createRecipeCardAlerts(recipe) {
-  const alertElements = document.createElement('div');
-  alertElements.className = 'recipe-card-block';
+function createRecipeCardAlerts(recipe, alertElements) {
+  const dietList = ['vegetarian', 'vegan', 'glutenFree', 'dairyFree'];
+  const iconMap = {
+    'vegetarian': 'icon-leaf',
+    'vegan': 'icon-exclamation',
+    'glutenFree': 'icon-warning-sign',
+    'dairyFree': 'icon-coffee'
+  };
+  const warningMap = {
+    'vegetarian': 'Non-Vegetarian Alert',
+    'vegan': 'Non-Vegan Alert',
+    'glutenFree': 'Non-GlutenFree Alert',
+    'dairyFree': 'Non-DairyFree Alert'
+  };
   
   fetch('/profile').then(response => response.json()).then((message) => {
-
     if (message.hasProfile) {
       const profile = message.profile;
-      // TODO: need comparisons against recipe json
-      // profile.vegetarian
-      // profile.vegan
-      // profile.glutenFree
-      // profile.dairyFree
-      // profile.allergies
+      const dietaryNeeds = profile.dietaryNeeds;
+      dietaryNeeds.forEach(dietaryNeed => {
+        switch(dietaryNeed) {
+          case "VEGETARIAN":
+            if (!recipe["vegetarian"]) {
+              alertElements.appendChild(createAlertElement(iconMap['vegetarian'], warningMap['vegetarian']));
+            }
+            break;
+          case "VEGAN":
+            if (!recipe["vegan"]) {
+              alertElements.appendChild(createAlertElement(iconMap['vegan'], warningMap['vegan']));
+            }
+            break;
+          case "GLUTENFREE":
+            if (!recipe["glutenFree"]) {
+              alertElements.appendChild(createAlertElement(iconMap['glutenFree'], warningMap['glutenFree']));
+            }
+            break;
+          case "DAIRYFREE":
+            if (!recipe["dairyFree"]) {
+              alertElements.appendChild(createAlertElement(iconMap['dairyFree'], warningMap['dairyFree']));
+            }
+            break;
+          default: 
+            break;
+        }
+      });
 
-      alertElements.appendChild(createAlertElement("icon-warning-sign", "Dietary Alert"));
-      alertElements.appendChild(createAlertElement("icon-exclamation", "Dietary Alert"));
-      alertElements.appendChild(createAlertElement("icon-leaf", "Non-Vegetarian Alert"));
-      alertElements.appendChild(createAlertElement("icon-coffee", "Non-DairyFree Alert"));
-      alertElements.appendChild(createAlertElement("icon-food", "Allergies Alert"));
+      const allergyList = allergyAlertList(recipe['extendedIngredients'], profile.allergies);
+      if (allergyList.length > 0) {
+        alertElements.appendChild(createAlertElement("icon-food", "The following allergies have been seen: " + allergyList.join(", "))); 
+      }
     }
   });
-  return alertElements;
+}
+
+// Loop through recipe ingredients to find food allergies
+function allergyAlertList(ingredients, allergies) {
+  var allergyList = [];
+  for (allergy of allergies) {
+    for (ingredient of ingredients) {
+      if (ingredient['name'].includes(allergy)) {
+        allergyList.push(allergy);
+        break;
+      }
+    }
+  }
+  return allergyList;
 }
 
 /** Creates an element that represents an alert */
 function createAlertElement(iconName, innerText) {
-  const alertElement = document.createElement('p');
-  alertElement.className = 'recipe-alert';
+  var temp = document.querySelector("#alert-template");;
+  var clone = temp.content.cloneNode(true);
+
+  const alertElement = clone.querySelector(".recipe-alert");
+
+  const textElement = clone.querySelector('.alert-text');
+  textElement.innerText = innerText;
 
   const iconElement = document.createElement('i');
   iconElement.className = iconName;
-  alertElement.appendChild(iconElement);
-
-  const textElement = document.createElement('div');
-  textElement.innerText = innerText;
-  alertElement.appendChild(textElement);
+  alertElement.insertBefore(iconElement, textElement);
   
-  return alertElement;
+  return clone;
 }
 
 /** Get user's tags for recipe */
-function createRecipeCardTags(recipe) {
-  // TODO: Will eventually have get request to server
-  const tagElements = document.createElement('div');
-  tagElements.className = "recipe-card-tags";
-  tagElements.appendChild(createTagElement("Favorite"));
-  tagElements.appendChild(createTagElement("Dinner"));
-  return tagElements;
+function createRecipeCardTags(recipeId, tagElements) {
+  fetch('/tag?recipeId=' + recipeId).then(response => response.json()).then((tagList) => {
+    tagList.forEach(tag => tagElements.appendChild(createTagElement(tag)));
+  });
 }
 
 /** Creates an element that represents a tag. */
-// TODO: will eventually incldue recipe id as parameter for tag deletion
 function createTagElement(tag) {
-  const tagElement = document.createElement('div');
-  tagElement.className = 'recipe-tag';
+  var temp = document.querySelector("#tag-template");;
+  var clone = temp.content.cloneNode(true);
 
-  const titleElement = document.createElement('span');
-  titleElement.innerText = tag;
+  const tagElement = clone.querySelector(".recipe-tag");
+  
+  const titleElement = clone.querySelector('span');
+  titleElement.innerText = tag.tagName;
 
-  const deleteButtonElement = document.createElement('button');
-  deleteButtonElement.innerText = 'X';
-  deleteButtonElement.className = "delete-tag-button";
+  const deleteButtonElement = clone.querySelector('button');
   deleteButtonElement.addEventListener('click', () => {
-    // Remove the tag from the DOM.
-    tagElement.remove();
-    // TODO: will eventually have post request to delete tags
+    const params = new URLSearchParams();
+    params.append('tag-id', tag.tagId);
+
+    fetch('/delete-tag', {method: 'POST', body: params}).then(() => {
+      // Remove the tag from the DOM.
+      tagElement.remove();
+    });
   });
 
-  tagElement.appendChild(titleElement);
-  tagElement.appendChild(deleteButtonElement);
-  return tagElement;
+  return clone;
 }
 
-/** Add new tag associated with recipe to datastore */
-function addTagForRecipe() {
-  // TODO
-}
-
-/** Delete tag associated with recipe in datastore */
-function deleteTagForRecipe() {
-  // TODO
-}
-
-function readOption(){
+function readOption() {
   var dishName = document.forms.dishFitChoice.elements.labelFitChoice.value;
-  console.log(dishName);
-  document.getElementById("first-option-label").innerText = dishName;
-  //replace with Coco's function
+  //handle null dishName
+  //fetch 
+  //redirect to display.html
+  createNutritionElements(dishName);
 }

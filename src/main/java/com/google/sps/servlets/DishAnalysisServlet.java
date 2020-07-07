@@ -23,10 +23,12 @@ import com.google.cloud.vision.v1.Feature.Type;
 import com.google.cloud.vision.v1.Image;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.google.protobuf.ByteString;
+import com.google.common.collect.ImmutableSet;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,33 +42,44 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType; 
 import com.google.gson.Gson;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Arrays;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
+import com.google.common.collect.ImmutableSet;
 
+/**
+* Servlet that completes a post request by accepting image input, classifying that image using 
+* the Vision API, and then returns json recipe/nutritional data through the Spoonacular API
+*/
 
 /** Servlet that uses VisionAPI to analyze uploaded images */
 
+@MultipartConfig
 @WebServlet("/dishAnalysis")
 public class DishAnalysisServlet extends HttpServlet {
   
-  @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    int i = 1;
-    System.out.println(i);
-    /*
+  // Initialize blocked catagories
+  private static final int MAX_RESULT = 7;
+  private final ImmutableSet<String> BLOCKED_CATAGORIES = ImmutableSet.of("Cuisine", "Dish", "Food", "Ingredient", "Salad", "Fried food");
+
+  // Initialize blocked catagories
+  private static Set<String> blockedCatagories = ImmutableSet.copyOf(new HashSet<String>(Arrays.asList("Cuisine", "Dish", "Food", "Ingredient", "Salad", "Fried food")));
+  
+  @Override 
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     // Initialize client used to send requests.
     try (ImageAnnotatorClient vision = ImageAnnotatorClient.create()) {
-      int maxResults = 7;
-      // Get the file path from the form.
-      String fileName = getParameter(request, "image", "");
-
-      // Reads the image file into memory
-      Path path = Paths.get(fileName);
-      byte[] data = Files.readAllBytes(path);
-      ByteString imgBytes = ByteString.copyFrom(data);
+      // Get the image file
+      Part filePart = request.getPart("image");
+      InputStream fileContent = filePart.getInputStream();
+      ByteString imgBytes = ByteString.readFrom(fileContent);
 
       // Builds the image annotation request
       List<AnnotateImageRequest> requests = new ArrayList<>();
       Image img = Image.newBuilder().setContent(imgBytes).build();
-      Feature feat = Feature.newBuilder().setType(Type.LABEL_DETECTION).setMaxResults(maxResults).build();
+      Feature feat = Feature.newBuilder().setType(Type.LABEL_DETECTION).setMaxResults(MAX_RESULT).build();
       AnnotateImageRequest new_request =
           AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
       requests.add(new_request);
@@ -75,21 +88,17 @@ public class DishAnalysisServlet extends HttpServlet {
       BatchAnnotateImagesResponse new_response = vision.batchAnnotateImages(requests);
       List<AnnotateImageResponse> responses = new_response.getResponsesList();
 
-      // Initialize blocked catagories
-      Set<String> blockedCatagories = new HashSet<String>();
-      blockedCatagories = new HashSet<String>(Arrays.asList("Cuisine", "Dish", "Food", "Ingredient", "Salad", "Fried food"));
-
       //Save and sort the descriptors
       List<String> descriptors = new ArrayList<>();
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
           System.out.format("Error: %s%n", res.getError().getMessage());
-          return;
+          continue;
         }
 
         for (EntityAnnotation annotation : res.getLabelAnnotationsList()) {
           String label = annotation.getDescription();
-          if (!blockedCatagories.contains(label)) {
+          if (!BLOCKED_CATAGORIES.contains(label)) {
             descriptors.add(annotation.getDescription());
           }
         }
@@ -113,9 +122,9 @@ public class DishAnalysisServlet extends HttpServlet {
       } catch(Exception e){
         System.out.println(e);
       }
-      
+      */
     }
-    */
+    
   }
 
   /* Returns parameter value given its name */
