@@ -15,7 +15,6 @@
 package com.google.sps.servlets;
 
 import com.google.sps.data.Profile;
-import com.google.sps.data.ProfileBuilder;
 import com.google.gson.Gson;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -59,30 +58,30 @@ public class ProfileServlet extends HttpServlet {
       } else {
         String id = (String) entity.getProperty("id");
         String userName = (String) entity.getProperty("userName");
-        boolean vegetarian = (boolean) entity.getProperty("vegetarian");
-        boolean vegan = (boolean) entity.getProperty("vegan");
-        boolean glutenFree = (boolean) entity.getProperty("glutenFree");
-        boolean dairyFree = (boolean) entity.getProperty("dairyFree");
+        ArrayList<String> dietaryNeedsStrings = (ArrayList<String>) entity.getProperty("dietaryNeeds");
         ArrayList<String> allergies = (ArrayList<String>) entity.getProperty("allergies");
 
-        ProfileBuilder profileObjectBuilder = new ProfileBuilder(id, userName);
-        if (vegetarian) {
-          profileObjectBuilder.setVegetarian(vegetarian);
+        ArrayList<Profile.Diet> dietaryNeeds = new ArrayList<>();
+        for (String dietString: dietaryNeedsStrings) {
+          switch(dietString) {
+            case "VEGETARIAN":
+              dietaryNeeds.add(Profile.Diet.VEGETARIAN);
+              break;
+            case "VEGAN":
+              dietaryNeeds.add(Profile.Diet.VEGAN);
+              break;
+            case "GLUTENFREE":
+              dietaryNeeds.add(Profile.Diet.GLUTENFREE);
+              break;
+            case "DAIRYFREE":
+              dietaryNeeds.add(Profile.Diet.DAIRYFREE);
+              break;
+            default: break;
+          }
         }
-        if (vegan) {
-          profileObjectBuilder.setVegan(vegan);
-        }
-        if (glutenFree) {
-          profileObjectBuilder.setGlutenFree(glutenFree);
-        }
-        if (dairyFree) {
-          profileObjectBuilder.setDairyFree(dairyFree);
-        }
-        if (allergies != null && allergies.size() > 0) {
-          profileObjectBuilder.setAllergies(allergies);
-        }
-
-        Profile profileObject = profileObjectBuilder.build();
+        Profile profileObject = Profile.builder().setId(id).setUserName(userName).
+          setDietaryNeeds(dietaryNeeds).setAllergies(allergies).build();
+          
         responseMap.put("profile", profileObject);
         responseMap.put("hasProfile", true);
       }
@@ -117,10 +116,12 @@ public class ProfileServlet extends HttpServlet {
       String userName = request.getParameter("userName");
       if (userName != null) {
         entity.setProperty("userName", request.getParameter("userName"));
-        entity.setProperty("vegetarian", Boolean.parseBoolean(request.getParameter("vegetarian")));
-        entity.setProperty("vegan", Boolean.parseBoolean(request.getParameter("vegan")));
-        entity.setProperty("glutenFree", Boolean.parseBoolean(request.getParameter("glutenFree")));
-        entity.setProperty("dairyFree", Boolean.parseBoolean(request.getParameter("dairyFree")));
+        String[] dietaryNeeds = request.getParameterValues("dietary-needs");
+        entity.setProperty("dietaryNeeds", Arrays.asList(dietaryNeeds));
+        // entity.setProperty("vegetarian", Boolean.parseBoolean(request.getParameter("vegetarian")));
+        // entity.setProperty("vegan", Boolean.parseBoolean(request.getParameter("vegan")));
+        // entity.setProperty("glutenFree", Boolean.parseBoolean(request.getParameter("glutenFree")));
+        // entity.setProperty("dairyFree", Boolean.parseBoolean(request.getParameter("dairyFree")));
         
         String[] allergies = request.getParameter("allergies").split(",");
         if (allergies == null) {
