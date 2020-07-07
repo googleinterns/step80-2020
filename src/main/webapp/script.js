@@ -94,7 +94,6 @@ function getProfile() {
     if (message.error == null) {
       if (message.hasProfile) {
         const profile = message.profile;
-
         const userNameElement = document.getElementById('name-entry');
         const vegetarianElement = document.getElementById("vegetarian-checkbox");
         const veganElement = document.getElementById("vegan-checkbox");
@@ -102,11 +101,26 @@ function getProfile() {
         const dairyFreeElement = document.getElementById("dairy-checkbox");
         const allergiesStringElement = document.getElementById("allergies-entry");
 
+        const dietaryNeeds = profile.dietaryNeeds;
+        dietaryNeeds.forEach(dietaryNeed => {
+          switch(dietaryNeed) {
+            case "VEGETARIAN":
+              vegetarianElement.checked = true;
+              break;
+            case "VEGAN":
+              veganElement.checked = true;
+              break;
+            case "GLUTENFREE":
+              glutenFreeElement.checked = true;
+              break;
+            case "DAIRYFREE":
+              dairyFreeElement.checked = true;
+              break;
+            default: 
+              break;
+          }
+        });
         userNameElement.value = profile.userName;
-        vegetarianElement.checked = profile.vegetarian;
-        veganElement.checked = profile.vegan;
-        glutenFreeElement.checked = profile.glutenFree;
-        dairyFreeElement.checked = profile.dairyFree;
         allergiesStringElement.value = (profile.allergies).join(", ");
       }
       
@@ -128,10 +142,18 @@ function postProfile() {
   const allergies = allergiesString.split(",").map(allergy => allergy.toLowerCase().trim());
   const params = new URLSearchParams();
   params.append('userName', userName);
-  params.append('vegetarian', vegetarian);
-  params.append('vegan', vegan);
-  params.append('glutenFree', glutenFree);
-  params.append('dairyFree', dairyFree);
+  if (vegetarian) {
+    params.append('dietary-needs', "VEGETARIAN");
+  }
+  if (vegan) {
+    params.append('dietary-needs', "VEGAN");
+  }
+  if (glutenFree) {
+    params.append('dietary-needs', "GLUTENFREE");
+  }
+  if (dairyFree) {
+    params.append('dietary-needs', "DAIRYFREE");
+  }
   params.append('allergies', allergies);
 
   fetch('/profile', {method: 'POST', body: params}).then(response => response.json()).then((message) => {
@@ -268,18 +290,33 @@ function createRecipeCardAlerts(recipe, alertElements) {
 
     if (message.hasProfile) {
       const profile = message.profile;
-      if (profile.vegetarian && !recipe["vegetarian"]) {
-        alertElements.appendChild(createAlertElement("icon-leaf", "Non-Vegetarian Alert"));
-      }
-      if (profile.vegan && !recipe["vegan"]) {
-        alertElements.appendChild(createAlertElement("icon-exclamation", "Non-Vegan Alert"));
-      }
-      if (profile.glutenFree && !recipe["glutenFree"]) {
-        alertElements.appendChild(createAlertElement("icon-warning-sign", "Non-GlutenFree Alert"));
-      }
-      if (profile.dairyFree && !recipe["dairyFree"]) {
-        alertElements.appendChild(createAlertElement("icon-coffee", "Non-DairyFree Alert"));
-      }
+      const dietaryNeeds = profile.dietaryNeeds;
+      dietaryNeeds.forEach(dietaryNeed => {
+        switch(dietaryNeed) {
+          case "VEGETARIAN":
+            if (!recipe["vegetarian"]) {
+              alertElements.appendChild(createAlertElement("icon-leaf", "Non-Vegetarian Alert"));
+            }
+            break;
+          case "VEGAN":
+            if (!recipe["vegan"]) {
+              alertElements.appendChild(createAlertElement("icon-exclamation", "Non-Vegan Alert"));
+            }
+            break;
+          case "GLUTENFREE":
+            if (!recipe["glutenFree"]) {
+              alertElements.appendChild(createAlertElement("icon-warning-sign", "Non-GlutenFree Alert"));
+            }
+            break;
+          case "DAIRYFREE":
+            if (!recipe["dairyFree"]) {
+              alertElements.appendChild(createAlertElement("icon-coffee", "Non-DairyFree Alert"));
+            }
+            break;
+          default: 
+            break;
+        }
+      });
 
       const allergyList = allergyAlertList(recipe['extendedIngredients'], profile.allergies);
       if (allergyList.length > 0) {
