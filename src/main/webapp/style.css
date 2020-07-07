@@ -411,7 +411,7 @@ h1 {
 }
 
 .upload {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   cursor: pointer;
   font-family: 'TypeWriterBold', helvetica, sans-serif;
@@ -438,8 +438,13 @@ h1 {
 }
 
 .image-preview {
-  max-width: 250px;
-  min-width: 100px;
+  border: 3px solid darkorange;
+  left: 40%;
+  margin-left: -40px;
+  max-height: 350px;
+  max-width: 400px;
+  position: absolute;
+  top: 15%;
 }
 
 .txt-rotate {

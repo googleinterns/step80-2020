@@ -59,7 +59,7 @@ import com.google.common.collect.ImmutableSet;
 public class DishAnalysisServlet extends HttpServlet {
   
   // Initialize blocked catagories
-  private static final MAX_RESULT = 7;
+  private static final int MAX_RESULT = 7;
   private final ImmutableSet<String> BLOCKED_CATAGORIES = ImmutableSet.of("Cuisine", "Dish", "Food", "Ingredient", "Salad", "Fried food");
 
   // Initialize blocked catagories
