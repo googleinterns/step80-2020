@@ -46,12 +46,16 @@ import java.util.HashSet;
 import java.util.Arrays;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
+import com.google.common.collect.ImmutableSet;
 
 /** Servlet that uses VisionAPI to analyze uploaded images */
 @MultipartConfig
 @WebServlet("/dishAnalysis")
 public class DishAnalysisServlet extends HttpServlet {
 
+  // Initialize blocked catagories
+  private static Set<String> blockedCatagories = ImmutableSet.copyOf(new HashSet<String>(Arrays.asList("Cuisine", "Dish", "Food", "Ingredient", "Salad", "Fried food")));
+  
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     // Initialize client used to send requests.
@@ -73,9 +77,6 @@ public class DishAnalysisServlet extends HttpServlet {
       // Performs label detection on the image file
       BatchAnnotateImagesResponse new_response = vision.batchAnnotateImages(requests);
       List<AnnotateImageResponse> responses = new_response.getResponsesList();
-
-      // Initialize blocked catagories
-      Set<String> blockedCatagories = new HashSet<String>(Arrays.asList("Cuisine", "Dish", "Food", "Ingredient", "Salad", "Fried food"));
 
       //Save and sort the descriptors
       List<String> descriptors = new ArrayList<>();

@@ -236,24 +236,6 @@ function createRecipeCardAlerts(recipe) {
   alertElements.appendChild(createAlertElement("icon-leaf", "Non-Vegetarian Alert"));
   alertElements.appendChild(createAlertElement("icon-coffee", "Non-DairyFree Alert"));
   alertElements.appendChild(createAlertElement("icon-food", "Allergies Alert"));
-  //   //fetch('/profile').then(response => response.json()).then((message) => {
-
-  //     if (message.hasProfile) {
-  //       const profile = message.profile;
-  //       // TODO: need comparisons against recipe json
-  //       // profile.vegetarian
-  //       // profile.vegan
-  //       // profile.glutenFree
-  //       // profile.dairyFree
-  //       // profile.allergies
-
-  //       alertElements.appendChild(createAlertElement("icon-warning-sign", "Dietary Alert"));
-  //       alertElements.appendChild(createAlertElement("icon-exclamation", "Dietary Alert"));
-  //       alertElements.appendChild(createAlertElement("icon-leaf", "Non-Vegetarian Alert"));
-  //       alertElements.appendChild(createAlertElement("icon-coffee", "Non-DairyFree Alert"));
-  //       alertElements.appendChild(createAlertElement("icon-food", "Allergies Alert"));
-  //     }
-  //   });
   return alertElements;
 }
 
