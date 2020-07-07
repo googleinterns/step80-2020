@@ -40,7 +40,9 @@ import org.json.simple.JSONObject;
 /** Servlet that returns all tags and saves tags in Datastore */
 @WebServlet("/tag")
 public class TagServlet extends HttpServlet {
+  private static final String AUTHORIZATION_ERROR = "User needs to login";
   
+  /** Return all tags filtered by tagName and/or recipeId */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
@@ -64,7 +66,7 @@ public class TagServlet extends HttpServlet {
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       PreparedQuery results = datastore.prepare(query);
 
-      ArrayList<TagRecipePair> tagList = new ArrayList<TagRecipePair>();
+      ArrayList<TagRecipePair> tagList = new ArrayList<>();
       for (Entity entity : results.asIterable()) {
         String userId = (String) entity.getProperty("userId");
         String tagName = (String) entity.getProperty("tagName");
@@ -78,8 +80,7 @@ public class TagServlet extends HttpServlet {
       response.setContentType("application/json");
 
     } else {
-      String errorMessage = "User needs to log in to see tags.";
-      responseMap.put("error", errorMessage); 
+      responseMap.put("error", AUTHORIZATION_ERROR); 
       json = gson.toJson(responseMap);
     }
     
@@ -87,6 +88,7 @@ public class TagServlet extends HttpServlet {
     response.getWriter().println(json);
   }
 
+  /** Add a TagRecipePair to datastore which represents a user's tag on a recipe */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
@@ -94,9 +96,7 @@ public class TagServlet extends HttpServlet {
     JSONObject responseMap = new JSONObject();
 
     if (!userService.isUserLoggedIn()) {
-      String errorMessage = "User needs to log in to add tag.";
-      responseMap.put("error", errorMessage);
-      
+      responseMap.put("error", AUTHORIZATION_ERROR);
     } else {
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       String id = userService.getCurrentUser().getUserId();

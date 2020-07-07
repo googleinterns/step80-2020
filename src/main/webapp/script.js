@@ -229,21 +229,27 @@ function createRecipeElement(recipe) {
 
 /** Get profile information to determine which alerts to create */
 function createRecipeCardAlerts(recipe, alertElements) {
+  const dietList = ['vegetarian', 'vegan', 'glutenFree', 'dairyFree'];
+  const iconMap = {
+    'vegetarian': 'icon-leaf',
+    'vegan': 'icon-exclamation',
+    'glutenFree': 'icon-warning-sign',
+    'dairyFree': 'icon-coffee'
+  };
+  const warningMap = {
+    'vegetarian': 'Non-Vegetarian Alert',
+    'vegan': 'Non-Vegan Alert',
+    'glutenFree': 'Non-GlutenFree Alert',
+    'dairyFree': 'Non-DairyFree Alert'
+  };
+  
   fetch('/profile').then(response => response.json()).then((message) => {
-
     if (message.hasProfile) {
       const profile = message.profile;
-      if (profile.vegetarian && !recipe["vegetarian"]) {
-        alertElements.appendChild(createAlertElement("icon-leaf", "Non-Vegetarian Alert"));
-      }
-      if (profile.vegan && !recipe["vegan"]) {
-        alertElements.appendChild(createAlertElement("icon-exclamation", "Non-Vegan Alert"));
-      }
-      if (profile.glutenFree && !recipe["glutenFree"]) {
-        alertElements.appendChild(createAlertElement("icon-warning-sign", "Non-GlutenFree Alert"));
-      }
-      if (profile.dairyFree && !recipe["dairyFree"]) {
-        alertElements.appendChild(createAlertElement("icon-coffee", "Non-DairyFree Alert"));
+      for (diet of dietList) {
+        if (profile[diet] && !recipe[diet]) {
+          alertElements.appendChild(createAlertElement(iconMap[diet], warningMap[diet]));
+        }
       }
 
       const allergyList = allergyAlertList(recipe['extendedIngredients'], profile.allergies);
