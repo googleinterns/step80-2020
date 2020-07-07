@@ -26,22 +26,24 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;  
 import com.google.gson.Gson;
 
-/** Returns recipe id from dish name */
-@WebServlet("/dishId")
-public class SpoonacularDishIdServlet extends HttpServlet {
-  static String spoonacularPrefix = "https://api.spoonacular.com/recipes";
+import org.json.JSONObject;
+import org.json.JSONArray;
+
+/** Servlet to take in dish name and return bulk recipe infomation */
+@WebServlet("/dishNutrition")
+public class SpoonacularNutritionServlet extends HttpServlet {
+  static String spoonacularPrefix = "https://api.spoonacular.com/recipes/guessNutrition";
   static String spoonacularAPIKey = "cd2269d31cb94065ad1e73ce292374a5";
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String query = request.getParameter("dishName");
+    String title = request.getParameter("dishName");
     Client client = ClientBuilder.newClient();
-    WebTarget target = client.target(spoonacularPrefix + "/search?query=" + query + "&number=2&apiKey=" + spoonacularAPIKey);
-
+    WebTarget target = client.target(spoonacularPrefix + "?title=" + title + "&apiKey=" + spoonacularAPIKey);
     try {
-      String recipeInfo = target.request(MediaType.APPLICATION_JSON).get(String.class);
+      String recipeListJSONString = target.request(MediaType.APPLICATION_JSON).get(String.class);
       Gson gson = new Gson();
       response.setContentType("application/json");
-      response.getWriter().println(gson.toJson(recipeInfo));
+      response.getWriter().println(gson.toJson(recipeListJSONString));
     } catch(Exception e){
       System.out.println(e);
     }

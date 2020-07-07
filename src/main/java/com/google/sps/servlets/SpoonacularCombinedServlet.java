@@ -38,7 +38,7 @@ public class SpoonacularCombinedServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String query = request.getParameter("dishName");
     Client client = ClientBuilder.newClient();
-    WebTarget target = client.target(spoonacularPrefix + "/search?query=" + query + "&number=2&apiKey=" + spoonacularAPIKey);
+    WebTarget target = client.target(spoonacularPrefix + "/search?query=" + query + "&number=4&includeNutrition=true&apiKey=" + spoonacularAPIKey);
     try {
       String recipeListJSONString = target.request(MediaType.APPLICATION_JSON).get(String.class);
       JSONObject recipeJson = new JSONObject(recipeListJSONString);
@@ -63,4 +63,4 @@ public class SpoonacularCombinedServlet extends HttpServlet {
       System.out.println(e);
     }
   }
-} 
+}
