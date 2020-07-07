@@ -23,6 +23,7 @@ import com.google.cloud.vision.v1.Feature.Type;
 import com.google.cloud.vision.v1.Image;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.google.protobuf.ByteString;
+import com.google.common.collect.ImmutableSet;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -57,8 +58,8 @@ import javax.servlet.annotation.MultipartConfig;
 public class DishAnalysisServlet extends HttpServlet {
   
   // Initialize blocked catagories
-  private final int MAX_RESULT = 7;
-  private final Set<String> BLOCKED_CATAGORIES = new HashSet<String>(Arrays.asList("Cuisine", "Dish", "Food", "Ingredient", "Salad", "Fried food"));
+  private static final MAX_RESULT = 7;
+  private final ImmutableSet<String> BLOCKED_CATAGORIES = ImmutableSet.of("Cuisine", "Dish", "Food", "Ingredient", "Salad", "Fried food");
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
