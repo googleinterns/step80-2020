@@ -332,6 +332,7 @@ h1 {
   transform: translateX(-50%);
   top: 1500px;
   width: 70%;
+  z-index: -1;
 }
 
 .paint-stroke {
@@ -437,13 +438,45 @@ h1 {
 }
 
 .image-preview {
-  border: 3px solid darkorange;
-  left: 40%;
-  margin-left: -40px;
-  max-height: 350px;
-  max-width: 400px;
+  max-width: 250px;
+  min-width: 100px;
+}
+
+.txt-rotate {
+  color:black;
+  font-family: 'TypeWriter', helvetica, sans-serif;
+  font-size:50px;
+  left: 50%;
+  letter-spacing: 3px;
+  padding-top: 40%;
   position: absolute;
-  top: 15%;
+  text-align: center;
+  text-decoration: underline;
+  text-transform: uppercase;
+  transform: translate(-50%, -50%);
+}
+
+.dish-image-wrap {
+  height: 200px;
+  position: relative;
+  width: 257px;
+}
+
+.dish-image-text {
+  background: rgba(29, 106, 154, 0.72);
+  bottom: 0;
+  color: #fff;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  visibility: hidden;
+}
+
+.dish-image-wrap:hover .dish-image-text {
+  opacity: 1;
+  visibility: visible;
 }
 
 /* Fonts and animations */
@@ -455,31 +488,17 @@ h1 {
 }
 
 @font-face {
+  font-family: 'TypeWriter';
+  font-style: normal;
+  font-weight: normal;
+  src: url('texgyrecursor-regular.otf');
+}
+
+@font-face {
   font-family: 'TypeWriterBold';
   font-style: normal;
   font-weight: normal;
   src: url('texgyrecursor-bolditalic.otf');
-}
-
-@font-face {
-  font-family: 'Compagnon';
-  font-style: normal;
-  font-weight: normal;
-  src: url('Compagnon-Medium.otf');
-}
-
-@font-face {
-  font-family: 'Belligerent';
-  font-style: normal;
-  font-weight: normal;
-  src: url('belligerent.ttf');
-}
-
-@font-face {
-  font-family: 'Lemon';
-  font-style: normal;
-  font-weight: normal;
-  src: url('LEMONCHI.ttf');
 }
 
 @-webkit-keyframes bounce {

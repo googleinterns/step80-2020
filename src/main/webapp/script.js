@@ -24,6 +24,77 @@ function getRecipeInfo() {
   });
 }
 
+/** Fetches and then populates nutrition information section of display page with average fat, calories, etc. */
+function createNutritionElements() {
+  fetch('/dishNutrition?dishName='+dishName).then(response => response.json()).then((dish) => {
+    // Get dish name
+    var dishName = document.forms.dishFitChoice.elements.labelFitChoice.value;
+    if (dishName != null) {
+      title.setAttribute("data-rotate", dishName);
+    }
+
+    // Populate nutrition element
+    var nutritionElement = document.getElementById(".nutrition-info");
+    Object.keys(dish).forEach(function(key) {
+      var node = document.createElement('div');
+      node.className = 'nutrition-element';
+      node.innerText = 'Average' + key + ': ' + dish[key]['value'] + ' ' + dish[key]['units'];
+      nutritionElement.appendChild(node);
+    });
+  });
+}
+
+/** Creates text typing animation */
+window.onload = function() {
+  var text_element = document.getElementById('dish');
+  var toRotate = text_element.getAttribute('data-rotate');
+  console.log("---1.----" + toRotate);
+  var period = text_element.getAttribute('data-period');
+  if (toRotate != null) {
+    new TxtRotate(text_element, toRotate, period);
+  }
+}
+
+var TxtRotate = function(el, toRotate, period) {
+  this.toRotate = toRotate;
+  this.el = el;
+  this.loopNum = 0;
+  this.period = parseInt(period, 10) || 2000;
+  this.txt = '';
+  this.tick();
+  this.isDeleting = false;
+};
+
+TxtRotate.prototype.tick = function() {
+  var i = this.loopNum % this.toRotate.length;
+  var fullTxt = this.toRotate;
+
+  if (this.isDeleting) {
+    this.txt = fullTxt.substring(0, this.txt.length - 1);
+  } else {
+    this.txt = fullTxt.substring(0, this.txt.length + 1);
+  }
+
+  this.el.innerHTML = '<span class="wrap">' + this.txt + '</span>';
+
+  var delta = 300 - Math.random() * 100;
+
+  if (this.isDeleting) { delta /= 2; }
+
+  if (!this.isDeleting && this.txt === fullTxt) {
+    delta = this.period;
+    this.isDeleting = true;
+  } else if (this.isDeleting && this.txt === '') {
+    this.isDeleting = false;
+    this.loopNum++;
+    delta = 400;
+  }
+
+  setTimeout(function() {
+    this.tick();
+  }, delta);
+}
+
 /** at display.html onload, display recipeList json stored in session storage */
 function displayRecipes() {
   var recipeList = JSON.parse(sessionStorage.recipeList);
@@ -49,7 +120,28 @@ function appendToDisplayElement(recipeList) {
   const displayRecipeElement = document.getElementById('display-recipes');
   displayRecipeElement.innerHTML = "";
   for (recipe of recipeList) {
-    displayRecipeElement.appendChild(createRecipeElement(recipe));
+    var recipeCard = createRecipeElement(recipe);
+    recipeCard.className ='dish-recipe';
+    receipeCard.style.display = 'none';
+
+    var pictureWrap = document.createElement('div');
+    pictureWrap.className = 'dish-image-wrap';
+
+    var picture = document.createElement('img');
+    picture.className = 'dish-image';
+    picture.src = recipe["image"];
+
+    var pictureText = document.createElement('button');
+    pictureText.className = 'dish-image-text';
+    pictureText.innerHTML = recipe["title"];
+    pictureText.onclick = function() {
+      recipeCard.style.display = "block";
+    }
+
+    displayRecipeElement.appendChild(pictureWrap);
+    pictureWrap.appendChild(picture);
+    pictureWrap.appendChild(pictureText);
+    pictureWrap.appendChild(recipeCard);
   }
 }
 

@@ -8,9 +8,28 @@
     <script src="script.js"></script>
   </head>
 
-  <body id="display-background" onload="displayRecipes()"> 
-    <div class="content">
-      <h2>Recipes</h2>
+  <body id="display-background"> 
+    <div id="frame-top" class="frame"></div>
+    <div id="frame-bottom" class="frame"></div>
+    <div id="frame-right" class="frame"></div>
+    <div id="frame-left" class="frame"></div>
+    <div class="navbar">
+      <div class="container">
+        <a class="navbar-title" href="profile.html">Forked</a>
+        <div class="navbar-menu-container">
+          <ul class="navbar-menu">
+            <li class="navbar-item"><a href="index.html">Profile</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="content" onload="displayRecipes()">
+      <span
+          id="dish"
+          class="txt-rotate"
+          data-rotate="Cesar Salad"
+          data-period="10000"></span>
+      <div id="nutrition-info"> </div>
       <div id="display-recipes"> </div>
     </div>
     <template id="recipe-template">
