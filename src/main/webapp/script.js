@@ -40,9 +40,6 @@ function savedRecipes() {
     // TODO: replace with get request to spoonacular to get json for recipeIds
     const recipeIdList = tagList.map(tag => tag.recipeId);
     tempDisplayTagJson.innerHTML = JSON.stringify(tagList);
-
-    // use json to display recipe cards
-    // appendToDisplayElement(recipeList);
   });
 }
 
