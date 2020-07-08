@@ -44,7 +44,7 @@ function createNutritionElements() {
     Object.keys(dish).forEach(function(key) {
       var node = document.createElement('div');
       node.className = 'nutrition-element';
-      node.innerText = 'Average' + key + ': ' + dish[key]['value'] + ' ' + dish[key]['units'];
+      node.innerText = 'Average' + key + ': ' + dish[key]['value'] + ' ' + dish[key]['unit'];
       nutritionElement.appendChild(node);
     });
   });
