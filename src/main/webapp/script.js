@@ -42,24 +42,16 @@ function createNutritionElements() {
     // Populate nutrition element
     var nutritionElement = document.getElementById("nutrition-info");
     Object.keys(dish).forEach(function(key) {
-      var node = document.createElement('div');
-      node.className = 'nutrition-element';
-      node.innerText = 'Average' + key + ': ' + dish[key]['value'] + ' ' + dish[key]['unit'];
-      nutritionElement.appendChild(node);
+      if (key != "recipesUsed") {
+        var node = document.createElement('div');
+        node.className = 'nutrition-element';
+        node.innerText = 'Average ' + key + ': ' + dish[key]['value'] + ' ' + dish[key]['unit'];
+        nutritionElement.appendChild(node);
+      }
     });
   });
+  displayRecipes();
 }
-
-/** Creates text typing animation */
-// window.onload = function() {
-//   var text_element = document.getElementById('dish');
-//   var toRotate = text_element.getAttribute('data-rotate');
-//   console.log("---1.----" + toRotate);
-//   var period = text_element.getAttribute('data-period');
-//   if (toRotate != null) {
-//     new TxtRotate(text_element, toRotate, period);
-//   }
-// }
 
 var TxtRotate = function(el, toRotate, period) {
   this.toRotate = toRotate;
@@ -102,13 +94,13 @@ TxtRotate.prototype.tick = function() {
   }, delta);
 }
 
-/** at display.html onload, display recipeList json stored in session storage */
+/** Display recipeList json stored in session storage */
 function displayRecipes() {
-  var recipeList = JSON.parse(sessionStorage.recipeList);
-  appendToDisplayElement(recipeList);
+  var recipeList = sessionStorage.recipeList;
+  appendToDisplayElement(JSON.parse(recipeList));
 }
 
-/** display saved recipes by tag name */
+/** Display saved recipes by tag name */
 function savedRecipes() {
   const tagName = document.getElementById('tag-name').value.trim();
   
@@ -127,9 +119,9 @@ function appendToDisplayElement(recipeList) {
   const displayRecipeElement = document.getElementById('display-recipes');
   displayRecipeElement.innerHTML = "";
   for (recipe of recipeList) {
-    var recipeCard = createRecipeElement(recipe);
-    recipeCard.className ='dish-recipe';
-    receipeCard.style.display = 'none';
+    // var recipeCard = createRecipeElement(recipe);
+    // recipeCard.className ='dish-recipe';
+    // recipeCard.style.display = "none";
 
     var pictureWrap = document.createElement('div');
     pictureWrap.className = 'dish-image-wrap';
@@ -148,7 +140,7 @@ function appendToDisplayElement(recipeList) {
     displayRecipeElement.appendChild(pictureWrap);
     pictureWrap.appendChild(picture);
     pictureWrap.appendChild(pictureText);
-    pictureWrap.appendChild(recipeCard);
+    // pictureWrap.appendChild(recipeCard);
   }
 }
 
@@ -272,9 +264,8 @@ function clearSavedProfileStatus() {
   profileStatusElement.style.display = "none";
 }
 
-
+/** Function gets recipe information from user input ID and displays the title on the page */
 function getRecipe(){
-  /** Function gets recipe information from user input ID and displays the title on the page */
   var numRecipe = document.getElementById("num-recipe").value;
   fetch('/recipeInfo?numRecipe='+numRecipe).then(response => response.json()).then((recipeInfo) => {
     recipeInf = JSON.parse(recipeInfo);
@@ -283,7 +274,7 @@ function getRecipe(){
   });
 }
 
-/* Function gets recipe list from user input dish and displays the title of the first two returned results on the page **/
+/** Function gets recipe list from user input dish and displays the title of the first two returned results on the page */
 function getRecipeId(){
   var dishName = document.getElementById("dish-name").value;
   fetch('/dishId?dishName='+dishName).then(response => response.json()).then(recipeId => {
@@ -391,7 +382,6 @@ function createRecipeElement(recipe) {
       });
     }
   });
-
   return clone;
 }
 
@@ -519,7 +509,7 @@ function readUserDishChoice() {
   if(dishName != null){
     fetch('/recipeInfo?dishName=' + dishName).then(response => response.json()).then((recipeListInfoJson) => {
       sessionStorage.dishName = dishName;
-      sessionStorage.recipeList = JSON.parse(recipeListInfoJson);
+      sessionStorage.recipeList = recipeListInfoJson;
       window.location.href = "/display.html";
     });
   }

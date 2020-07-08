@@ -227,6 +227,7 @@ h3 {
   position: fixed;
   right: 0;
   top: 0;
+  z-index: 9;
 }
 
 .navbar .container {
@@ -264,7 +265,7 @@ h3 {
 }
 
 .icon-double-angle-down {
-  color: wheat;
+  color: darkorange;
 }
 
 .navbar-item a {
@@ -295,6 +296,21 @@ a:hover {
   position: absolute;
   text-align: center;
   width: 100%;
+  -webkit-animation-duration: 2.5s;
+  animation-duration: 2.5s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-timing-function: linear;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  -webkit-animation-iteration-count: infinite;
+}
+
+.scroller2 {
+  color: orange;
+  cursor: pointer;
+  margin-left: 50%;
+  position: relative;
   -webkit-animation-duration: 2.5s;
   animation-duration: 2.5s;
   -webkit-animation-fill-mode: both;
@@ -448,7 +464,7 @@ h1 {
 }
 
 .txt-rotate {
-  color:black;
+  color:darkorange;
   font-family: 'TypeWriter', helvetica, sans-serif;
   font-size:50px;
   left: 50%;
@@ -461,25 +477,56 @@ h1 {
   transform: translate(-50%, -50%);
 }
 
-.dish-image-wrap {
-  height: 200px;
+#nutrition-info {
+  font-family: 'TypeWriter', helvetica, sans-serif;
+  font-size: 30px;
+  margin-bottom: 10%;
+  margin-top: 40%;
   position: relative;
-  width: 257px;
+  text-align: center;
+}
+
+/* Recipe Image Gallery */
+#display-recipes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-gap: 15px;
+  position: relative;
+  margin-top: 50%;
+}
+
+.dish-image-wrap {
+  border: 2px solid rgb(234, 184, 19);
+  max-height: 200px;
+  max-width: 300px;
+  position: relative;
+}
+
+.dish-image {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
 }
 
 .dish-image-text {
-  background: rgba(29, 106, 154, 0.72);
+  background: rgb(234, 184, 19, 0);
   bottom: 0;
-  color: #fff;
+  color: white;
+  font-family: 'TypeWriterBold', helvetica, sans-serif;
+  font-size: 20px;
+  height: 100%;
   left: 0;
   opacity: 0;
   position: absolute;
   right: 0;
   top: 0;
   visibility: hidden;
+  width: 100%;
 }
 
 .dish-image-wrap:hover .dish-image-text {
+  background: rgb(234, 184, 19, .7);
   opacity: 1;
   visibility: visible;
 }
