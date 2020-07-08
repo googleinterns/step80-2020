@@ -19,22 +19,28 @@ function getRecipeInfo() {
   params.append('image', image);
   const request = new Request('/dishAnalysis', {method: "POST", body: params});
   fetch(request).then(response => response.json()).then((recipeListInfoJson) => {
-    //set top options to radio buttons and reveal them
+    //set top options to radio buttons
     document.getElementById("first-option-label").innerText = recipeListInfoJson[0];
     document.getElementById("second-option-label").innerText = recipeListInfoJson[1];
     //set radio button values
-
-    sessionStorage.recipeList = JSON.parse(recipeListInfoJson);
-    window.location.href = "/display.html";
+    document.getElementById("first-option").value = recipeListInfoJson[0];
+    document.getElementById("second-option").value = recipeListInfoJson[1];
   });
 }
 
 /** Fetches and then populates nutrition information section of display page with average fat, calories, etc. */
-function createNutritionElements(dishName) {
+function createNutritionElements() {
+  dishName = sessionStorage.dishName;
   fetch('/dishNutrition?dishName='+dishName).then(response => response.json()).then((dish) => {
+    dish = JSON.parse(dish);
+    var title = document.getElementById("dish");
+    title.setAttribute("data-rotate", dishName);
+
+    var period = title.getAttribute('data-period');
+    new TxtRotate(title, dishName, period);
 
     // Populate nutrition element
-    var nutritionElement = document.getElementById(".nutrition-info");
+    var nutritionElement = document.getElementById("nutrition-info");
     Object.keys(dish).forEach(function(key) {
       var node = document.createElement('div');
       node.className = 'nutrition-element';
@@ -45,15 +51,15 @@ function createNutritionElements(dishName) {
 }
 
 /** Creates text typing animation */
-window.onload = function() {
-  var text_element = document.getElementById('dish');
-  var toRotate = text_element.getAttribute('data-rotate');
-  console.log("---1.----" + toRotate);
-  var period = text_element.getAttribute('data-period');
-  if (toRotate != null) {
-    new TxtRotate(text_element, toRotate, period);
-  }
-}
+// window.onload = function() {
+//   var text_element = document.getElementById('dish');
+//   var toRotate = text_element.getAttribute('data-rotate');
+//   console.log("---1.----" + toRotate);
+//   var period = text_element.getAttribute('data-period');
+//   if (toRotate != null) {
+//     new TxtRotate(text_element, toRotate, period);
+//   }
+// }
 
 var TxtRotate = function(el, toRotate, period) {
   this.toRotate = toRotate;
@@ -506,10 +512,15 @@ function createTagElement(tag) {
   return clone;
 }
 
-function readOption() {
-  var dishName = document.forms.dishFitChoice.elements.labelFitChoice.value;
-  //handle null dishName
-  //fetch 
-  //redirect to display.html
-  createNutritionElements(dishName);
+
+/** Reads dishname, fetches recipe information, and stores both in serssionStorage to use in display.html */
+function readUserDishChoice() {
+  var dishName = (document.forms.dishFitChoice.elements.labelFitChoice.value).split(" ").join("+");
+  if(dishName != null){
+    fetch('/recipeInfo?dishName=' + dishName).then(response => response.json()).then((recipeListInfoJson) => {
+      sessionStorage.dishName = dishName;
+      sessionStorage.recipeList = JSON.parse(recipeListInfoJson);
+      window.location.href = "/display.html";
+    });
+  }
 }

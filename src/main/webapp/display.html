@@ -8,7 +8,7 @@
     <script src="script.js"></script>
   </head>
 
-  <body id="display-background"> 
+  <body id="display-background" onload="createNutritionElements()"> 
     <div id="frame-top" class="frame"></div>
     <div id="frame-bottom" class="frame"></div>
     <div id="frame-right" class="frame"></div>
@@ -23,7 +23,7 @@
         </div>
       </div>
     </div>
-    <div class="content" onload="displayRecipes()">
+    <div class="content">
       <span
           id="dish"
           class="txt-rotate"
