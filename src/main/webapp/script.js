@@ -19,13 +19,24 @@ function getRecipeInfo() {
   params.append('image', image);
   const request = new Request('/dishAnalysis', {method: "POST", body: params});
   fetch(request).then(response => response.json()).then((recipeListInfoJson) => {
-    //set top options to radio buttons
-    document.getElementById("first-option-label").innerText = recipeListInfoJson[0];
-    document.getElementById("second-option-label").innerText = recipeListInfoJson[1];
-    //set radio button values
-    document.getElementById("first-option").value = recipeListInfoJson[0];
-    document.getElementById("second-option").value = recipeListInfoJson[1];
+    if(recipeListInfoJson["length"] > 1) {
+      sessionStorage.optionOne = recipeListInfoJson[0];
+      sessionStorage.optionTwo = recipeListInfoJson[1];
+      window.location.href = "/selection.html";
+    } else {
+      // set something about too few matches - I don't think this should trigger too often 
+      window.location.href = "/index.html";
+    }
   });
+}
+
+function setRadioButtonValues() {
+    // set top options to radio buttons
+    document.getElementById("first-option-label").innerText = sessionStorage.optionOne;
+    document.getElementById("second-option-label").innerText = sessionStorage.optionTwo;
+    // set radio button values
+    document.getElementById("first-option").value = sessionStorage.optionOne;
+    document.getElementById("second-option").value = sessionStorage.optionTwo;
 }
 
 /** Fetches and then populates nutrition information section of display page with average fat, calories, etc. */
@@ -49,17 +60,6 @@ function createNutritionElements() {
     });
   });
 }
-
-/** Creates text typing animation */
-// window.onload = function() {
-//   var text_element = document.getElementById('dish');
-//   var toRotate = text_element.getAttribute('data-rotate');
-//   console.log("---1.----" + toRotate);
-//   var period = text_element.getAttribute('data-period');
-//   if (toRotate != null) {
-//     new TxtRotate(text_element, toRotate, period);
-//   }
-// }
 
 var TxtRotate = function(el, toRotate, period) {
   this.toRotate = toRotate;
@@ -515,7 +515,7 @@ function createTagElement(tag) {
 
 /** Reads dishname, fetches recipe information, and stores both in serssionStorage to use in display.html */
 function readUserDishChoice() {
-  var dishName = (document.forms.dishFitChoice.elements.labelFitChoice.value).split(" ").join("+");
+  var dishName = document.forms.dishFitChoice.elements.labelFitChoice.value;
   if(dishName != null){
     fetch('/recipeInfo?dishName=' + dishName).then(response => response.json()).then((recipeListInfoJson) => {
       sessionStorage.dishName = dishName;

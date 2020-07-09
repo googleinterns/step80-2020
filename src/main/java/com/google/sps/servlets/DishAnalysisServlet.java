@@ -67,7 +67,7 @@ public class DishAnalysisServlet extends HttpServlet {
   // Initialize blocked catagories
   private static Set<String> blockedCatagories = ImmutableSet.copyOf(new HashSet<String>(Arrays.asList("Cuisine", "Dish", "Food", "Ingredient", "Salad", "Fried food")));
   
-  @Override 
+  @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     // Initialize client used to send requests.
     try (ImageAnnotatorClient vision = ImageAnnotatorClient.create()) {

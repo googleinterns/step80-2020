@@ -326,13 +326,13 @@ h1 {
 
 /* About Box */
 #about {
+  z-index: 1;
   left: 50%;
   position: relative;
   text-align: center;
   transform: translateX(-50%);
   top: 1500px;
   width: 70%;
-  z-index: -1;
 }
 
 .paint-stroke {
@@ -519,4 +519,9 @@ h1 {
 .bounce { 
   -webkit-animation-name: bounce;
   animation-name: bounce;
+}
+
+#selection{
+    margin-top: 158px;
+    text-align: center;
 }
