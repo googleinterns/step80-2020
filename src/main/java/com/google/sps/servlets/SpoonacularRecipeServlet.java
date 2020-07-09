@@ -29,8 +29,8 @@ import com.google.gson.Gson;
 /** Returns recipe information from recipe id */
 @WebServlet("/recipe")
 public class SpoonacularRecipeServlet extends HttpServlet {
-  static String spoonacularPrefix = "https://api.spoonacular.com/recipes";
-  static String spoonacularAPIKey = "cd2269d31cb94065ad1e73ce292374a5";
+  private static final String spoonacularPrefix = "https://api.spoonacular.com/recipes";
+  private static final String spoonacularAPIKey = "cd2269d31cb94065ad1e73ce292374a5";
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
