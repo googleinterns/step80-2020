@@ -94,10 +94,14 @@
   background-repeat: no-repeat;
   background-size: 100% 100%;
   border: solid 2px black;
-  margin: 5px;
-  max-height: 400px;
+  display: none;
+  height: 350px;
+  left: 50%;
+  margin-top: -175px;
+  margin-left: -400px;
   padding: 110px 40px 20px 40px;
-  position: relative;
+  position: fixed;
+  top: 50%;
   width: 800px;
 }
 

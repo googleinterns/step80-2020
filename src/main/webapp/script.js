@@ -119,28 +119,22 @@ function appendToDisplayElement(recipeList) {
   const displayRecipeElement = document.getElementById('display-recipes');
   displayRecipeElement.innerHTML = "";
   for (recipe of recipeList) {
-    // var recipeCard = createRecipeElement(recipe);
-    // recipeCard.className ='dish-recipe';
-    // recipeCard.style.display = "none";
-
     var pictureWrap = document.createElement('div');
     pictureWrap.className = 'dish-image-wrap';
 
     var picture = document.createElement('img');
     picture.className = 'dish-image';
     picture.src = recipe["image"];
+    
+    var recipeCard = createRecipeElement(recipe, pictureWrap);
 
     var pictureText = document.createElement('button');
     pictureText.className = 'dish-image-text';
     pictureText.innerHTML = recipe["title"];
-    pictureText.onclick = function() {
-      recipeCard.style.display = "block";
-    }
 
     displayRecipeElement.appendChild(pictureWrap);
     pictureWrap.appendChild(picture);
     pictureWrap.appendChild(pictureText);
-    // pictureWrap.appendChild(recipeCard);
   }
 }
 
@@ -346,13 +340,20 @@ function hardCodedRecipeCard() {
 }
 
 /** Creates an element that represents a recipe card */
-function createRecipeElement(recipe) {
+function createRecipeElement(recipe, pictureWrap) {
   var temp = document.querySelector("#recipe-template");;
   var clone = temp.content.cloneNode(true);
   
+  const hoverElement = clone.querySelector(".recipe-card");
+
   const titleElement = clone.querySelector(".recipe-card-title");
   titleElement.innerText = recipe["title"];
 
+  const closeElement = clone.querySelector(".icon-remove-sign");
+  closeElement.onclick = function() {
+      hoverElement.style.display = "none";
+      document.getElementById("display-recipes").style.opacity = "1";
+  }
   const imageElement = clone.querySelector(".recipe-image");
   imageElement.src = recipe["image"];
 
@@ -382,7 +383,11 @@ function createRecipeElement(recipe) {
       });
     }
   });
-  return clone;
+  document.getElementById("card-gallery").appendChild(clone);
+  pictureWrap.onclick = function() {
+      hoverElement.style.display = "block";
+      document.getElementById("display-recipes").style.opacity = "0.2";
+  }
 }
 
 /** Get profile information to determine which alerts to create */
