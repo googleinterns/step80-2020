@@ -8,12 +8,14 @@
     <script src="script.js"></script>
   </head>
 
-  <body> 
+  <body onload="javascript:savedRecipes()"> 
     <div class="content">
       <h2>Saved Recipes</h2>
       <form class="content" action="javascript:savedRecipes()" method="POST">
-        <span>Enter tag</span>
-        <textarea placeholder="Enter name of tag here..." id="tag-name"></textarea>
+        <label for="tags">Choose a tag:</label>
+        <select name="tags" id="select-tags">
+          <option value="">All tags</option>
+        </select>
         <input type="submit" />
       </form>
       <div id="temp-display-tags-json"></div>

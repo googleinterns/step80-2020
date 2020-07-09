@@ -14,21 +14,23 @@
 
 package com.google.sps.data;
 import com.google.auto.value.AutoValue;
+import java.util.ArrayList;
 /**
  * Abstract class representing saved recipe
  */
 @AutoValue
 public abstract class SavedRecipe {
-  public abstract long getRecipeId();
+  public abstract long getId();
   public abstract String getTitle();
   public abstract String getImage();
-  public abstract String getSource();
-  public abstract boolean getVegetarian();
-  public abstract boolean getVegan();
-  public abstract boolean getGlutenFree();
-  public abstract boolean getDairyFree();
+  public abstract String getSourceUrl();
+  public abstract ArrayList<Diet> getDietaryNeeds();
   public static Builder builder() {
     return new AutoValue_SavedRecipe.Builder();
+  }
+
+  public enum Diet {
+    VEGETARIAN, VEGAN, GLUTENFREE, DAIRYFREE
   }
 
   @AutoValue.Builder
@@ -38,16 +40,13 @@ public abstract class SavedRecipe {
       * @param title The title of the recipe
       * @param imageUrl The url of the recipe image
       * @param sourceUrl The url of the recipe source
-      * @param vegetarian @param vegan @param glutenFree @param diaryFree The user's dietary options
+      * @param dietaryNeeds The dietary needs of the recipe (ex: vegetarian, vegan)
       */
-    public abstract Builder setRecipeId(long recipeId);
+    public abstract Builder setId(long recipeId);
     public abstract Builder setTitle(String title);
     public abstract Builder setImage(String imageUrl);
-    public abstract Builder setSource(String sourceUrl);
-    public abstract Builder setVegetarian(boolean vegetarian);
-    public abstract Builder setVegan(boolean vegan);
-    public abstract Builder setGlutenFree(boolean GlutenFree);
-    public abstract Builder setDairyFree(boolean dairyFree);
+    public abstract Builder setSourceUrl(String sourceUrl);
+    public abstract Builder setDietaryNeeds(ArrayList<Diet> dietaryNeeds);
     public abstract SavedRecipe build();
   }
 }
