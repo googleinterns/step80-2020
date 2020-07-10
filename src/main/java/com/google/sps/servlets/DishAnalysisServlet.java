@@ -54,6 +54,8 @@ import com.google.common.collect.ImmutableSet;
 * the Vision API, and then returns json recipe/nutritional data through the Spoonacular API
 */
 
+/** Servlet that uses VisionAPI to analyze uploaded images */
+
 @MultipartConfig
 @WebServlet("/dishAnalysis")
 public class DishAnalysisServlet extends HttpServlet {
@@ -65,7 +67,7 @@ public class DishAnalysisServlet extends HttpServlet {
   // Initialize blocked catagories
   private static Set<String> blockedCatagories = ImmutableSet.copyOf(new HashSet<String>(Arrays.asList("Cuisine", "Dish", "Food", "Ingredient", "Salad", "Fried food")));
   
-  @Override
+  @Override 
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     // Initialize client used to send requests.
     try (ImageAnnotatorClient vision = ImageAnnotatorClient.create()) {
@@ -101,7 +103,12 @@ public class DishAnalysisServlet extends HttpServlet {
           }
         }
       }
-      
+
+      Gson gson = new Gson();
+      response.setContentType("application/json");
+      response.getWriter().println(gson.toJson(descriptors));
+      //Saving this block just in case - should be replaced with a fetch in js
+      /*
       // Make Spoonacular 'GET' request
       String query = descriptors.get(0);
       Client client = ClientBuilder.newClient();
@@ -115,12 +122,14 @@ public class DishAnalysisServlet extends HttpServlet {
       } catch(Exception e){
         System.out.println(e);
       }
+      */
     }
+    
   }
+
   /* Returns parameter value given its name */
   private String getParameter(HttpServletRequest request, String name, String defaultValue) {
     String value = request.getParameter(name);
     return value;
   }
 }
-
