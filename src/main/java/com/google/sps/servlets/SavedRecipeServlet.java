@@ -45,7 +45,6 @@ public class SavedRecipeServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
-    response.setContentType("application/json");
     JSONObject responseMap = new JSONObject();
 
     // get recipeId from request parameter
@@ -92,7 +91,7 @@ public class SavedRecipeServlet extends HttpServlet {
     
     Gson gson = new Gson();   
     String json = gson.toJson(responseMap);
-    response.setContentType("application");
+    response.setContentType("application/json");
     response.getWriter().println(json);
   }
 
@@ -100,8 +99,6 @@ public class SavedRecipeServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
-    response.setContentType("application/json");
-    JSONObject responseMap = new JSONObject();
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     String recipeIdStr = request.getParameter("recipe-id");
@@ -122,10 +119,5 @@ public class SavedRecipeServlet extends HttpServlet {
     entity.setProperty("dietaryNeeds", Arrays.asList(dietaryNeeds));
     
     datastore.put(entity);
-
-    Gson gson = new Gson();   
-    String json = gson.toJson(responseMap);
-    response.setContentType("application");
-    response.getWriter().println(json);
   }
 }
