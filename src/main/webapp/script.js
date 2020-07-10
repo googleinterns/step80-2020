@@ -42,20 +42,20 @@ function setRadioButtonValues() {
 /** Fetches and then populates nutrition information section of display page with average fat, calories, etc. */
 function createNutritionElements() {
   dishName = sessionStorage.dishName;
-  fetch('/dishNutrition?dishName='+dishName).then(response => response.json()).then((dish) => {
-    dish = JSON.parse(dish);
+  fetch('/dishNutrition?dishName='+dishName).then(response => response.json()).then((dishNutrition) => {
+    dishNutrition = JSON.parse(dishNutrition);
     var title = document.getElementById("dish");
     title.setAttribute("data-rotate", dishName);
-
+    var dish = 1;
     var period = title.getAttribute('data-period');
     new TxtRotate(title, dishName, period);
 
     // Populate nutrition element
     var nutritionElement = document.getElementById("nutrition-info");
-    Object.keys(dish).forEach(function(key) {
+    Object.keys(dishNutrition).forEach(function(key) {
       var node = document.createElement('div');
       node.className = 'nutrition-element';
-      node.innerText = 'Average' + key + ': ' + dish[key]['value'] + ' ' + dish[key]['unit'];
+      node.innerText = 'Average' + key + ': ' + dishNutrition[key]['value'] + ' ' + dishNutrition[key]['unit'];
       nutritionElement.appendChild(node);
     });
   });
