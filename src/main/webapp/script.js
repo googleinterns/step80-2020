@@ -46,7 +46,6 @@ function createNutritionElements() {
     dishNutrition = JSON.parse(dishNutrition);
     var title = document.getElementById("dish");
     title.setAttribute("data-rotate", dishName);
-    var dish = 1;
     var period = title.getAttribute('data-period');
     new TxtRotate(title, dishName, period);
 
