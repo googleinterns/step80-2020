@@ -42,24 +42,16 @@ function createNutritionElements() {
     // Populate nutrition element
     var nutritionElement = document.getElementById("nutrition-info");
     Object.keys(dish).forEach(function(key) {
-      var node = document.createElement('div');
-      node.className = 'nutrition-element';
-      node.innerText = 'Average' + key + ': ' + dish[key]['value'] + ' ' + dish[key]['unit'];
-      nutritionElement.appendChild(node);
+      if (key != "recipesUsed") {
+        var node = document.createElement('div');
+        node.className = 'nutrition-element';
+        node.innerText = 'Average ' + key + ': ' + dish[key]['value'] + ' ' + dish[key]['unit'];
+        nutritionElement.appendChild(node);
+      }
     });
   });
+  displayRecipes();
 }
-
-/** Creates text typing animation */
-// window.onload = function() {
-//   var text_element = document.getElementById('dish');
-//   var toRotate = text_element.getAttribute('data-rotate');
-//   console.log("---1.----" + toRotate);
-//   var period = text_element.getAttribute('data-period');
-//   if (toRotate != null) {
-//     new TxtRotate(text_element, toRotate, period);
-//   }
-// }
 
 var TxtRotate = function(el, toRotate, period) {
   this.toRotate = toRotate;
@@ -102,13 +94,13 @@ TxtRotate.prototype.tick = function() {
   }, delta);
 }
 
-/** at display.html onload, display recipeList json stored in session storage */
+/** Display recipeList json stored in session storage */
 function displayRecipes() {
-  var recipeList = JSON.parse(sessionStorage.recipeList);
-  appendToDisplayElement(recipeList);
+  var recipeList = sessionStorage.recipeList;
+  appendToDisplayElement(JSON.parse(recipeList));
 }
 
-/** display saved recipes by tag name */
+/** Display saved recipes by tag name */
 function savedRecipes() {
   const tagName = document.getElementById('tag-name').value.trim();
   
@@ -127,28 +119,22 @@ function appendToDisplayElement(recipeList) {
   const displayRecipeElement = document.getElementById('display-recipes');
   displayRecipeElement.innerHTML = "";
   for (recipe of recipeList) {
-    var recipeCard = createRecipeElement(recipe);
-    recipeCard.className ='dish-recipe';
-    receipeCard.style.display = 'none';
-
     var pictureWrap = document.createElement('div');
     pictureWrap.className = 'dish-image-wrap';
 
     var picture = document.createElement('img');
     picture.className = 'dish-image';
     picture.src = recipe["image"];
+    
+    createRecipeElement(recipe, pictureWrap);
 
     var pictureText = document.createElement('button');
     pictureText.className = 'dish-image-text';
     pictureText.innerHTML = recipe["title"];
-    pictureText.onclick = function() {
-      recipeCard.style.display = "block";
-    }
 
     displayRecipeElement.appendChild(pictureWrap);
     pictureWrap.appendChild(picture);
     pictureWrap.appendChild(pictureText);
-    pictureWrap.appendChild(recipeCard);
   }
 }
 
@@ -272,18 +258,17 @@ function clearSavedProfileStatus() {
   profileStatusElement.style.display = "none";
 }
 
-
+/** Function gets recipe information from user input ID and displays the title on the page */
 function getRecipe(){
-  /** Function gets recipe information from user input ID and displays the title on the page */
-  var numRecipe = document.getElementById("num-recipe").value;
-  fetch('/recipeInfo?numRecipe='+numRecipe).then(response => response.json()).then((recipeInfo) => {
+  var idRecipe = document.getElementById("num-recipe").value;
+  fetch('/recipeInfo?idRecipe='+idRecipe).then(response => response.json()).then((recipeInfo) => {
     recipeInf = JSON.parse(recipeInfo);
     const recipeDisplayElement = document.getElementById('recipe-info');
     recipeDisplayElement.innerText = recipeInf["title"];
   });
 }
 
-/* Function gets recipe list from user input dish and displays the title of the first two returned results on the page **/
+/** Function gets recipe list from user input dish and displays the title of the first two returned results on the page */
 function getRecipeId(){
   var dishName = document.getElementById("dish-name").value;
   fetch('/dishId?dishName='+dishName).then(response => response.json()).then(recipeId => {
@@ -355,22 +340,32 @@ function hardCodedRecipeCard() {
 }
 
 /** Creates an element that represents a recipe card */
-function createRecipeElement(recipe) {
+function createRecipeElement(recipe, pictureWrap) {
   var temp = document.querySelector("#recipe-template");;
   var clone = temp.content.cloneNode(true);
   
+  const hoverElement = clone.querySelector(".recipe-card");
+
   const titleElement = clone.querySelector(".recipe-card-title");
   titleElement.innerText = recipe["title"];
+  titleElement.href = recipe["sourceUrl"];
 
+  const closeElement = clone.querySelector(".icon-remove-sign");
+  closeElement.onclick = function() {
+      hoverElement.style.display = "none";
+      document.getElementById("display-recipes").style.opacity = "1";
+  }
   const imageElement = clone.querySelector(".recipe-image");
   imageElement.src = recipe["image"];
 
-  const linkElement = clone.querySelector('a');
-  linkElement.href = recipe["sourceUrl"];
-  linkElement.innerHTML = recipe["sourceUrl"];
-
   const alertElements = clone.querySelectorAll(".recipe-card-block")[1];
   createRecipeCardAlerts(recipe, alertElements);
+
+  const servingElement = clone.querySelector(".recipe-card-servings");
+  servingElement.innerHTML = "Serving Size: " + recipe["servings"];
+
+  const timeElement = clone.querySelector(".recipe-card-time");
+  timeElement.innerHTML = "Preparation Time: " + recipe["readyInMinutes"] + " minutes";
   
   const tagElements = clone.querySelector(".recipe-card-tags");
   createRecipeCardTags(recipe['id'], tagElements);
@@ -391,8 +386,11 @@ function createRecipeElement(recipe) {
       });
     }
   });
-
-  return clone;
+  document.getElementById("card-gallery").appendChild(clone);
+  pictureWrap.onclick = function() {
+      hoverElement.style.display = "block";
+      document.getElementById("display-recipes").style.opacity = "0.2";
+  }
 }
 
 /** Get profile information to determine which alerts to create */
@@ -415,6 +413,11 @@ function createRecipeCardAlerts(recipe, alertElements) {
     if (message.hasProfile) {
       const profile = message.profile;
       const dietaryNeeds = profile.dietaryNeeds;
+      console.log(dietaryNeeds);
+      if (dietaryNeeds != null) {
+        const alertContainer = document.getElementById("recipe-alert-block");
+        alertContainer.innerText = "Dietary Alerts";
+      }
       dietaryNeeds.forEach(dietaryNeed => {
         switch(dietaryNeed) {
           case "VEGETARIAN":
@@ -519,7 +522,7 @@ function readUserDishChoice() {
   if(dishName != null){
     fetch('/recipeInfo?dishName=' + dishName).then(response => response.json()).then((recipeListInfoJson) => {
       sessionStorage.dishName = dishName;
-      sessionStorage.recipeList = JSON.parse(recipeListInfoJson);
+      sessionStorage.recipeList = recipeListInfoJson;
       window.location.href = "/display.html";
     });
   }

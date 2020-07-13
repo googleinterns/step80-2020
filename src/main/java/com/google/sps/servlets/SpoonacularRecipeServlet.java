@@ -34,9 +34,9 @@ public class SpoonacularRecipeServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String numRecipe = request.getParameter("numRecipe");
+    String idRecipe = request.getParameter("idRecipe");
     Client client = ClientBuilder.newClient();
-    WebTarget target = client.target(spoonacularPrefix + "/" + numRecipe + "/information?apiKey=" + spoonacularAPIKey + "&includeNutrition=true");
+    WebTarget target = client.target(spoonacularPrefix + "/" + idRecipe + "/information?apiKey=" + spoonacularAPIKey + "&includeNutrition=true");
 
     try {
       String recipeInfo = target.request(MediaType.APPLICATION_JSON).get(String.class);
