@@ -126,7 +126,7 @@ function appendToDisplayElement(recipeList) {
     picture.className = 'dish-image';
     picture.src = recipe["image"];
     
-    var recipeCard = createRecipeElement(recipe, pictureWrap);
+    createRecipeElement(recipe, pictureWrap);
 
     var pictureText = document.createElement('button');
     pictureText.className = 'dish-image-text';
@@ -348,6 +348,7 @@ function createRecipeElement(recipe, pictureWrap) {
 
   const titleElement = clone.querySelector(".recipe-card-title");
   titleElement.innerText = recipe["title"];
+  titleElement.href = recipe["sourceUrl"];
 
   const closeElement = clone.querySelector(".icon-remove-sign");
   closeElement.onclick = function() {
@@ -357,12 +358,14 @@ function createRecipeElement(recipe, pictureWrap) {
   const imageElement = clone.querySelector(".recipe-image");
   imageElement.src = recipe["image"];
 
-  const linkElement = clone.querySelector('a');
-  linkElement.href = recipe["sourceUrl"];
-  linkElement.innerHTML = recipe["sourceUrl"];
-
   const alertElements = clone.querySelectorAll(".recipe-card-block")[1];
   createRecipeCardAlerts(recipe, alertElements);
+
+  const servingElement = clone.querySelector(".recipe-card-servings");
+  servingElement.innerHTML = "Serving Size: " + recipe["servings"];
+
+  const timeElement = clone.querySelector(".recipe-card-time");
+  timeElement.innerHTML = "Preparation Time: " + recipe["readyInMinutes"] + " minutes";
   
   const tagElements = clone.querySelector(".recipe-card-tags");
   createRecipeCardTags(recipe['id'], tagElements);

@@ -95,6 +95,7 @@
   background-size: 100% 100%;
   border: solid 2px black;
   display: none;
+  font-family: 'TypeWriter', helvetica, sans-serif;
   height: 350px;
   left: 50%;
   margin-top: -175px;
@@ -106,10 +107,22 @@
 }
 
 .recipe-card-title {
-  font-size: 40px;
+  color: black;
+  font-size: 25px;
   margin-left: 150px;
   position: absolute;
-  top: 20px;
+  top: 50px;
+}
+
+.recipe-card-servings {
+  font-size: 18px;
+  margin-left: -100px;
+  margin-top: -50px;
+}
+
+.recipe-card-time {
+  margin-left: -100px;
+  margin-top: 10px;
 }
 
 .recipe-card-block {
@@ -127,11 +140,16 @@
 .recipe-alert {
   background: none;
   display: flex;
-  margin: auto;
-  padding: 10px;
+  margin-left: -70px;
+  padding: 6px;
+}
+
+.recipe-alert i {
+  padding-right: 10px;
 }
 
 .recipe-image {
+  border: 2px solid #ffc109;
   max-height: 250px;
   max-width: 250px;
 }
