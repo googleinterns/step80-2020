@@ -61,6 +61,8 @@ public class SavedRecipeServlet extends HttpServlet {
       String title = (String) entity.getProperty("title");
       String imageUrl = (String) entity.getProperty("imageUrl");
       String sourceUrl = (String) entity.getProperty("sourceUrl");
+      Long servings = (Long) entity.getProperty("servings");
+      Long readyInMinutes = (Long) entity.getProperty("readyInMinutes");
       ArrayList<String> dietaryNeedsStrings = (ArrayList<String>) entity.getProperty("dietaryNeeds");
       
       // convert string to Diet enum because datastore stores dietaryNeeds as a list of strings
@@ -83,7 +85,7 @@ public class SavedRecipeServlet extends HttpServlet {
         }
       }
       SavedRecipe savedRecipeObject = SavedRecipe.builder().setId(recipeId).setTitle(title).
-        setImage(imageUrl).setSourceUrl(sourceUrl).setDietaryNeeds(dietaryNeeds).build();
+        setImage(imageUrl).setSourceUrl(sourceUrl).setServings(servings).setReadyInMinutes(readyInMinutes).setDietaryNeeds(dietaryNeeds).build();
           
       responseMap.put("savedRecipe", savedRecipeObject);
       responseMap.put("recipeIsSaved", true);
@@ -114,6 +116,12 @@ public class SavedRecipeServlet extends HttpServlet {
 
     String sourceUrl = request.getParameter("source-url");
     entity.setProperty("sourceUrl", sourceUrl);
+
+    long servings = Long.parseLong(request.getParameter("servings"));
+    entity.setProperty("servings", servings);
+
+    long readyInMinutes = Long.parseLong(request.getParameter("ready-in-minutes"));
+    entity.setProperty("readyInMinutes", readyInMinutes);
 
     String[] dietaryNeeds = request.getParameterValues("dietary-needs");
     entity.setProperty("dietaryNeeds", Arrays.asList(dietaryNeeds));

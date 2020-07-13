@@ -354,8 +354,9 @@ function hardCodedRecipeCard() {
   recipe['title'] = "Title";
   recipe['image'] = "/images/salad.jpeg";
   recipe['sourceUrl'] = "https://css-tricks.com/snippets/css/a-guide-to-flexbox/";
+  recipe['servings'] = 1;
+  recipe['readyInMinutes'] = 10;
   recipe['vegetarian'] = true;
-  console.log(createRecipeElement(recipe));
   displayRecipeElement.appendChild(createRecipeElement(recipe));
 
   const recipe1 = {};
@@ -363,6 +364,8 @@ function hardCodedRecipeCard() {
   recipe1['title'] = "Title 1";
   recipe1['image'] = "/images/salad.jpeg";
   recipe1['sourceUrl'] = "https://css-tricks.com/snippets/css/a-guide-to-flexbox/";
+  recipe1['servings'] = 1;
+  recipe1['readyInMinutes'] = 10;
   recipe1['vegan'] = true;
   displayRecipeElement.appendChild(createRecipeElement(recipe1));
 }
@@ -551,6 +554,8 @@ function postSavedRecipe(recipe) {
   params.append('recipe-title', recipe['title']);
   params.append('image-url', recipe['image']);
   params.append('source-url', recipe['sourceUrl']);
+  params.append('servings', recipe['servings']);
+  params.append("ready-in-minutes", recipe['readyInMinutes']);
   if (recipe['vegetarian']) {
     params.append('dietary-needs', "VEGETARIAN");
   }

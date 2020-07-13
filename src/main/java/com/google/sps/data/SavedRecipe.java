@@ -24,6 +24,8 @@ public abstract class SavedRecipe {
   public abstract String getTitle();
   public abstract String getImage();
   public abstract String getSourceUrl();
+  public abstract long getServings();
+  public abstract long getReadyInMinutes();
   public abstract ArrayList<Diet> getDietaryNeeds();
   public static Builder builder() {
     return new AutoValue_SavedRecipe.Builder();
@@ -40,12 +42,16 @@ public abstract class SavedRecipe {
       * @param title The title of the recipe
       * @param imageUrl The url of the recipe image
       * @param sourceUrl The url of the recipe source
+      * @param servings The servings size of the dish
+      * @param readyInMinutes THe time that it takes to cook the dish
       * @param dietaryNeeds The dietary needs of the recipe (ex: vegetarian, vegan)
       */
     public abstract Builder setId(long recipeId);
     public abstract Builder setTitle(String title);
     public abstract Builder setImage(String imageUrl);
     public abstract Builder setSourceUrl(String sourceUrl);
+    public abstract Builder setServings(long servings);
+    public abstract Builder setReadyInMinutes(long readyInMunutes);
     public abstract Builder setDietaryNeeds(ArrayList<Diet> dietaryNeeds);
     public abstract SavedRecipe build();
   }
