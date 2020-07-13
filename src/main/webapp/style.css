@@ -118,11 +118,22 @@
   font-size: 18px;
   margin-left: -100px;
   margin-top: -50px;
+  padding-top: 30px;
+}
+
+.recipe-alert-block {
+  font-weight: bolder;
+  padding-top: 15px;
+}
+
+.recipe-card-tags {
+  padding-top: 50px;
 }
 
 .recipe-card-time {
   margin-left: -100px;
   margin-top: 10px;
+  padding-bottom: 15px;
 }
 
 .recipe-card-block {

@@ -260,8 +260,8 @@ function clearSavedProfileStatus() {
 
 /** Function gets recipe information from user input ID and displays the title on the page */
 function getRecipe(){
-  var numRecipe = document.getElementById("num-recipe").value;
-  fetch('/recipeInfo?numRecipe='+numRecipe).then(response => response.json()).then((recipeInfo) => {
+  var idRecipe = document.getElementById("num-recipe").value;
+  fetch('/recipeInfo?idRecipe='+idRecipe).then(response => response.json()).then((recipeInfo) => {
     recipeInf = JSON.parse(recipeInfo);
     const recipeDisplayElement = document.getElementById('recipe-info');
     recipeDisplayElement.innerText = recipeInf["title"];
@@ -413,6 +413,11 @@ function createRecipeCardAlerts(recipe, alertElements) {
     if (message.hasProfile) {
       const profile = message.profile;
       const dietaryNeeds = profile.dietaryNeeds;
+      console.log(dietaryNeeds);
+      if (dietaryNeeds != null) {
+        const alertContainer = document.getElementById("recipe-alert-block");
+        alertContainer.innerText = "Dietary Alerts";
+      }
       dietaryNeeds.forEach(dietaryNeed => {
         switch(dietaryNeed) {
           case "VEGETARIAN":
