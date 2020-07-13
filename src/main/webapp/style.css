@@ -319,11 +319,13 @@ h3 {
   display: block;
   font-family: 'TypeWriter', helvetica, sans-serif;
   font-size: 15px;
+  font-weight: normal;
   padding: 12px 16px;
 }
 
 .dropdown-content a:hover {
   background-color: white;
+  font-weight: bolder;
 }
 
 .navbar-item:hover .dropdown-content {
@@ -337,7 +339,6 @@ h3 {
 .navbar-item a {
   color:black;
   float: left;
-  font-weight: normal;
   margin-right: 1em;
   padding-left: 0;
   position: relative;
@@ -347,7 +348,6 @@ h3 {
 
 a:hover {
   color: orange;
-  font-weight: bolder;
 }
 
 /* Homepage general formatting */
