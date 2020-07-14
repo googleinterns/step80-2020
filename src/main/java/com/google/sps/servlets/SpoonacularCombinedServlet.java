@@ -39,7 +39,7 @@ public class SpoonacularCombinedServlet extends HttpServlet {
     String query = request.getParameter("dishName");
     Client client = ClientBuilder.newClient();
     query = query.replaceAll(" ", "+");
-    WebTarget target = client.target(spoonacularPrefix + "/search?query=" + query + "&number=4&includeNutrition=true&apiKey=" + spoonacularAPIKey);
+    WebTarget target = client.target(spoonacularPrefix + "/search?query=" + query + "&number=6&includeNutrition=true&apiKey=" + spoonacularAPIKey);
     try {
       String recipeListJSONString = target.request(MediaType.APPLICATION_JSON).get(String.class);
       JSONObject recipeJson = new JSONObject(recipeListJSONString);
