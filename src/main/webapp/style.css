@@ -422,6 +422,7 @@ h1 {
 
 /* About Box */
 #about {
+  z-index: 1;
   left: 50%;
   padding-bottom: 15%;
   position: absolute;
@@ -429,7 +430,6 @@ h1 {
   transform: translateX(-50%);
   top: 1500px;
   width: 70%;
-  z-index: -1;
 }
 
 .paint-stroke {
@@ -657,4 +657,9 @@ h1 {
   margin-left: 15px;
   opacity: 0.8;
   padding: 5px 10px;
+}
+
+#selection {
+  margin-top: 158px;
+  text-align: center;
 }

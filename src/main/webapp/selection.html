@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Your Recipes</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <script src="script.js"></script>
+  </head>
+
+  <body id="display-background" onload="javascript:setRadioButtonValues()"> 
+    <div id="frame-top" class="frame"></div>
+    <div id="frame-bottom" class="frame"></div>
+    <div id="frame-right" class="frame"></div>
+    <div id="frame-left" class="frame"></div>
+    <div class="navbar">
+      <div class="container">
+        <a class="navbar-title" href="profile.html">Forked</a>
+        <div class="navbar-menu-container">
+          <ul class="navbar-menu">
+            <li class="navbar-item"><a href="index.html">Profile</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div id="selection">
+        <form action= "javascript:readUserDishChoice()" id="best-fit-choice" name="dishFitChoice">
+            <input type="radio" id="first-option" name="labelFitChoice" value="first-option">
+            <label id="first-option-label" for="first-option">First option</label><br>
+            <input type="radio" id="second-option" name="labelFitChoice" value="second-option">
+            <label id="second-option-label" for="second-option">Second option</label><br>
+            <input type="submit" value="Submit">
+          </form>
+    </div>
+  </body>
+</html>
