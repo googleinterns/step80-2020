@@ -110,16 +110,16 @@ function displayRecipes() {
 
 /** display saved recipes by tag name */
 function savedRecipes() {
-  const tagName = document.getElementById('select-tags').value;
+  const tagName = document.getElementById('select-tag').value;
   const displayRecipesElement = document.getElementById("display-recipes");
   displayRecipesElement.innerHTML = "";
 
   fetch('/tag?tagName=' + tagName).then(response => response.json()).then((tagJson) => {
     // get list of unique recipes from tagList
-    const tagList = tagJson.tagList;
+    const tagList = tagJson.filteredList;
     const recipeIdList = new Set(tagList.map(tag => tag.recipeId));
 
-    const selectElement = document.getElementById("select-tags");
+    const selectElement = document.getElementById("select-tag");
     selectElement.innerHTML = "<option value=''>All tags</option>";
     // get list of unique tag names from tagList
     tagJson.tagNames.forEach(tagName => {
@@ -142,7 +142,6 @@ function addTagOption(tag) {
 
 /** Helper function to display recipe cards in display-recipes element */
 function appendToDisplayElement(recipeList) {
-  // switch id="display-recipes" to class="display-recipes"?
   const displayRecipeElement = document.getElementById('display-recipes');
   displayRecipeElement.innerHTML = "";
   for (recipe of recipeList) {
@@ -170,6 +169,34 @@ function appendToDisplayElement(recipeList) {
     pictureWrap.appendChild(recipeCard);
   }
 }
+
+/*
+// helper to create picture wrap for gallery display
+function createPictureWrap(displayRecipeElement, recipe) {
+  var recipeCard = createRecipeElement(recipe);
+    recipeCard.className ='dish-recipe';
+    receipeCard.style.display = 'none';
+
+    var pictureWrap = document.createElement('div');
+    pictureWrap.className = 'dish-image-wrap';
+
+    var picture = document.createElement('img');
+    picture.className = 'dish-image';
+    picture.src = recipe["image"];
+
+    var pictureText = document.createElement('button');
+    pictureText.className = 'dish-image-text';
+    pictureText.innerHTML = recipe["title"];
+    pictureText.onclick = function() {
+      recipeCard.style.display = "block";
+    }
+
+    displayRecipeElement.appendChild(pictureWrap);
+    pictureWrap.appendChild(picture);
+    pictureWrap.appendChild(pictureText);
+    pictureWrap.appendChild(recipeCard);
+}
+*/
 
 /* Slideshow that rotates through different background images */
 function startSlideshow() {
@@ -526,7 +553,7 @@ function createAlertElement(iconName, innerText) {
 /** Get user's tags for recipe */
 function createRecipeCardTags(recipeId, tagElements) {
   fetch('/tag?recipeId=' + recipeId).then(response => response.json()).then((tagJson) => {
-    tagJson.tagList.forEach(tag => tagElements.appendChild(createTagElement(tag)));
+    tagJson.filteredList.forEach(tag => tagElements.appendChild(createTagElement(tag)));
   });
 }
 
@@ -608,6 +635,7 @@ function getSavedRecipe(displayRecipesElement, recipeId) {
 
       // display recipe card using the recipe's saved information
       displayRecipesElement.append(createRecipeElement(savedRecipe));
+      // createPictureWrap(displayRecipesElement, savedRecipe);
     }
   });
 }
