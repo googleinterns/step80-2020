@@ -15,10 +15,10 @@
     <div id="frame-left" class="frame"></div>
     <div class="navbar">
       <div class="container">
-        <a class="navbar-title" href="profile.html">Forked</a>
+        <a class="navbar-title" href="index.html">Forked</a>
         <div class="navbar-menu-container">
           <ul class="navbar-menu">
-            <li class="navbar-item"><a href="index.html">Profile</a></li>
+            <li class="navbar-item"><a href="profile.html">Profile</a></li>
           </ul>
         </div>
       </div>
@@ -30,17 +30,26 @@
           data-rotate="Ceasar Salad"
           data-period="10000"></span>
       <div id="nutrition-info"> </div>
+      <a class="scroller2 bounce" href="#display-recipes">
+        <i class="icon-double-angle-down icon-4x"></i>
+      </a>
       <div id="display-recipes"> </div>
+      <div id="card-gallery"> </div>
     </div>
     <template id="recipe-template">
       <div class="recipe-card">
-        <p class="recipe-card-title"></p>
+        <a class="recipe-card-title"></a>
+        <i class="icon-remove-sign icon-2x"></i>
         <div class="recipe-card-table">
           <div class="recipe-card-block">
             <img class="recipe-image"></img>
-            <br/><a></a>
+            <br/>
           </div>
-          <div class="recipe-card-block"> </div>
+          <div class="recipe-card-block">
+            <div class="recipe-card-servings"> </div>
+            <div class="recipe-card-time"> </div>
+            <div id="recipe-alert-block"> </div>
+          </div>
         </div>
         <div class="recipe-card-tags"></div>
         <div class="recipe-card-table">
