@@ -284,6 +284,12 @@ function loadHomePage() {
   getLoginStatus();
 }
 
+/** Call the appropriate functions needed on-load of the body of display page */
+function loadDisplayPage() {
+  createNutritionElements();
+  getLoginStatus();
+}
+
 /**
   * Checks with server if user has logged in.
   * Display corresponding text and url in login section if login is true/false.
