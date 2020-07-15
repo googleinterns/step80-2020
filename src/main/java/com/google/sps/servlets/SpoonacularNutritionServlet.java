@@ -32,15 +32,15 @@ import org.json.JSONArray;
 /** Servlet to take in dish name and return bulk recipe infomation */
 @WebServlet("/dishNutrition")
 public class SpoonacularNutritionServlet extends HttpServlet {
-  static String spoonacularPrefix = "https://api.spoonacular.com/recipes/guessNutrition";
-  static String spoonacularAPIKey = "cd2269d31cb94065ad1e73ce292374a5";
+  private static String spoonacularPrefix = "https://api.spoonacular.com/recipes/guessNutrition";
+  private static String spoonacularAPIKey = "cd2269d31cb94065ad1e73ce292374a5";
 
   /** Takes in dishName parameter and uses spoonacular's guess nutrition to return nutrition information about the dish*/
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String title = request.getParameter("dishName");
+    title = title.replaceAll(" ", "+");
     Client client = ClientBuilder.newClient();
-    System.out.println(String.format("%s?title=%s&apikey=%s", spoonacularPrefix, title, spoonacularAPIKey));
     WebTarget target = client.target(String.format("%s?title=%s&apiKey=%s", spoonacularPrefix, title, spoonacularAPIKey));
     try {
       String recipeListJSONString = target.request(MediaType.APPLICATION_JSON).get(String.class);
