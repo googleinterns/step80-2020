@@ -29,6 +29,11 @@ import com.google.gson.Gson;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.io.UnsupportedEncodingException;
+
 /** Servlet to take in dish name and return bulk recipe infomation */
 @WebServlet("/dishNutrition")
 public class SpoonacularNutritionServlet extends HttpServlet {
@@ -39,8 +44,13 @@ public class SpoonacularNutritionServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String title = request.getParameter("dishName");
-    title = title.replaceAll(" ", "+");
     Client client = ClientBuilder.newClient();
+    try {
+      title = URLEncoder.encode(title);
+    }
+    catch (Exception e) {
+      System.out.println(e);
+    }
     WebTarget target = client.target(String.format("%s?title=%s&apiKey=%s", spoonacularPrefix, title, spoonacularAPIKey));
     try {
       String recipeListJSONString = target.request(MediaType.APPLICATION_JSON).get(String.class);

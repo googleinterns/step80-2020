@@ -24,7 +24,7 @@ function getRecipeInfo() {
       sessionStorage.optionTwo = recipeListInfoJson[1];
       window.location.href = "/selection.html";
     } else {
-      // set something about too few matches - I don't think this should trigger too often 
+      // TODO: Add alert of too few labels for image: should not trigger often
       window.location.href = "/index.html";
     }
   });
@@ -515,8 +515,9 @@ function createTagElement(tag) {
 /** Reads dishname, fetches recipe information, and stores both in serssionStorage to use in display.html */
 function readUserDishChoice() {
   var dishName = document.forms.dishFitChoice.elements.labelFitChoice.value;
+  console.log(dishName);
   if(dishName != null){
-    fetch('/recipeInfo?dishName=' + dishName).then(response => response.json()).then((recipeListInfoJson) => {
+    fetch('/recipeInfo?dishName='+dishName).then(response => response.json()).then((recipeListInfoJson) => {
       sessionStorage.dishName = dishName;
       sessionStorage.recipeList = JSON.parse(recipeListInfoJson);
       window.location.href = "/display.html";

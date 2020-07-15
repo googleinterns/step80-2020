@@ -29,17 +29,28 @@ import com.google.gson.Gson;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.io.UnsupportedEncodingException;
+
 /** Servlet to take in dish name and return bulk recipe infomation */
 @WebServlet("/recipeInfo")
 public class SpoonacularCombinedServlet extends HttpServlet {
   private static final String spoonacularPrefix = "https://api.spoonacular.com/recipes";
   private static final String spoonacularAPIKey = "cd2269d31cb94065ad1e73ce292374a5";
+  private static final String API_QUERY_NUMBER = "6";
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String query = request.getParameter("dishName");
     Client client = ClientBuilder.newClient();
-    query = query.replaceAll(" ", "+");
-    WebTarget target = client.target(spoonacularPrefix + "/search?query=" + query + "&number=4&includeNutrition=true&apiKey=" + spoonacularAPIKey);
+    try {
+      query = URLEncoder.encode(query);
+    }
+    catch (Exception e) {
+      System.out.println(e);
+    }
+    WebTarget target = client.target(spoonacularPrefix + "/search?query=" + query + "&number=" + API_QUERY_NUMBER + "&includeNutrition=true&apiKey=" + spoonacularAPIKey);
     try {
       String recipeListJSONString = target.request(MediaType.APPLICATION_JSON).get(String.class);
       JSONObject recipeJson = new JSONObject(recipeListJSONString);
