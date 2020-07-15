@@ -48,7 +48,6 @@ public class TagServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
-    response.setContentType("application/json");
     JSONObject responseMap = new JSONObject();
     Gson gson = new Gson();  
     String json;
@@ -82,41 +81,23 @@ public class TagServlet extends HttpServlet {
         TagRecipePair tagObject = new TagRecipePair(tagId, userId, tagName, recipeId);
         filteredList.add(tagObject);
       }
-    
+
       responseMap.put("filteredList", filteredList);
       responseMap.put("tagNames", getTagNames());
-      json = gson.toJson(responseMap);
-      response.setContentType("application/json");
 
     } else {
       responseMap.put("error", AUTHORIZATION_ERROR); 
-      json = gson.toJson(responseMap);
     }
     
-    response.setContentType("application");
+    json = gson.toJson(responseMap);
+    response.setContentType("application/json");
     response.getWriter().println(json);
-  }
-
-  public Set<String> getTagNames() {
-    UserService userService = UserServiceFactory.getUserService();
-    Query query = new Query("TagRecipePair")
-      .setFilter(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userService.getCurrentUser().getUserId()));
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    PreparedQuery results = datastore.prepare(query);
-
-    Set<String> tagNameList = new HashSet<String>(); 
-    for (Entity entity : results.asIterable()) {
-      String tagName = (String) entity.getProperty("tagName");
-      tagNameList.add(tagName);
-    }
-    return tagNameList;
   }
 
   /** Add a TagRecipePair to datastore which represents a user's tag on a recipe */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
-    response.setContentType("application/json");
     JSONObject responseMap = new JSONObject();
 
     if (!userService.isUserLoggedIn()) {
@@ -138,7 +119,7 @@ public class TagServlet extends HttpServlet {
 
     Gson gson = new Gson();   
     String json = gson.toJson(responseMap);
-    response.setContentType("application");
+    response.setContentType("application/json");
     response.getWriter().println(json);
   }
 
