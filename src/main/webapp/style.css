@@ -8,6 +8,7 @@
 .content {
   margin-left: auto;
   margin-right: auto;
+  margin-top: 50px;
   padding: 20px;
   width: 800px;
 }
@@ -199,7 +200,17 @@
 }
 
 .delete-tag-button {
+  cursor: pointer;
   margin-left: 5px;
+}
+
+.add-tag-button {
+  cursor: pointer;
+}
+
+.tag-input {
+  padding: 5px;
+  resize: none;
 }
 
 /* Texts */
@@ -626,6 +637,7 @@ h1 {
   animation-name: bounce;
 }
 
+<<<<<<< HEAD
 #selection {
   margin-top: 158px;
   text-align: center;
@@ -646,4 +658,31 @@ h1 {
   font-family: 'TypeWriterBold', helvetica, sans-serif;
   font-size: 3vw;
   color: darkorange;
+}
+
+#select-tags {
+  border-bottom: 2px solid black; 
+  font-weight: bold;
+  letter-spacing: .15em;
+  margin-left: 10px;
+  padding: 3px 5px;
+}
+
+#select-tags:focus, #select-tags:active {
+  border-bottom-color: red;
+}
+
+#select-button {
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+  font-family: 'TypeWriterBold', helvetica, sans-serif;
+  margin-left: 15px;
+  opacity: 0.8;
+  padding: 5px 10px;
+}
+
+#selection {
+  margin-top: 158px;
+  text-align: center;
 }

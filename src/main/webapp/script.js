@@ -120,27 +120,43 @@ function savedRecipes() {
 
   fetch('/tag?tagName=' + tagName).then(response => response.json()).then((tagJson) => {
     // get list of unique recipes from tagList
-    const tagList = tagJson.filteredList;
-    const recipeIdList = new Set(tagList.map(tag => tag.recipeId));
+    if (tagJson.error == null) {
+      const tagList = tagJson.filteredList;
+      const recipeIdList = new Set(tagList.map(tag => tag.recipeId));
 
-    const selectElement = document.getElementById("select-tag");
+      refreshTagNameSelection();
+    
+      // display recipes as cards
+      recipeIdList.forEach(recipeId => { 
+        getSavedRecipe(displayRecipesElement, recipeId);
+      });
+    } else {
+      alert(tagJson.error);
+    }
+    
+  });
+}
+
+// refresh the tag selection in case tag was deleted or added
+function refreshTagNameSelection() {
+  const selectElement = document.getElementById("select-tags");
+  if (selectElement != null) {
+    fetch('/tag-names').then(response => response.json()).then((tagNames) => {
+    const selectElement = document.getElementById("select-tags");
     selectElement.innerHTML = "<option value=''>All tags</option>";
-    // get list of unique tag names from tagList
-    tagJson.tagNames.forEach(tagName => {
+    
+    tagNames.forEach(tagName => {
       selectElement.appendChild(addTagOption(tagName));
     });
-    
-    // display recipes as cards
-    recipeIdList.forEach(recipeId => { 
-      getSavedRecipe(displayRecipesElement, recipeId);
-    });
   });
+  }
 }
 
 function addTagOption(tag) {
   const optionElement = document.createElement('option');
   optionElement.value = tag;
   optionElement.innerHTML = tag;
+  optionElement.className = "tag-option";
   return optionElement;
 }
 
@@ -418,7 +434,7 @@ function createRecipeElement(recipe, pictureWrap) {
   const tagElements = clone.querySelector(".recipe-card-tags");
   createRecipeCardTags(recipe['id'], tagElements);
 
-  const tagTextElement = clone.querySelector("textarea");
+  const tagTextElement = clone.querySelector(".tag-input");
 
   const addTagElement = clone.querySelector(".add-tag-button");
   addTagElement.addEventListener('click', () => {
@@ -432,6 +448,7 @@ function createRecipeElement(recipe, pictureWrap) {
         tagElements.innerHTML = "";
         createRecipeCardTags(recipe['id'], tagElements);
         postSavedRecipe(recipe);
+        refreshTagNameSelection();
       });
     }
   });
@@ -577,6 +594,7 @@ function createTagElement(tag) {
     fetch('/delete-tag', {method: 'POST', body: params}).then(() => {
       // Remove the tag from the DOM.
       tagElement.remove();
+      refreshTagNameSelection();
     });
   });
 

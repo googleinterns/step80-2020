@@ -9,14 +9,28 @@
   </head>
 
   <body onload="javascript:savedRecipes()"> 
+    <div id="frame-top" class="frame"></div>
+    <div id="frame-bottom" class="frame"></div>
+    <div id="frame-right" class="frame"></div>
+    <div id="frame-left" class="frame"></div>
+    <div class="navbar">
+      <div class="container">
+        <a class="navbar-title" href="index.html">Forked</a>
+        <div class="navbar-menu-container">
+          <ul class="navbar-menu">
+            <li class="navbar-item"><a href="profile.html">Profile</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
     <div class="content">
       <h2>Saved Recipes</h2>
       <form class="content" action="javascript:savedRecipes()" method="POST">
-        <label for="tags">Choose a tag:</label>
+        <label for="tags">Search recipe by tag:</label>
         <select name="tags" id="select-tag">
           <option value="">All tags</option>
         </select>
-        <input type="submit" />
+        <input type="submit" id="select-button"/>
       </form>
       <div id="display-recipes"> </div>
       <div id="card-gallery"> </div>
@@ -38,7 +52,7 @@
         </div>
         <div class="recipe-card-tags"></div>
         <div class="recipe-card-table">
-          <textarea></textarea>
+          <textarea class="tag-input"></textarea>
           <button class="add-tag-button">+</button>
         </div>
       </div>
