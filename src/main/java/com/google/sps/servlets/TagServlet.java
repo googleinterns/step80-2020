@@ -71,7 +71,7 @@ public class TagServlet extends HttpServlet {
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       PreparedQuery results = datastore.prepare(query);
 
-      ArrayList<TagRecipePair> tagList = new ArrayList<>();
+      ArrayList<TagRecipePair> filteredList = new ArrayList<>();
       for (Entity entity : results.asIterable()) {
         long tagId = entity.getKey().getId();
         String userId = (String) entity.getProperty("userId");
@@ -79,9 +79,11 @@ public class TagServlet extends HttpServlet {
         long recipeId = (long) entity.getProperty("recipeId");
 
         TagRecipePair tagObject = new TagRecipePair(tagId, userId, tagName, recipeId);
-        tagList.add(tagObject);
+        filteredList.add(tagObject);
       }
-      responseMap.put("tagList", tagList);
+
+      responseMap.put("filteredList", filteredList);
+      responseMap.put("tagNames", getTagNames());
 
     } else {
       responseMap.put("error", AUTHORIZATION_ERROR); 

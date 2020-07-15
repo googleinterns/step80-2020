@@ -7,7 +7,7 @@
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
     <script src="script.js"></script>
   </head>
-  <body class="home-body" onload="startSlideshow()">
+  <body class="home-body" onload="loadHomePage()">
     <div id="frame-top" class="frame"></div>
     <div id="frame-bottom" class="frame"></div>
     <div id="frame-right" class="frame"></div>
@@ -17,7 +17,10 @@
         <a class="navbar-title" href="index.html">Forked</a>
         <div class="navbar-menu-container">
           <ul class="navbar-menu">
-            <li class="navbar-item"><a href="profile.html">Profile</a></li>
+            <li class="navbar-item" id="login-status">
+              <a href="profile.html">My Profile</a>
+              <div class="dropdown-content" id="dropdown"></div>
+            </li>
           </ul>
         </div>
       </div>
@@ -28,6 +31,15 @@
     <div id="about">
       <div class="about-container">
         <h3>About Forked</h3>
+        <div id="final-options">
+          <form action= "javascript:readUserDishChoice()" id="best-fit-choice" name="dishFitChoice">
+            <input type="radio" id="first-option" name="labelFitChoice" value="first-option">
+            <label id="first-option-label" for="first-option">First option</label><br>
+            <input type="radio" id="second-option" name="labelFitChoice" value="second-option">
+            <label id="second-option-label" for="second-option">Second option</label><br>
+            <input type="submit" value="Submit">
+          </form>
+        </div>
         <h4 class="about-text">Curious what ingredients are in your dish? Want to find a similar recipe for later? Worried about potential food allergens or restrictions? Forked provides you with instantanous information on your dish. Just upload your photo below and let us do the rest!</h4>
         <button id="popup-button" class="open-button" onclick="openImageForm()">Analyze Your Dish</button>
       </div>

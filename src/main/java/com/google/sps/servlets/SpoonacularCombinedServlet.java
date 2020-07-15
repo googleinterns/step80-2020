@@ -32,13 +32,13 @@ import org.json.JSONArray;
 /** Servlet to take in dish name and return bulk recipe infomation */
 @WebServlet("/recipeInfo")
 public class SpoonacularCombinedServlet extends HttpServlet {
-  static String spoonacularPrefix = "https://api.spoonacular.com/recipes";
-  static String spoonacularAPIKey = "cd2269d31cb94065ad1e73ce292374a5";
+  private static final String spoonacularPrefix = "https://api.spoonacular.com/recipes";
+  private static final String spoonacularAPIKey = "cd2269d31cb94065ad1e73ce292374a5";
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String query = request.getParameter("dishName");
     Client client = ClientBuilder.newClient();
-    WebTarget target = client.target(spoonacularPrefix + "/search?query=" + query + "&number=4&includeNutrition=true&apiKey=" + spoonacularAPIKey);
+    WebTarget target = client.target(spoonacularPrefix + "/search?query=" + query + "&number=6&includeNutrition=true&apiKey=" + spoonacularAPIKey);
     try {
       String recipeListJSONString = target.request(MediaType.APPLICATION_JSON).get(String.class);
       JSONObject recipeJson = new JSONObject(recipeListJSONString);
