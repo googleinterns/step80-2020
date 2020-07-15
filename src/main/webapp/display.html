@@ -8,7 +8,7 @@
     <script src="script.js"></script>
   </head>
 
-  <body id="display-background" onload="createNutritionElements()"> 
+  <body id="display-background" onload="loadDisplayPage()"> 
     <div id="frame-top" class="frame"></div>
     <div id="frame-bottom" class="frame"></div>
     <div id="frame-right" class="frame"></div>
@@ -18,7 +18,10 @@
         <a class="navbar-title" href="index.html">Forked</a>
         <div class="navbar-menu-container">
           <ul class="navbar-menu">
-            <li class="navbar-item"><a href="profile.html">Profile</a></li>
+            <li class="navbar-item" id="login-status">
+              <a href="profile.html">My Profile</a>
+              <div class="dropdown-content" id="dropdown"></div>
+            </li>          
           </ul>
         </div>
       </div>

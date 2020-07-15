@@ -7,8 +7,25 @@
     <script src="script.js"></script>
   </head>
 
-  <body id="profile-background" onload="getProfile()"> 
-    <div class="content">
+  <body onload="getProfile()"> 
+    <div id="frame-top" class="frame"></div>
+    <div id="frame-bottom" class="frame"></div>
+    <div id="frame-right" class="frame"></div>
+    <div id="frame-left" class="frame"></div>
+    <div class="navbar">
+      <div class="container">
+        <a class="navbar-title" href="index.html">Forked</a>
+        <!-- <div class="navbar-menu-container">
+          <ul class="navbar-menu">
+            <li class="navbar-item" id="login-status">
+              <a href="profile.html">My Profile</a>
+              <div class="dropdown-content" id="dropdown"></div>
+            </li>
+          </ul>
+        </div> -->
+      </div>
+    </div>
+    <div class="content" id="profile-background">
       <h2 id="profile-header">Profile</h2>
       <div id="login-section"></div>
       <form class="content" id="profile-form" action="javascript:postProfile()" method="POST" onchange="clearSavedProfileStatus()">
