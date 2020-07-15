@@ -118,10 +118,6 @@ public class ProfileServlet extends HttpServlet {
         entity.setProperty("userName", request.getParameter("userName"));
         String[] dietaryNeeds = request.getParameterValues("dietary-needs");
         entity.setProperty("dietaryNeeds", Arrays.asList(dietaryNeeds));
-        // entity.setProperty("vegetarian", Boolean.parseBoolean(request.getParameter("vegetarian")));
-        // entity.setProperty("vegan", Boolean.parseBoolean(request.getParameter("vegan")));
-        // entity.setProperty("glutenFree", Boolean.parseBoolean(request.getParameter("glutenFree")));
-        // entity.setProperty("dairyFree", Boolean.parseBoolean(request.getParameter("dairyFree")));
         
         String[] allergies = request.getParameter("allergies").split(",");
         if (allergies == null) {

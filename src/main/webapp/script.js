@@ -102,20 +102,38 @@ function displayRecipes() {
 
 /** Display saved recipes by tag name */
 function savedRecipes() {
-  const tagName = document.getElementById('tag-name').value.trim();
-  
-  fetch('/tag?tagName=' + tagName).then(response => response.json()).then((tagList) => {
-    const tempDisplayTagJson = document.getElementById("temp-display-tags-json");
+  const tagName = document.getElementById('select-tag').value;
+  const displayRecipesElement = document.getElementById("display-recipes");
+  displayRecipesElement.innerHTML = "";
+
+  fetch('/tag?tagName=' + tagName).then(response => response.json()).then((tagJson) => {
+    // get list of unique recipes from tagList
+    const tagList = tagJson.filteredList;
+    const recipeIdList = new Set(tagList.map(tag => tag.recipeId));
+
+    const selectElement = document.getElementById("select-tag");
+    selectElement.innerHTML = "<option value=''>All tags</option>";
+    // get list of unique tag names from tagList
+    tagJson.tagNames.forEach(tagName => {
+      selectElement.appendChild(addTagOption(tagName));
+    });
     
-    // TODO: replace with get request to spoonacular to get json for recipeIds
-    const recipeIdList = tagList.map(tag => tag.recipeId);
-    tempDisplayTagJson.innerHTML = JSON.stringify(tagList);
+    // display recipes as cards
+    recipeIdList.forEach(recipeId => { 
+      getSavedRecipe(displayRecipesElement, recipeId);
+    });
   });
+}
+
+function addTagOption(tag) {
+  const optionElement = document.createElement('option');
+  optionElement.value = tag;
+  optionElement.innerHTML = tag;
+  return optionElement;
 }
 
 /** Helper function to display recipe cards in display-recipes element */
 function appendToDisplayElement(recipeList) {
-  // switch id="display-recipes" to class="display-recipes"?
   const displayRecipeElement = document.getElementById('display-recipes');
   displayRecipeElement.innerHTML = "";
   for (recipe of recipeList) {
@@ -137,6 +155,34 @@ function appendToDisplayElement(recipeList) {
     pictureWrap.appendChild(pictureText);
   }
 }
+
+/*
+// helper to create picture wrap for gallery display
+function createPictureWrap(displayRecipeElement, recipe) {
+  var recipeCard = createRecipeElement(recipe);
+    recipeCard.className ='dish-recipe';
+    receipeCard.style.display = 'none';
+
+    var pictureWrap = document.createElement('div');
+    pictureWrap.className = 'dish-image-wrap';
+
+    var picture = document.createElement('img');
+    picture.className = 'dish-image';
+    picture.src = recipe["image"];
+
+    var pictureText = document.createElement('button');
+    pictureText.className = 'dish-image-text';
+    pictureText.innerHTML = recipe["title"];
+    pictureText.onclick = function() {
+      recipeCard.style.display = "block";
+    }
+
+    displayRecipeElement.appendChild(pictureWrap);
+    pictureWrap.appendChild(picture);
+    pictureWrap.appendChild(pictureText);
+    pictureWrap.appendChild(recipeCard);
+}
+*/
 
 /* Slideshow that rotates through different background images */
 function startSlideshow() {
@@ -327,6 +373,8 @@ function hardCodedRecipeCard() {
   recipe['title'] = "Title";
   recipe['image'] = "/images/salad.jpeg";
   recipe['sourceUrl'] = "https://css-tricks.com/snippets/css/a-guide-to-flexbox/";
+  recipe['servings'] = 1;
+  recipe['readyInMinutes'] = 10;
   recipe['vegetarian'] = true;
   displayRecipeElement.appendChild(createRecipeElement(recipe));
 
@@ -335,6 +383,8 @@ function hardCodedRecipeCard() {
   recipe1['title'] = "Title 1";
   recipe1['image'] = "/images/salad.jpeg";
   recipe1['sourceUrl'] = "https://css-tricks.com/snippets/css/a-guide-to-flexbox/";
+  recipe1['servings'] = 1;
+  recipe1['readyInMinutes'] = 10;
   recipe1['vegan'] = true;
   displayRecipeElement.appendChild(createRecipeElement(recipe1));
 }
@@ -383,6 +433,7 @@ function createRecipeElement(recipe, pictureWrap) {
       fetch('/tag', {method: 'POST', body: params}).then(response => response.json()).then((tagList) => {
         tagElements.innerHTML = "";
         createRecipeCardTags(recipe['id'], tagElements);
+        postSavedRecipe(recipe);
       });
     }
   });
@@ -458,13 +509,31 @@ function allergyAlertList(ingredients, allergies) {
   var allergyList = [];
   for (allergy of allergies) {
     for (ingredient of ingredients) {
-      if (ingredient['name'].includes(allergy)) {
+      if (ifStringMatch(ingredient['name'], allergy)) {
         allergyList.push(allergy);
         break;
       }
     }
   }
   return allergyList;
+}
+
+// return true if ingredient is a matching string to allergy
+function ifStringMatch(ingredient, allergy) {
+  const allergyWordBase = stripEnding(allergy);
+  const pattern = '.*' + allergyWordBase + '.*';
+  const regex = new RegExp(pattern);
+  return regex.test(ingredient);
+}
+
+// strip common endings of input word
+function stripEnding(str) {
+  const strLength = str.length;
+  if (str.substring(strLength-3, strLength) == "ies") {
+    return str.substring(0, strLength-3);
+  } else if (str.substring(strLength-1, strLength) == "s" || str.substring(strLength-1, strLength == "y")) {
+    return str.substring(0, strLength-1);
+  }
 }
 
 /** Creates an element that represents an alert */
@@ -486,8 +555,8 @@ function createAlertElement(iconName, innerText) {
 
 /** Get user's tags for recipe */
 function createRecipeCardTags(recipeId, tagElements) {
-  fetch('/tag?recipeId=' + recipeId).then(response => response.json()).then((tagList) => {
-    tagList.forEach(tag => tagElements.appendChild(createTagElement(tag)));
+  fetch('/tag?recipeId=' + recipeId).then(response => response.json()).then((tagJson) => {
+    tagJson.filteredList.forEach(tag => tagElements.appendChild(createTagElement(tag)));
   });
 }
 
@@ -515,6 +584,64 @@ function createTagElement(tag) {
   return clone;
 }
 
+// post recipe information to servlet
+function postSavedRecipe(recipe) {
+  const params = new URLSearchParams();
+  params.append('recipe-id', recipe['id']);
+  params.append('recipe-title', recipe['title']);
+  params.append('image-url', recipe['image']);
+  params.append('source-url', recipe['sourceUrl']);
+  params.append('servings', recipe['servings']);
+  params.append("ready-in-minutes", recipe['readyInMinutes']);
+  if (recipe['vegetarian']) {
+    params.append('dietary-needs', "VEGETARIAN");
+  }
+  if (recipe['vegan']) {
+    params.append('dietary-needs', "VEGAN");
+  }
+  if (recipe['glutenFree']) {
+    params.append('dietary-needs', "GLUTENFREE");
+  }
+  if (recipe['dairyFree']) {
+    params.append('dietary-needs', "DAIRYFREE");
+  }
+  fetch('/saved-recipe', {method: 'POST', body: params});
+}
+
+// display recipe card element with information if saved recipe exists
+function getSavedRecipe(displayRecipesElement, recipeId) {
+  fetch('/saved-recipe?recipeId=' + recipeId).then(response => response.json()).then((savedRecipeJson) => {
+    // check if recipe information is saved in datastore
+    if (savedRecipeJson.recipeIsSaved) {
+      const savedRecipe = savedRecipeJson.savedRecipe;
+
+      // modify json to allow dietary needs to be displayed on recipe card
+      const dietaryNeeds = savedRecipe.dietaryNeeds;
+      dietaryNeeds.forEach(dietaryNeed => {
+        switch(dietaryNeed) {
+          case "VEGETARIAN":
+            savedRecipe['vegetarian'] = true;
+            break;
+          case "VEGAN":
+            savedRecipe['vegan'] = true;
+            break;
+          case "GLUTENFREE":
+            savedRecipe['glutenFree'] = true;
+            break;
+          case "DAIRYFREE":
+            savedRecipe['dairyFree'] = true;
+            break;
+          default: 
+            break;
+        }
+      });
+
+      // display recipe card using the recipe's saved information
+      displayRecipesElement.append(createRecipeElement(savedRecipe));
+      // createPictureWrap(displayRecipesElement, savedRecipe);
+    }
+  });
+}
 
 /** Reads dishname, fetches recipe information, and stores both in serssionStorage to use in display.html */
 function readUserDishChoice() {
