@@ -324,43 +324,51 @@ function getRecipeId(){
   });
 }
 
+/** Call the appropriate functions needed on-load of the body of home page */
+function loadHomePage() {
+  startSlideshow();
+  getLoginStatus();
+}
+
+/** Call the appropriate functions needed on-load of the body of display page */
+function loadDisplayPage() {
+  createNutritionElements();
+  getLoginStatus();
+}
+
 /**
   * Checks with server if user has logged in.
   * Display corresponding text and url in login section if login is true/false.
   */
 function getLoginStatus() {
   fetch('/login').then(response => response.json()).then((userInfo) => {
-    const loginStatusElement = document.getElementById('login-section');
-    loginStatusElement.innerHTML = "";
+    const loginStatusElement = document.getElementById('login-status');
+    const hoverMenuElement = document.getElementById('dropdown');
 
     if (userInfo.isLoggedIn) {
-      const logoutElement = document.createElement('a');
-      logoutElement.innerHTML = "Logout";
-      logoutElement.href = userInfo.logoutUrl;
+      const myProfileLink = document.createElement("a");
+      myProfileLink.innerText = "Edit My Profile";
+      myProfileLink.href="/profile.html";
 
-      const textElement = document.createElement('p');
-      if (userInfo.hasProfile) {
-        textElement.innerHTML = "Welcome, <strong>" + userInfo.userName + "</strong>";
-      } else {
-        textElement.innerHTML = "Welcome! Remember to create a profile!";
-      }
+      const taggedLink = document.createElement("a");
+      taggedLink.innerText = "My Tagged Recipes";
+      taggedLink.href="/board.html";
 
-      loginStatusElement.appendChild(logoutElement);
-      loginStatusElement.appendChild(textElement);
+      const logoutLink = document.createElement("a");
+      logoutLink.innerHTML = "Logout";
+      logoutLink.href = userInfo.logoutUrl;
+
+      hoverMenuElement.appendChild(myProfileLink);
+      hoverMenuElement.appendChild(taggedLink);
+      hoverMenuElement.appendChild(logoutLink);
       
     } else {
-      const loginElement = document.createElement('a');
-      loginElement.innerHTML = "Login";
-      loginElement.href = userInfo.loginUrl;
-
-      const textElement = document.createElement('p');
-      textElement.innerHTML = "Hello!";
-
-      loginStatusElement.appendChild(loginElement);
-      loginStatusElement.appendChild(textElement);
+      const loginLink = document.createElement("a");
+      loginLink.innerHTML = "Login";
+      loginLink.href = userInfo.loginUrl;
+      hoverMenuElement.appendChild(loginLink);
     }
   });
-
 }
 
 // test function for displaying recipes
@@ -464,7 +472,6 @@ function createRecipeCardAlerts(recipe, alertElements) {
     if (message.hasProfile) {
       const profile = message.profile;
       const dietaryNeeds = profile.dietaryNeeds;
-      console.log(dietaryNeeds);
       if (dietaryNeeds != null) {
         const alertContainer = document.getElementById("recipe-alert-block");
         alertContainer.innerText = "Dietary Alerts";
