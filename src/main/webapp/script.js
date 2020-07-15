@@ -139,10 +139,9 @@ function savedRecipes() {
 
 // refresh the tag selection in case tag was deleted or added
 function refreshTagNameSelection() {
-  const selectElement = document.getElementById("select-tags");
+  const selectElement = document.getElementById("select-tag");
   if (selectElement != null) {
     fetch('/tag-names').then(response => response.json()).then((tagNames) => {
-    const selectElement = document.getElementById("select-tags");
     selectElement.innerHTML = "<option value=''>All tags</option>";
     
     tagNames.forEach(tagName => {

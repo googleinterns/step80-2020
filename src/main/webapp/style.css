@@ -660,7 +660,7 @@ h1 {
   color: darkorange;
 }
 
-#select-tags {
+#select-tag {
   border-bottom: 2px solid black; 
   font-weight: bold;
   letter-spacing: .15em;
@@ -668,7 +668,7 @@ h1 {
   padding: 3px 5px;
 }
 
-#select-tags:focus, #select-tags:active {
+#select-tag:focus, #select-tag:active {
   border-bottom-color: red;
 }
 
