@@ -630,3 +630,20 @@ h1 {
   margin-top: 158px;
   text-align: center;
 }
+
+.label-options {
+  font-family: 'TypeWriter', helvetica, sans-serif;
+  font-size: 3vw;
+  padding-right: 50%;
+  color: black;
+}
+
+.radio-label {
+  padding-left: 50%;
+}
+
+#label-header {
+  font-family: 'TypeWriterBold', helvetica, sans-serif;
+  font-size: 3vw;
+  color: darkorange;
+}
