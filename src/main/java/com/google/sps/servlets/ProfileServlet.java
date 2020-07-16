@@ -59,8 +59,13 @@ public class ProfileServlet extends HttpServlet {
         String id = (String) entity.getProperty("id");
         String userName = (String) entity.getProperty("userName");
         ArrayList<String> dietaryNeedsStrings = (ArrayList<String>) entity.getProperty("dietaryNeeds");
+        if (dietaryNeedsStrings == null) {
+          dietaryNeedsStrings = new ArrayList<>();
+        }
         ArrayList<String> allergies = (ArrayList<String>) entity.getProperty("allergies");
-
+        if (allergies == null) {
+          allergies = new ArrayList<>();
+        }
         ArrayList<Profile.Diet> dietaryNeeds = new ArrayList<>();
         for (String dietString: dietaryNeedsStrings) {
           switch(dietString) {
@@ -117,9 +122,12 @@ public class ProfileServlet extends HttpServlet {
       if (userName != null) {
         entity.setProperty("userName", request.getParameter("userName"));
         String[] dietaryNeeds = request.getParameterValues("dietary-needs");
+        if (dietaryNeeds == null) {
+          dietaryNeeds = new String[0];
+        }
         entity.setProperty("dietaryNeeds", Arrays.asList(dietaryNeeds));
         
-        String[] allergies = request.getParameter("allergies").split(",");
+        String[] allergies = request.getParameterValues("allergies");
         if (allergies == null) {
           allergies = new String[0];
         }

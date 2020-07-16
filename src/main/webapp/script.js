@@ -298,7 +298,9 @@ function postProfile() {
   const dairyFree = document.getElementById("dairy-checkbox").checked;
 
   const allergiesString = document.getElementById("allergies-entry").value;
-  const allergies = allergiesString.split(",").map(allergy => allergy.toLowerCase().trim());
+  const allergies = allergiesString.split(",").map(allergy => {
+    params.append('allergies', allergy.toLowerCase().trim()); 
+  });
   const params = new URLSearchParams();
   params.append('userName', userName);
   if (vegetarian) {
@@ -313,7 +315,6 @@ function postProfile() {
   if (dairyFree) {
     params.append('dietary-needs', "DAIRYFREE");
   }
-  params.append('allergies', allergies);
 
   fetch('/profile', {method: 'POST', body: params}).then(response => response.json()).then((message) => {
     const profileStatusElement = document.getElementById('saved-profile-status');

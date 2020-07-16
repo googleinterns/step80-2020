@@ -83,7 +83,7 @@ public class TagServlet extends HttpServlet {
       }
 
       responseMap.put("filteredList", filteredList);
-      responseMap.put("tagNames", getTagNames());
+      //responseMap.put("tagNames", getTagNames());
 
     } else {
       responseMap.put("error", AUTHORIZATION_ERROR); 
