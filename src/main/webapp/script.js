@@ -51,12 +51,17 @@ function createNutritionElements() {
 
     // Populate nutrition element
     var nutritionElement = document.getElementById("nutrition-info");
-    Object.keys(dish).forEach(function(key) {
+    Object.keys(dishNutrition).forEach(function(key) {
       if (key != "recipesUsed") {
-        var node = document.createElement('div');
-        node.className = 'nutrition-element';
-        node.innerText = 'Average ' + key + ': ' + dish[key]['value'] + ' ' + dish[key]['unit'];
-        nutritionElement.appendChild(node);
+        var average = document.createElement('div');
+        average.className = 'nutrition-element-title';
+        average.innerText = 'Average ' + key + ':    ';
+        var value = document.createElement('div');
+        value.className = 'nutrition-element';
+        value.innerText = dishNutrition[key]['value'] + ' ' + dishNutrition[key]['unit'];
+        nutritionElement.appendChild(average);
+        nutritionElement.appendChild(value);
+        nutritionElement.appendChild(document.createElement('br'));
       }
     });
   });

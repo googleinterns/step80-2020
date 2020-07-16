@@ -230,13 +230,13 @@ h3 {
 
 /* Frame */
 .frame {
-  background-color: white;
+  background-color: darkseagreen;
   position: fixed;
   z-index: 990;
 }
 
 #frame-top {
-  height: 15px;
+  height: 8px;
   left: 0;
   top: 0;
   width: 100%;
@@ -246,13 +246,13 @@ h3 {
   bottom: 0;
   right: 0;
   top: 0;
-  width: 15px;
+  width: 8px;
 }
 
 #frame-bottom {
   bottom: 0;
   left: 0;
-  height: 15px;
+  height: 8px;
   width: 100%;
 }
 
@@ -260,12 +260,13 @@ h3 {
   bottom: 0;
   left: 0;
   top: 0;
-  width: 15px;
+  width: 8px;
 }
 
 /* Navigation Bar */
 .navbar {
   background: white;
+  border-bottom: 5px double darkseagreen;
   height: 138px;
   left: 0;
   margin-bottom: 20px;
@@ -286,7 +287,7 @@ h3 {
   float: left;
   font-family: 'Massenet', helvetica, sans-serif;
   font-size: 50px;
-  color: black;
+  color: darkorange;
   position: static;
   text-decoration: none;
   top: auto;
@@ -348,7 +349,7 @@ h3 {
 }
 
 .navbar-item a {
-  color:black;
+  color:darkorange;
   float: left;
   margin-right: 1em;
   padding-left: 0;
@@ -358,7 +359,7 @@ h3 {
 }
 
 a:hover {
-  color: orange;
+  color: #bfd9bf;
 }
 
 /* Homepage general formatting */
@@ -386,11 +387,15 @@ a:hover {
   -webkit-animation-iteration-count: infinite;
 }
 
+.empty-container {
+  padding-bottom: 40%;
+}
+
 .scroller2 {
   color: orange;
   cursor: pointer;
-  margin-left: 50%;
-  position: relative;
+  left: 50%;
+  position: absolute;
   -webkit-animation-duration: 2.5s;
   animation-duration: 2.5s;
   -webkit-animation-fill-mode: both;
@@ -414,6 +419,12 @@ h1 {
   position: absolute;
   top: 75%;
   transform: translate(-50%, -50%);
+}
+
+h2 {
+  font-family: 'TypeWriterBold', helvetica, sans-serif;
+  font-size: 30px;
+  color: darkorange;
 }
 
 .paint-stroke {
@@ -538,10 +549,8 @@ h1 {
   font-size:50px;
   left: 50%;
   letter-spacing: 3px;
-  padding-top: 40%;
   position: absolute;
   text-align: center;
-  text-decoration: underline;
   text-transform: uppercase;
   transform: translate(-50%, -50%);
 }
@@ -550,9 +559,18 @@ h1 {
   font-family: 'TypeWriter', helvetica, sans-serif;
   font-size: 30px;
   margin-bottom: 10%;
-  margin-top: 40%;
+  margin-top: 10%;
   position: relative;
   text-align: center;
+}
+
+.nutrition-element-title {
+  display: inline-block;
+  font-weight: bold;
+}
+
+.nutrition-element {
+  display: inline-block;
 }
 
 /* Recipe Image Gallery */
@@ -561,8 +579,9 @@ h1 {
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, 1fr);
   grid-gap: 15px;
+  margin-top: 55%;
+  padding-bottom: 10%;
   position: relative;
-  margin-top: 50%;
 }
 
 .dish-image-wrap {
