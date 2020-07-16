@@ -51,11 +51,9 @@ import java.util.Arrays;
 @RunWith(MockitoJUnitRunner.class)
 public final class ProfileServletTest {
   private final LocalServiceTestHelper helper =
-      new LocalServiceTestHelper(new LocalUserServiceTestConfig()).setEnvAuthDomain("gmail.com")
-          .setEnvEmail("test@gmail.com")
-          .setEnvAttributes(
-              ImmutableMap.of(
-                  "com.google.appengine.api.users.UserService.user_id_key", "123"));
+    new LocalServiceTestHelper(new LocalUserServiceTestConfig()).setEnvAuthDomain("gmail.com")
+      .setEnvEmail("test@gmail.com")
+      .setEnvAttributes(ImmutableMap.of("com.google.appengine.api.users.UserService.user_id_key", "123"));
   
   @Mock private ProfileServlet servlet;
   @Mock private HttpServletRequest request;
@@ -127,9 +125,8 @@ public final class ProfileServletTest {
   @Test
   public void getProfileHasNoProfile() throws IOException, ServletException, ParseException {
     helper.setEnvIsLoggedIn(true);
-    helper.setEnvEmail("test2@gmail.com").setEnvAttributes(
-      ImmutableMap.of(
-        "com.google.appengine.api.users.UserService.user_id_key", "111"));
+    helper.setEnvEmail("test2@gmail.com")
+      .setEnvAttributes(ImmutableMap.of("com.google.appengine.api.users.UserService.user_id_key", "111"));
     helper.setUp();
 
     StringWriter sw = new StringWriter();
@@ -147,10 +144,8 @@ public final class ProfileServletTest {
 
   @Test
   public void onlyUsernameProfile() throws IOException, ServletException, ParseException {
-    helper.setEnvIsLoggedIn(true);
-    helper.setEnvAttributes(
-      ImmutableMap.of(
-        "com.google.appengine.api.users.UserService.user_id_key", "123"));
+    helper.setEnvIsLoggedIn(true)
+      .setEnvAttributes(ImmutableMap.of("com.google.appengine.api.users.UserService.user_id_key", "123"));
     helper.setUp();
 
     when(request.getParameter("userName")).thenReturn("testUserName");
