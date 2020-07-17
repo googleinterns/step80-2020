@@ -65,8 +65,14 @@ public class SavedRecipeServlet extends HttpServlet {
       ArrayList<String> dietaryNeedsStrings = (ArrayList<String>) entity.getProperty("dietaryNeeds");
       dietaryNeedsStrings = nullToArrayList(dietaryNeedsStrings);
 
+      ArrayList<String> ingredientNamesStrings = (ArrayList<String>) entity.getProperty("ingredientNames");
+      ingredientNamesStrings = nullToArrayList(ingredientNamesStrings);
+      
       // convert string to Diet enum because datastore stores dietaryNeeds as a list of strings
       ArrayList<SavedRecipe.Diet> dietaryNeeds = new ArrayList<>();
+      if(dietaryNeedsStrings == null) {
+        dietaryNeedsStrings = new ArrayList<String>();
+      }
       for (String dietString: dietaryNeedsStrings) {
         switch(dietString) {
           case "VEGETARIAN":
@@ -85,8 +91,10 @@ public class SavedRecipeServlet extends HttpServlet {
         }
       }
       SavedRecipe savedRecipeObject = SavedRecipe.builder().setId(recipeId).setTitle(title).
-        setImage(imageUrl).setSourceUrl(sourceUrl).setServings(servings).setReadyInMinutes(readyInMinutes).setDietaryNeeds(dietaryNeeds).build();
-          
+        setImage(imageUrl).setSourceUrl(sourceUrl).setServings(servings)
+        .setReadyInMinutes(readyInMinutes).setDietaryNeeds(dietaryNeeds)
+        .setIngredientNames(ingredientNamesStrings).build();
+        
       responseMap.put("savedRecipe", savedRecipeObject);
       responseMap.put("recipeIsSaved", true);
     }
@@ -124,8 +132,11 @@ public class SavedRecipeServlet extends HttpServlet {
       Long readyInMinutes = strToLong(request.getParameter("ready-in-minutes"));
       entity.setProperty("readyInMinutes", readyInMinutes);
 
-      String[] dietaryNeeds = request.getParameterValues("dietary-needs");
-      entity.setProperty("dietaryNeeds", convertToList(dietaryNeeds));
+      String[] dietaryNeeds = retrieveLists(request, "dietary-needs");
+      entity.setProperty("dietaryNeeds", Arrays.asList(dietaryNeeds));
+
+      String[] ingredientNames = retrieveLists(request, "ingredient-names");
+      entity.setProperty("ingredientNames", Arrays.asList(ingredientNames));
     
       datastore.put(entity);
     } else {
@@ -173,5 +184,13 @@ public class SavedRecipeServlet extends HttpServlet {
       return new Long(0);
     }
     return num;
+  }
+  
+  String[] retrieveLists(HttpServletRequest request, String query) {
+    String[] tempList = request.getParameterValues(query);
+    if(tempList == null) {
+      tempList = new String[0];
+    }
+    return tempList;
   }
 }

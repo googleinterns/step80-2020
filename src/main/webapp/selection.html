@@ -15,22 +15,26 @@
     <div id="frame-left" class="frame"></div>
     <div class="navbar">
       <div class="container">
-        <a class="navbar-title" href="profile.html">Forked</a>
+        <a class="navbar-title" href="index.html">Forked</a>
         <div class="navbar-menu-container">
           <ul class="navbar-menu">
-            <li class="navbar-item"><a href="index.html">Profile</a></li>
+            <li class="navbar-item" id="login-status">
+              <a href="profile.html">My Profile</a>
+              <div class="dropdown-content" id="dropdown"></div>
+            </li>
           </ul>
         </div>
       </div>
     </div>
     <div id="selection">
-        <form action= "javascript:readUserDishChoice()" id="best-fit-choice" name="dishFitChoice">
-            <input type="radio" id="first-option" name="labelFitChoice" value="first-option">
-            <label id="first-option-label" for="first-option">First option</label><br>
-            <input type="radio" id="second-option" name="labelFitChoice" value="second-option">
-            <label id="second-option-label" for="second-option">Second option</label><br>
-            <input type="submit" value="Submit">
-          </form>
+      <form action= "javascript:readUserDishChoice()" id="best-fit-choice" name="dishFitChoice">
+        <h2 id="label-header">Choose The label that best fits your dish!</h1>
+        <input type="radio" class="radio-label" id="first-option" name="labelFitChoice" value="first-option">
+        <label id="first-option-label" class="label-options" for="first-option">First option</label><br>
+        <input type="radio" class="radio-label" id="second-option" name="labelFitChoice" value="second-option">
+        <label id="second-option-label" class="label-options"for="second-option">Second option</label><br>
+        <input type="submit" class="upload" value="Submit">
+      </form>
     </div>
   </body>
 </html>
