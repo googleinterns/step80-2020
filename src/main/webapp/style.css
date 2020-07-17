@@ -422,7 +422,6 @@ h1 {
 
 /* About Box */
 #about {
-  z-index: 1;
   left: 50%;
   padding-bottom: 15%;
   position: absolute;
@@ -430,6 +429,7 @@ h1 {
   transform: translateX(-50%);
   top: 1500px;
   width: 70%;
+  z-index: 1;
 }
 
 .paint-stroke {
@@ -637,7 +637,29 @@ h1 {
   animation-name: bounce;
 }
 
-#select-tags {
+#selection {
+  margin-top: 158px;
+  text-align: center;
+}
+
+.label-options {
+  font-family: 'TypeWriter', helvetica, sans-serif;
+  font-size: 3vw;
+  padding-right: 50%;
+  color: black;
+}
+
+.radio-label {
+  padding-left: 50%;
+}
+
+#label-header {
+  font-family: 'TypeWriterBold', helvetica, sans-serif;
+  font-size: 3vw;
+  color: darkorange;
+}
+
+#select-tag {
   border-bottom: 2px solid black; 
   font-weight: bold;
   letter-spacing: .15em;
@@ -645,7 +667,7 @@ h1 {
   padding: 3px 5px;
 }
 
-#select-tags:focus, #select-tags:active {
+#select-tag:focus, #select-tag:active {
   border-bottom-color: red;
 }
 

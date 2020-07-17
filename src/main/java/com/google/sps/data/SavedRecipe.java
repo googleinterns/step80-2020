@@ -27,6 +27,7 @@ public abstract class SavedRecipe {
   public abstract long getServings();
   public abstract long getReadyInMinutes();
   public abstract ArrayList<Diet> getDietaryNeeds();
+  public abstract ArrayList<String> getIngredientNames();
   public static Builder builder() {
     return new AutoValue_SavedRecipe.Builder();
   }
@@ -45,6 +46,7 @@ public abstract class SavedRecipe {
       * @param servings The servings size of the dish
       * @param readyInMinutes THe time that it takes to cook the dish
       * @param dietaryNeeds The dietary needs of the recipe (ex: vegetarian, vegan)
+      * @param ingredientNames The ingredients of the recipe
       */
     public abstract Builder setId(long recipeId);
     public abstract Builder setTitle(String title);
@@ -53,6 +55,7 @@ public abstract class SavedRecipe {
     public abstract Builder setServings(long servings);
     public abstract Builder setReadyInMinutes(long readyInMunutes);
     public abstract Builder setDietaryNeeds(ArrayList<Diet> dietaryNeeds);
+    public abstract Builder setIngredientNames(ArrayList<String> ingredientNames);
     public abstract SavedRecipe build();
   }
 }
