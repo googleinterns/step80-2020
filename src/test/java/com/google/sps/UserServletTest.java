@@ -47,8 +47,11 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 /** Tests for UserServlet */
+// maybe move user tests to ProfileServletTest to allow profile to be created before IsLoggedInHasProfile() runs
+// to remove dependency on having "mvn test" run at least once before test passes
 @RunWith(MockitoJUnitRunner.class)
 public final class UserServletTest {
+  // helper to mimic user authentication
   private final LocalServiceTestHelper helper =
     new LocalServiceTestHelper(new LocalUserServiceTestConfig()).setEnvAuthDomain("gmail.com")
       .setEnvEmail("test@gmail.com")
@@ -72,6 +75,7 @@ public final class UserServletTest {
 
   @Test
   public void IsNotLoggedIn() throws IOException, ServletException, ParseException {
+    // User is not logged in
     helper.setEnvIsLoggedIn(false);
 
     StringWriter sw = new StringWriter();
@@ -84,10 +88,12 @@ public final class UserServletTest {
     JSONParser parser = new JSONParser();
     JSONObject json = (JSONObject) parser.parse(result);
     
+    assertFalse((boolean) json.get("isLoggedIn"));
   }
   
   @Test
   public void IsLoggedInHasProfile() throws IOException, ServletException, ParseException {
+    // User is logged in and has profile
     helper.setEnvIsLoggedIn(true);
 
     StringWriter sw = new StringWriter();
@@ -108,6 +114,7 @@ public final class UserServletTest {
 
   @Test
   public void IsLoggedInHasNoProfile() throws IOException, ServletException, ParseException {
+    // User is logged in but doesn't have profile
     helper.setEnvIsLoggedIn(true);
     helper.setEnvEmail("test2@gmail.com")
       .setEnvAttributes(ImmutableMap.of("com.google.appengine.api.users.UserService.user_id_key", "111"));
@@ -127,6 +134,4 @@ public final class UserServletTest {
     assertEquals("test2@gmail.com", json.get("email"));
     assertFalse((boolean) json.get("hasProfile"));
   }
-
 }
-

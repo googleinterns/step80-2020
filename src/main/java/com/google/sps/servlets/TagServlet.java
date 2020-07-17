@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.HashMap;
 import org.json.simple.JSONObject;
@@ -53,21 +54,9 @@ public class TagServlet extends HttpServlet {
     String json;
 
     String inputTagName = request.getParameter("tagName");
-    String recipeIdString = request.getParameter("recipeId");
-    Long inputRecipeId = null;
-    if (recipeIdString != null) {
-      inputRecipeId = Long.parseLong(recipeIdString);
-    }
-    
+    Long inputRecipeId = strToLong(request.getParameter("recipeId"));
     if (userService.isUserLoggedIn()) {
-      Query query = new Query("TagRecipePair")
-        .setFilter(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userService.getCurrentUser().getUserId()));
-      if (inputTagName != null && !inputTagName.equals("")) {
-        query.setFilter(new Query.FilterPredicate("tagName", Query.FilterOperator.EQUAL, inputTagName));
-      }
-      if (inputRecipeId != null) {
-        query.setFilter(new Query.FilterPredicate("recipeId", Query.FilterOperator.EQUAL, inputRecipeId));
-      }
+      Query query = getQueryWithFilters(inputTagName, inputRecipeId, userService);
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       PreparedQuery results = datastore.prepare(query);
 
@@ -83,7 +72,6 @@ public class TagServlet extends HttpServlet {
       }
 
       responseMap.put("filteredList", filteredList);
-      //responseMap.put("tagNames", getTagNames());
 
     } else {
       responseMap.put("error", AUTHORIZATION_ERROR); 
@@ -92,6 +80,29 @@ public class TagServlet extends HttpServlet {
     json = gson.toJson(responseMap);
     response.setContentType("application/json");
     response.getWriter().println(json);
+  }
+
+  // helper function for creating query with a combination of filters
+  public Query getQueryWithFilters(String tagName, Long recipeId, UserService userService) {
+    List<Query.Filter> filterList = new ArrayList<>();
+    String userId = userService.getCurrentUser().getUserId();
+
+    // set up filters for query
+    filterList.add(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userId));
+    if (tagName != null && !tagName.equals("")) {
+      filterList.add(new Query.FilterPredicate("tagName", Query.FilterOperator.EQUAL, tagName));
+    }
+    if (recipeId != null) {
+      filterList.add(new Query.FilterPredicate("recipeId", Query.FilterOperator.EQUAL, recipeId));
+    }
+
+    Query query = new Query("TagRecipePair");
+    if (filterList.size() > 1) { // use composite for multiple filters
+      query.setFilter(new Query.CompositeFilter(Query.CompositeFilterOperator.AND, filterList));
+    } else {
+      query.setFilter(filterList.get(0));
+    }
+    return query;
   }
 
   /** Add a TagRecipePair to datastore which represents a user's tag on a recipe */
@@ -110,17 +121,27 @@ public class TagServlet extends HttpServlet {
       
       String tagName = request.getParameter("tag-name");
       entity.setProperty("tagName", tagName);
-
-      long recipeId = Long.parseLong(request.getParameter("recipe-id"));
+      
+      Long recipeId = strToLong(request.getParameter("recipe-id"));
       entity.setProperty("recipeId", recipeId);
       
-      datastore.put(entity);
+      if (tagName != null && recipeId != null) {
+        datastore.put(entity);
+      }
     }
 
     Gson gson = new Gson();   
     String json = gson.toJson(responseMap);
     response.setContentType("application/json");
     response.getWriter().println(json);
+  }
+
+  public Long strToLong(String str) {
+    if (str == null) {
+      return null;
+    } else {
+      return Long.parseLong(str);
+    }
   }
 
 }
