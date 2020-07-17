@@ -37,8 +37,8 @@ import java.io.UnsupportedEncodingException;
 /** Servlet to take in dish name and return bulk recipe infomation */
 @WebServlet("/recipeInfo")
 public class SpoonacularCombinedServlet extends HttpServlet {
-  private static final String SPOONACULAR_API_KEY = "https://api.spoonacular.com/recipes";
-  private static final String SPOONACULAR_API_PREFIX = "cd2269d31cb94065ad1e73ce292374a5";
+  private static final String SPOONACULAR_API_PREFIX = "https://api.spoonacular.com/recipes";
+  private static final String SPOONACULAR_API_KEY = "cd2269d31cb94065ad1e73ce292374a5";
   private static final String API_QUERY_NUMBER = "6";
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

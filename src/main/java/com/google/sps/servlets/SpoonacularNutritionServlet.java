@@ -44,11 +44,18 @@ public class SpoonacularNutritionServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String title = request.getParameter("dishName");
+    System.out.println(title);
     Client client = ClientBuilder.newClient();
-    title = URLEncoder.encode(title);
+    try {
+      title = URLEncoder.encode(title);
+    }
+    catch (Exception e) {
+      System.out.println(e);
+    }
     WebTarget target = client.target(String.format("%s?title=%s&apiKey=%s", spoonacularPrefix, title, spoonacularAPIKey));
     try {
       String recipeListJSONString = target.request(MediaType.APPLICATION_JSON).get(String.class);
+      System.out.println(recipeListJSONString);
       Gson gson = new Gson();
       response.setContentType("application/json");
       response.getWriter().println(gson.toJson(recipeListJSONString));

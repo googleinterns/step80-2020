@@ -137,12 +137,12 @@ public class SavedRecipeServlet extends HttpServlet {
     
     datastore.put(entity);
   }
-}
-
-String[] retrieveLists(HttpServletRequest request, String query) {
-  String[] tempList = request.getParameterValues(query);
-  if(tempList == null) {
-    tempList = new String[0];
+  String[] retrieveLists(HttpServletRequest request, String query) {
+    String[] tempList = request.getParameterValues(query);
+    if(tempList == null) {
+      tempList = new String[0];
+    }
+    return tempList;
   }
-  return tempList;
+
 }

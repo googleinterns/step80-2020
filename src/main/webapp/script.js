@@ -570,7 +570,7 @@ function createAlertElement(iconName, innerText) {
 
 /** Get user's tags for recipe */
 function createRecipeCardTags(recipeId, tagElements) {
-  fetch('/tag?recipeId=' + recipeId).then(response => response.json()).then((tagJson) => {
+  fetch('/tag?recipeId=' + recipeId).then(response => response.json()).then((tagJson) => { 
     tagJson.filteredList.forEach(tag => tagElements.appendChild(createTagElement(tag)));
   });
 }
