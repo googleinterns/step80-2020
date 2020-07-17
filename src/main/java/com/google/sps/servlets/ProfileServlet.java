@@ -36,6 +36,7 @@ import org.json.simple.JSONObject;
 
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.List;
 
 /** Servlet that posts and gets user profiles in Datastore */
 @WebServlet("/profile")
@@ -59,13 +60,11 @@ public class ProfileServlet extends HttpServlet {
         String id = (String) entity.getProperty("id");
         String userName = (String) entity.getProperty("userName");
         ArrayList<String> dietaryNeedsStrings = (ArrayList<String>) entity.getProperty("dietaryNeeds");
-        if (dietaryNeedsStrings == null) {
-          dietaryNeedsStrings = new ArrayList<>();
-        }
+        dietaryNeedsStrings = nullToArrayList(dietaryNeedsStrings);
+        
         ArrayList<String> allergies = (ArrayList<String>) entity.getProperty("allergies");
-        if (allergies == null) {
-          allergies = new ArrayList<>();
-        }
+        allergies = nullToArrayList(allergies);
+        
         ArrayList<Profile.Diet> dietaryNeeds = new ArrayList<>();
         for (String dietString: dietaryNeedsStrings) {
           switch(dietString) {
@@ -122,16 +121,10 @@ public class ProfileServlet extends HttpServlet {
       if (userName != null) {
         entity.setProperty("userName", request.getParameter("userName"));
         String[] dietaryNeeds = request.getParameterValues("dietary-needs");
-        if (dietaryNeeds == null) {
-          dietaryNeeds = new String[0];
-        }
-        entity.setProperty("dietaryNeeds", Arrays.asList(dietaryNeeds));
+        entity.setProperty("dietaryNeeds", convertToList(dietaryNeeds));
         
         String[] allergies = request.getParameterValues("allergies");
-        if (allergies == null) {
-          allergies = new String[0];
-        }
-        entity.setProperty("allergies", Arrays.asList(allergies));
+        entity.setProperty("allergies", convertToList(allergies));
       
         // The put() function automatically inserts new data or updates existing data based on id
         datastore.put(entity);
@@ -145,5 +138,20 @@ public class ProfileServlet extends HttpServlet {
     String json = gson.toJson(responseMap);
     response.setContentType("application");
     response.getWriter().println(json);
+  }
+
+  public List<String> convertToList(String[] valuesList) {
+    if (valuesList == null) {
+      return new ArrayList<>();
+    } else {
+      return Arrays.asList(valuesList);
+    }
+  }
+
+  public ArrayList<String> nullToArrayList(ArrayList<String> valuesList) {
+    if (valuesList == null) {
+      return new ArrayList<>();
+    }
+    return valuesList;
   }
 }

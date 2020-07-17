@@ -47,7 +47,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import java.util.Arrays;
 
-/** */
+/** Tests for ProfileServlet */
 @RunWith(MockitoJUnitRunner.class)
 public final class ProfileServletTest {
   private final LocalServiceTestHelper helper =
