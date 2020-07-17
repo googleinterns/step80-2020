@@ -27,23 +27,28 @@
       <h2>Saved Recipes</h2>
       <form class="content" action="javascript:savedRecipes()" method="POST">
         <label for="tags">Search recipe by tag:</label>
-        <select name="tags" id="select-tags">
+        <select name="tags" id="select-tag">
           <option value="">All tags</option>
         </select>
         <input type="submit" id="select-button"/>
       </form>
-      <div id="temp-display-tags-json"></div>
       <div id="display-recipes"> </div>
+      <div id="card-gallery"> </div>
     </div>
     <template id="recipe-template">
       <div class="recipe-card">
-        <p class="recipe-card-title"></p>
+        <a class="recipe-card-title"></a>
+        <i class="icon-remove-sign icon-2x"></i>
         <div class="recipe-card-table">
           <div class="recipe-card-block">
             <img class="recipe-image"></img>
-            <br/><a></a>
+            <br/>
           </div>
-          <div class="recipe-card-block"> </div>
+          <div class="recipe-card-block">
+            <div class="recipe-card-servings"> </div>
+            <div class="recipe-card-time"> </div>
+            <div id="recipe-alert-block"> </div>
+          </div>
         </div>
         <div class="recipe-card-tags"></div>
         <div class="recipe-card-table">
