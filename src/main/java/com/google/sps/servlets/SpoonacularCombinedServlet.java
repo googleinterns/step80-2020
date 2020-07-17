@@ -34,6 +34,13 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.io.UnsupportedEncodingException;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+
 /** Servlet to take in dish name and return bulk recipe infomation */
 @WebServlet("/recipeInfo")
 public class SpoonacularCombinedServlet extends HttpServlet {
