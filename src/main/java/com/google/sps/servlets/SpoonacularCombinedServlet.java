@@ -38,10 +38,17 @@ import java.io.UnsupportedEncodingException;
 @WebServlet("/recipeInfo")
 public class SpoonacularCombinedServlet extends HttpServlet {
   private static final String SPOONACULAR_API_PREFIX = "https://api.spoonacular.com/recipes";
-  private static final String SPOONACULAR_API_KEY = "cd2269d31cb94065ad1e73ce292374a5";
   private static final String API_QUERY_NUMBER = "6";
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Query query =
+      new Query("apiKey")
+        .setFilter(new Query.FilterPredicate("keyName", Query.FilterOperator.EQUAL, "spoonacular"));
+    PreparedQuery results = datastore.prepare(query);
+    Entity entity = results.asSingleEntity();
+    String spoonacularKey = (String) entity.getProperty("key");
+    
     String query = request.getParameter("dishName");
     Client client = ClientBuilder.newClient();
     try {
@@ -50,7 +57,7 @@ public class SpoonacularCombinedServlet extends HttpServlet {
       System.out.println(e);
     }
     String targetString = String.format("%s/search?query=%s&number=%s&includeNutririon=true&apiKey=%s", 
-      SPOONACULAR_API_PREFIX, query, API_QUERY_NUMBER, SPOONACULAR_API_KEY);
+      SPOONACULAR_API_PREFIX, query, API_QUERY_NUMBER, spoonacularKey);
     WebTarget target = client.target(targetString);
     try {
       String recipeListJSONString = target.request(MediaType.APPLICATION_JSON).get(String.class);

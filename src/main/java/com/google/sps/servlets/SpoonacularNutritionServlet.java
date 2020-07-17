@@ -34,17 +34,30 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.io.UnsupportedEncodingException;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+
 /** Servlet to take in dish name and return bulk recipe infomation */
 @WebServlet("/dishNutrition")
 public class SpoonacularNutritionServlet extends HttpServlet {
   private static String spoonacularPrefix = "https://api.spoonacular.com/recipes/guessNutrition";
-  private static String spoonacularAPIKey = "cd2269d31cb94065ad1e73ce292374a5";
 
   /** Takes in dishName parameter and uses spoonacular's guess nutrition to return nutrition information about the dish*/
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String title = request.getParameter("dishName");
-    System.out.println(title);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Query query =
+      new Query("apiKey")
+        .setFilter(new Query.FilterPredicate("keyName", Query.FilterOperator.EQUAL, "spoonacular"));
+    PreparedQuery results = datastore.prepare(query);
+    Entity entity = results.asSingleEntity();
+    String spoonacularKey = (String) entity.getProperty("key");
+
+    String title = (String) request.getParameter("dishName");
     Client client = ClientBuilder.newClient();
     try {
       title = URLEncoder.encode(title);
@@ -52,7 +65,7 @@ public class SpoonacularNutritionServlet extends HttpServlet {
     catch (Exception e) {
       System.out.println(e);
     }
-    WebTarget target = client.target(String.format("%s?title=%s&apiKey=%s", spoonacularPrefix, title, spoonacularAPIKey));
+    WebTarget target = client.target(String.format("%s?title=%s&apiKey=%s", spoonacularPrefix, title, spoonacularKey));
     try {
       String recipeListJSONString = target.request(MediaType.APPLICATION_JSON).get(String.class);
       System.out.println(recipeListJSONString);
