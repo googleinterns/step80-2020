@@ -89,8 +89,10 @@ public class SavedRecipeServlet extends HttpServlet {
         }
       }
       SavedRecipe savedRecipeObject = SavedRecipe.builder().setId(recipeId).setTitle(title).
-        setImage(imageUrl).setSourceUrl(sourceUrl).setServings(servings).setReadyInMinutes(readyInMinutes).setDietaryNeeds(dietaryNeeds).setIngredientNames(ingredientNamesStrings).build();
-          
+        setImage(imageUrl).setSourceUrl(sourceUrl).setServings(servings)
+        .setReadyInMinutes(readyInMinutes).setDietaryNeeds(dietaryNeeds)
+        .setIngredientNames(ingredientNamesStrings).build();
+        
       responseMap.put("savedRecipe", savedRecipeObject);
       responseMap.put("recipeIsSaved", true);
     }
@@ -127,18 +129,20 @@ public class SavedRecipeServlet extends HttpServlet {
     long readyInMinutes = Long.parseLong(request.getParameter("ready-in-minutes"));
     entity.setProperty("readyInMinutes", readyInMinutes);
 
-    String[] dietaryNeeds = request.getParameterValues("dietary-needs");
-    if(dietaryNeeds == null) {
-      dietaryNeeds = new String[0];
-    }
+    String[] dietaryNeeds = retrieveLists(request, "dietary-needs");
     entity.setProperty("dietaryNeeds", Arrays.asList(dietaryNeeds));
 
-    String[] ingredientNames = request.getParameterValues("ingredient-names");
-    if(ingredientNames == null) {
-      ingredientNames = new String[0];
-    }
+    String[] ingredientNames = retrieveLists(request, "ingredient-names");
     entity.setProperty("ingredientNames", Arrays.asList(ingredientNames));
     
     datastore.put(entity);
   }
+}
+
+String[] retrieveLists(HttpServletRequest request, String query) {
+  String[] tempList = request.getParameterValues(query);
+  if(tempList == null) {
+    tempList = new String[0];
+  }
+  return tempList;
 }

@@ -37,8 +37,8 @@ import java.io.UnsupportedEncodingException;
 /** Servlet to take in dish name and return bulk recipe infomation */
 @WebServlet("/recipeInfo")
 public class SpoonacularCombinedServlet extends HttpServlet {
-  private static final String spoonacularPrefix = "https://api.spoonacular.com/recipes";
-  private static final String spoonacularAPIKey = "cd2269d31cb94065ad1e73ce292374a5";
+  private static final String SPOONACULAR_API_KEY = "https://api.spoonacular.com/recipes";
+  private static final String SPOONACULAR_API_PREFIX = "cd2269d31cb94065ad1e73ce292374a5";
   private static final String API_QUERY_NUMBER = "6";
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -46,18 +46,19 @@ public class SpoonacularCombinedServlet extends HttpServlet {
     Client client = ClientBuilder.newClient();
     try {
       query = URLEncoder.encode(query);
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       System.out.println(e);
     }
-    WebTarget target = client.target(spoonacularPrefix + "/search?query=" + query + "&number=" + API_QUERY_NUMBER + "&includeNutrition=true&apiKey=" + spoonacularAPIKey);
+    String targetString = String.format("%s/search?query=%s&number=%s&includeNutririon=true&apiKey=%s", 
+      SPOONACULAR_API_PREFIX, query, API_QUERY_NUMBER, SPOONACULAR_API_KEY);
+    WebTarget target = client.target(targetString);
     try {
       String recipeListJSONString = target.request(MediaType.APPLICATION_JSON).get(String.class);
       JSONObject recipeJson = new JSONObject(recipeListJSONString);
       JSONArray recipeListJson = new JSONArray(recipeJson.get("results").toString());
       String recipeList = "";
       Boolean isFirstinList = true;
-      for(Object recipeInfoObject: recipeListJson){
+      for(Object recipeInfoObject: recipeListJson) {
         JSONObject recipeInfoJson = (JSONObject)recipeInfoObject;
         if(isFirstinList) {
           recipeList = recipeList + recipeInfoJson.get("id"); 
@@ -66,7 +67,9 @@ public class SpoonacularCombinedServlet extends HttpServlet {
           recipeList = recipeList + "," + recipeInfoJson.get("id"); 
         }
       }
-      target = client.target(spoonacularPrefix + "/informationBulk?number=2&apiKey=" + spoonacularAPIKey + "&ids=" + recipeList);
+      targetString = String.format("%s/informationBulk?includeNutrition=true&apiKey=%s&ids=%s", 
+        SPOONACULAR_API_PREFIX, SPOONACULAR_API_KEY, recipeList);
+      target = client.target(targetString);
       String recipeInformationString = target.request(MediaType.APPLICATION_JSON).get(String.class);
       Gson gson = new Gson();
       response.setContentType("application/json");
