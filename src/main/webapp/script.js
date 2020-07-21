@@ -55,7 +55,7 @@ function createNutritionElements() {
       if (key != "recipesUsed") {
         var average = document.createElement('div');
         average.className = 'nutrition-element-title';
-        average.innerText = 'Average ' + key + ':    ';
+        average.innerText = 'Average ' + key + ':';
         var value = document.createElement('div');
         value.className = 'nutrition-element';
         value.innerText = dishNutrition[key]['value'] + ' ' + dishNutrition[key]['unit'];
@@ -456,26 +456,68 @@ function createRecipeElement(recipe, pictureWrap) {
   const timeElement = clone.querySelector(".recipe-card-time");
   timeElement.innerHTML = "Preparation Time: " + recipe["readyInMinutes"] + " minutes";
   
-  const tagElements = clone.querySelector(".recipe-card-tags");
-  createRecipeCardTags(recipe['id'], tagElements);
+  const tagElements = clone.querySelector(".container");
+  const carouselId = clone.querySelector("#myCarousel");
+  carouselId.id = "myCarousel" + recipe['id'];
+
+  const carouselLinks = clone.querySelector(".carousel-indicators");
+  console.log(carouselLinks.className);
+  const carousel = clone.querySelector(".carousel-inner");
+  createRecipeCardTags(recipe['id'], carouselLinks, carousel);
+
+  const carouselLeft = clone.querySelector(".left");
+  const carouselRight = clone.querySelector(".right");
+  carouselLeft.href = "#myCarousel" + recipe['id'];
+  carouselRight.href = "#myCarousel" + recipe['id'];
 
   const tagTextElement = clone.querySelector(".tag-input");
+  const label = clone.querySelector(".form-label");
+  tagTextElement.addEventListener('click', () => {
+    label.style.display = "none";
+  });
 
   const addTagElement = clone.querySelector(".add-tag-button");
   addTagElement.addEventListener('click', () => {
-    const newTagName = (tagTextElement.value).trim();
-    if (newTagName != "") {
-      const params = new URLSearchParams();
-      params.append('tag-name', newTagName);
-      params.append('recipe-id', recipe['id']);
+    fetch('/login').then(response => response.json()).then((userInfo) => {
+      if (!userInfo.isLoggedIn) {
+        const loginPopup = document.createElement('div');
+        loginPopup.className = "login-full-page";
 
-      fetch('/tag', {method: 'POST', body: params}).then(response => response.json()).then((tagList) => {
-        tagElements.innerHTML = "";
-        createRecipeCardTags(recipe['id'], tagElements);
-        postSavedRecipe(recipe);
-        refreshTagNameSelection();
-      });
-    }
+        loginPopup.onclick = function() {
+          loginPopup.style.display = "none";
+        }
+
+        const loginPopupText = document.createElement('h6');
+        loginPopupText.className = "login-full-text";
+        loginPopupText.innerText = "Please login to add tags and view nutrition information";
+        
+        const loginLink = document.createElement('a');
+        loginLink.className = "login-full-link upload";
+        loginLink.innerText = "LOGIN";
+        loginLink.href = userInfo.loginUrl;
+
+        document.body.append(loginPopup);
+        loginPopup.append(loginPopupText);
+        loginPopup.append(loginLink);
+        document.body.style.overflow = "hidden";
+        document.getElementById("display-recipes").style.opacity = "0.2";
+      } else {
+        const newTagName = (tagTextElement.value).trim();
+        if (newTagName != "") {
+          const params = new URLSearchParams();
+          params.append('tag-name', newTagName);
+          params.append('recipe-id', recipe['id']);
+
+          fetch('/tag', {method: 'POST', body: params}).then(response => response.json()).then((tagList) => {
+            carouselLinks.innerHTML = "";
+            carousel.innerHTML="";
+            createRecipeCardTags(recipe['id'], carouselLinks, carousel);
+            postSavedRecipe(recipe);
+            refreshTagNameSelection();
+          });
+        }
+      }
+    });
   });
   document.getElementById("card-gallery").appendChild(clone);
   pictureWrap.onclick = function() {
@@ -592,11 +634,46 @@ function createAlertElement(iconName, innerText) {
   return clone;
 }
 
+function createElementFromHTML(htmlString) {
+  var div = document.createElement('div');
+  div.innerHTML = htmlString.trim();
+
+  // Change this to div.childNodes to support multiple top-level nodes
+  return div.firstChild; 
+}
+
 /** Get user's tags for recipe */
-function createRecipeCardTags(recipeId, tagElements) {
+function createRecipeCardTags(recipeId, carouselLinks, carousel) {
   fetch('/tag?recipeId=' + recipeId).then(response => response.json()).then((tagJson) => {
-    tagJson.filteredList.forEach(tag => tagElements.appendChild(createTagElement(tag)));
+    var pages = Math.floor(tagJson.filteredList.length / 4);
+    var remainder = tagJson.filteredList.length % 4;
+    if (remainder != 0) {
+      pages++;
+    }
+
+    for (i = 0; i < pages; i++) {
+      var slice = tagJson.filteredList.slice(i*4, (i+1)*4);
+      if (i == 0) {
+        carouselLinks.appendChild(createElementFromHTML('<li data-target="#myCarousel' + recipeId + '" data-slide-to="' + i + '" class="active"></li>'));
+        carousel.appendChild(createCarouselPage(slice, true));
+
+      } else {
+        carouselLinks.appendChild(createElementFromHTML('<li data-target="#myCarousel' + recipeId + '" data-slide-to="' + i + '"></li>'));
+        carousel.appendChild(createCarouselPage(slice, false));
+      }
+    }
   });
+}
+
+function createCarouselPage(slice, isFirst) {
+  const page = document.createElement('div');
+  if (isFirst) {
+    page.className= 'item active';
+  } else {
+    page.className = 'item';
+  }
+  slice.forEach(tag => page.appendChild(createTagElement(tag)));
+  return page;
 }
 
 /** Creates an element that represents a tag. */
