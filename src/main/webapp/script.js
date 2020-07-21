@@ -226,15 +226,21 @@ function startSlideshow() {
 /** Opens form for user to submit image of dish for anlysis on home page */
 function openImageForm() {
   document.getElementById("popup").style.display = "block";
+  document.getElementById("about-text").style.display = "none";
+  document.getElementById("about-text-title").style.display = "none";
   document.getElementById("popup-button").style.display = "none";
   document.getElementById("upload").style.display = "none";
   document.getElementById("image-preview").style.display = "none";
+  document.body.style.overflow = "hidden";
 }
 
 /** Closes form for user to submit image of dish */
 function closeImageForm() {
   document.getElementById("popup").style.display = "none";
   document.getElementById("popup-button").style.display = "inline-block";
+  document.getElementById("about-text").style.display = "inline-block";
+  document.getElementById("about-text-title").style.display = "inline-block";
+  document.body.style.overflow = "auto";
 }
 
 /** Generates a preview of the user's uploaded image */
@@ -481,7 +487,7 @@ function createRecipeElement(recipe, pictureWrap) {
     fetch('/login').then(response => response.json()).then((userInfo) => {
       if (!userInfo.isLoggedIn) {
         const loginPopup = document.createElement('div');
-        loginPopup.className = "login-full-page";
+        loginPopup.className = "full-page-popup";
 
         loginPopup.onclick = function() {
           loginPopup.style.display = "none";

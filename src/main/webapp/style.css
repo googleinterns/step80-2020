@@ -243,7 +243,7 @@ body {
   border-bottom: 4px double darkseagreen;;
 }
 
-.login-full-page {
+.full-page-popup {
   background-color: darkseagreen;
   height: 100%;
   opacity: 0.9;
@@ -278,6 +278,7 @@ h3 {
 
 .about-text {
   color: black;
+  font-family: 'TypeWriter', helvetica, sans-serif;
   font-size: 24px;
 }
 
@@ -398,7 +399,8 @@ h3 {
 }
 
 .icon-double-angle-down {
-  color: darkorange;
+  color: darkseagreen;
+  text-shadow: 0 0 3px orange;
 }
 
 .navbar-item a {
@@ -520,10 +522,6 @@ h2 {
 .file-container {
   color: darkorange;
   font-size: 25px;
-  height: 6%;
-  left: 6%;
-  opacity: 0.7;
-  position: absolute;
   text-decoration: underline;
   top: 7%;
   width: 30%;
@@ -545,19 +543,15 @@ h2 {
 }
 
 .form-popup {
-  background-image: url("/images/border2.png");
-  background-repeat: no-repeat;
-  background-size: contain;
   display: none;
-  font-family: 'TypeWriterBold', helvetica, sans-serif;
-  height: 0;
-  padding-top: 100%;
-  position: relative;
-  width: 100%;
+  opacity: 0.7;
 }
 
 .form-container {
   padding: 10px;
+  position: absolute;
+  top: 150px;
+  width: 100%;
 }
 
 .upload {
@@ -672,6 +666,31 @@ h2 {
   background: rgb(234, 184, 19, .7);
   opacity: 1;
   visibility: visible;
+}
+
+.text-input {
+  background: white;
+  border: none;
+  border-bottom: 10px solid orange;
+  font-family: 'TypeWriter', helvetica, sans-serif;
+  font-size: 30px;
+  font-weight: bold;
+  height: 70px;
+  padding: 5px;
+  text-align: center;
+  width: 70%;
+}
+
+.input-title {
+  color: white;
+  font-family: 'TypeWriter';
+  font-size: 50px;
+  text-shadow: 0 0 5px darkorange;
+  text-transform: uppercase;
+  width: 70%;
+}
+.text-input:hover {
+  border-bottom: 10px double darkseagreen;;
 }
 
 /* Fonts and animations */
