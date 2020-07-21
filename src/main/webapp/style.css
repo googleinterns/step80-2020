@@ -106,6 +106,7 @@
   position: fixed;
   top: 50%;
   width: 800px;
+  z-index: 8;
 }
 
 .recipe-card-title {
@@ -659,29 +660,43 @@ h1 {
   color: darkorange;
 }
 
-#select-tag {
-  border-bottom: 2px solid black; 
-  font-weight: bold;
-  letter-spacing: .15em;
-  margin-left: 10px;
-  padding: 3px 5px;
+#tag-menu {
+  border: 2px solid green;
+  display: inline-block;
+  position: fixed;
+  top: 150px;
+  z-index: 7;
 }
 
-#select-tag:focus, #select-tag:active {
-  border-bottom-color: red;
+.tag-menu-item {
+  background: lightgreen;
+  border: 2px solid green;
+  display: inline-block;
+  margin: 5px;
+  padding: 5px 5px 5px 10px;
+  width: auto;
 }
 
-#select-button {
-  background-color: #4caf50;
+.tag-menu-item:hover {
+  background: rgb(84, 192, 84);
+  cursor: pointer;
+}
+
+.tag-item-name {
+  display: inline-block;
+  margin: auto;
+  width: 100px;
+}
+
+.tag-item-button {
+  background: red;
+  border: none;
+  border-radius: 20px;
   color: white;
   cursor: pointer;
-  font-family: 'TypeWriterBold', helvetica, sans-serif;
-  margin-left: 15px;
-  opacity: 0.8;
-  padding: 5px 10px;
+  font-weight: 900;
 }
 
-#selection {
-  margin-top: 158px;
-  text-align: center;
+.tag-item-button:hover {
+  background: rgb(255, 102, 102);
 }

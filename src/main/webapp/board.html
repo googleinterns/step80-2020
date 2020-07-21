@@ -8,7 +8,7 @@
     <script src="script.js"></script>
   </head>
 
-  <body onload="javascript:savedRecipes()"> 
+  <body onload="javascript:loadBoardPage()"> 
     <div id="frame-top" class="frame"></div>
     <div id="frame-bottom" class="frame"></div>
     <div id="frame-right" class="frame"></div>
@@ -18,20 +18,16 @@
         <a class="navbar-title" href="index.html">Forked</a>
         <div class="navbar-menu-container">
           <ul class="navbar-menu">
-            <li class="navbar-item"><a href="profile.html">Profile</a></li>
+            <li class="navbar-item" id="login-status">
+              <a href="profile.html">My Profile</a>
+              <div class="dropdown-content" id="dropdown"></div>
+            </li>
           </ul>
         </div>
       </div>
     </div>
     <div class="content">
-      <h2>Saved Recipes</h2>
-      <form class="content" action="javascript:savedRecipes()" method="POST">
-        <label for="tags">Search recipe by tag:</label>
-        <select name="tags" id="select-tag">
-          <option value="">All tags</option>
-        </select>
-        <input type="submit" id="select-button"/>
-      </form>
+      <div id="tag-menu"></div>
       <div id="display-recipes"> </div>
       <div id="card-gallery"> </div>
     </div>
@@ -67,6 +63,13 @@
         <span></span>
         <button class="delete-tag-button">X</button>
       </div>
+    </template>
+    <template id="tag-name-template">
+      <p class="tag-menu-item">
+        <span class="tag-item-name"></span>
+        <button class="tag-item-button">x</button>
+      </p>
+      <br/>
     </template>
   </body>
 </html>

@@ -125,7 +125,7 @@ public class TagServlet extends HttpServlet {
       Long recipeId = strToLong(request.getParameter("recipe-id"));
       entity.setProperty("recipeId", recipeId);
       
-      if (tagName != null && recipeId != null) {
+      if (tagName != null && recipeId != null && !ifTagExists(tagName, recipeId, userService)) {
         datastore.put(entity);
       }
     }
@@ -141,6 +141,18 @@ public class TagServlet extends HttpServlet {
       return null;
     } else {
       return Long.parseLong(str);
+    }
+  }
+
+  public boolean ifTagExists(String tagName, Long recipeId, UserService userService) {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Query query = getQueryWithFilters(tagName, recipeId, userService);
+    PreparedQuery results = datastore.prepare(query);
+    Entity entity = results.asSingleEntity();
+    if (entity == null) {
+      return false;
+    } else {
+      return true;
     }
   }
 
