@@ -519,6 +519,23 @@ h1 {
   top: 5%;
 }
 
+/* selected favorite icon */
+.icon-star {
+  color: transparent;
+  cursor: pointer;
+  position: absolute;
+  right: 10%;
+  top: 5%;
+}
+
+/* unselected favorite icon */
+.icon-star-empty {
+  color: black;
+  position: absolute;
+  right: 10%;
+  top: 5%;
+}
+
 .form-container .upload:hover, .open-button:hover {
   opacity: 1;
 }
