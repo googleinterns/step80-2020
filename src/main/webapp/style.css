@@ -219,6 +219,28 @@ body {
   color: darkseagreen;
 }
 
+.search-icon {
+  font-size: 130px;
+  color: darkseagreen;
+  opacity: 0.7;
+  padding-left: 60px;
+  padding-right: 60px;
+  padding-top: 50px;
+  text-shadow: 0 0 2px black;
+}
+
+.button-container {
+  color: white;
+  cursor: pointer;
+  background-color: white;
+  border: none;
+}
+
+.search-icon:hover {
+  font-size: 160px;
+  opacity: 1;
+}
+
 .form-label {
   opacity: 1;
   padding-top: 10px;
@@ -243,14 +265,9 @@ body {
   border-bottom: 4px double darkseagreen;;
 }
 
-.full-page-popup {
-  background-color: darkseagreen;
-  height: 100%;
-  opacity: 0.9;
-  position: fixed;
+.form-body {
+  overflow: hidden;
   text-align: center;
-  top: 0;
-  width: 100%;
 }
 
 .login-full-text {
@@ -280,6 +297,7 @@ h3 {
   color: black;
   font-family: 'TypeWriter', helvetica, sans-serif;
   font-size: 24px;
+  margin-bottom: 100px;
 }
 
 /* Frame */
@@ -542,12 +560,9 @@ h2 {
   opacity: 0;
 }
 
-.form-popup {
-  display: none;
-  opacity: 0.7;
-}
-
 .form-container {
+  background-color: #bbd6bb;
+  height: 100%;
   padding: 10px;
   position: absolute;
   top: 150px;
@@ -567,6 +582,22 @@ h2 {
   padding: 10px 10px;
   top: 65%;
   width: 100px;
+}
+
+.text-upload {
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+  font-family: 'TypeWriterBold', helvetica, sans-serif;
+  font-size: 20px;
+  opacity: 0.8;
+  padding: 10px 10px;
+  top: 45%;
+  width: 150px;
+}
+
+.text-upload:hover {
+  opacity: 1;
 }
 
 .icon-remove-sign {
@@ -676,8 +707,12 @@ h2 {
   font-size: 30px;
   font-weight: bold;
   height: 70px;
+  left: 50%;
   padding: 5px;
+  position: absolute;
   text-align: center;
+  top: 40%;
+  transform: translate(-50%, -50%);
   width: 70%;
 }
 

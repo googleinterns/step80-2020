@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Image Upload</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <script src="script.js"></script>
+  </head>
+  <body class="home-body" onload="getLoginStatus()">
+    <div id="frame-top" class="frame"></div>
+    <div id="frame-bottom" class="frame"></div>
+    <div id="frame-right" class="frame"></div>
+    <div id="frame-left" class="frame"></div>
+    <div class="navbar">
+      <div class="container">
+        <a class="navbar-title" href="index.html">Forked</a>
+        <div class="navbar-menu-container">
+          <ul class="navbar-menu">
+            <li class="navbar-item" id="login-status">
+              <a href="profile.html">My Profile</a>
+              <div class="dropdown-content" id="dropdown"></div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="form">
+      <form action="javascript:readUserDishInput()" id="form" class="form-container" enctype="multipart/form-data">
+        <i class="icon-picture"></i>
+        <!-- <h3 class="input-title">Search by Dish Image</h3> -->
+        <label class="file-container">
+          Choose File
+          <i class="icon-upload-alt"></i>
+          <input type="file" id="image" class="input-file" name="image" multiple="false" onchange="previewImage(this);"/>
+        </label> 
+        <i onclick="/#about" class="icon-remove-sign icon-2x"></i>
+        <img class="image-preview" id="image-preview" >
+        <br>
+        <button type="submit" id="upload" class="upload">Upload</button>
+      </form>
+    </div>
+  </body>
+</html>

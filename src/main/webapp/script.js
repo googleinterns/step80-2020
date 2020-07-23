@@ -225,7 +225,7 @@ function startSlideshow() {
 
 /** Opens form for user to submit image of dish for anlysis on home page */
 function openImageForm() {
-  document.getElementById("popup").style.display = "block";
+  document.getElementById("image-popup").style.display = "block";
   document.getElementById("about-text").style.display = "none";
   document.getElementById("about-text-title").style.display = "none";
   document.getElementById("popup-button").style.display = "none";
@@ -769,6 +769,18 @@ function getSavedRecipe(displayRecipesElement, recipeId) {
 /** Reads dishname, fetches recipe information, and stores both in serssionStorage to use in display.html */
 function readUserDishChoice() {
   var dishName = document.forms.dishFitChoice.elements.labelFitChoice.value;
+  if(dishName != null){
+    fetch('/recipeInfo?dishName=' + dishName).then(response => response.json()).then((recipeListInfoJson) => {
+      sessionStorage.dishName = dishName;
+      sessionStorage.recipeList = recipeListInfoJson;
+      window.location.href = "/display.html";
+    });
+  }
+}
+
+/** Reads dishname, fetches recipe information, and stores both in serssionStorage to use in display.html */
+function readUserDishInput() {
+  var dishName = document.getElementById('input').value;
   if(dishName != null){
     fetch('/recipeInfo?dishName=' + dishName).then(response => response.json()).then((recipeListInfoJson) => {
       sessionStorage.dishName = dishName;
