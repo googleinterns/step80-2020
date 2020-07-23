@@ -3,12 +3,12 @@
   <head>
     <meta charset="UTF-8">
     <title>Your Recipes</title>
-    <link rel="stylesheet" href="style.css">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
 
-  <body id="display-background" onload="loadDisplayPage()"> 
+  <body id="display-background" onload="hardCodedRecipeCard()"> 
     <div id="frame-top" class="frame"></div>
     <div id="frame-bottom" class="frame"></div>
     <div id="frame-right" class="frame"></div>
@@ -43,6 +43,10 @@
       <div class="recipe-card">
         <a class="recipe-card-title"></a>
         <i class="icon-remove-sign icon-2x"></i>
+        <span class="favorite-star">
+          <i class="icon-star-empty icon-2x"></i>
+          <i class="icon-star icon-2x"></i>
+        </span>
         <div class="recipe-card-table">
           <div class="recipe-card-block">
             <img class="recipe-image"></img>
@@ -70,6 +74,12 @@
       <div class="recipe-tag">
         <span></span>
         <button class="delete-tag-button">X</button>
+      </div>
+    </template>
+    <template id="picture-wrap-template">
+      <div class="dish-image-wrap">
+        <img class="dish-image">
+        <button class="dish-image-text"></button>
       </div>
     </template>
   </body>

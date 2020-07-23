@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8">
     <title>Your Recipe Board</title>
-    <link rel="stylesheet" href="style.css">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
 
@@ -27,7 +27,12 @@
       </div>
     </div>
     <div class="content">
-      <div id="tag-menu"></div>
+      <div id="tag-page-header">
+        <div id="tag-menu"></div>
+        <i class="icon-arrow-left icon-4x"></i>
+        <div id="your-tags-text">Your Tags</div>
+        <i class="icon-tags icon-4x"></i>
+      </div>
       <div id="display-recipes"> </div>
       <div id="card-gallery"> </div>
     </div>
@@ -74,6 +79,12 @@
         <button class="tag-item-button">x</button>
       </p>
       <br/>
+    </template>
+    <template id="picture-wrap-template">
+      <div class="dish-image-wrap">
+        <img class="dish-image">
+        <button class="dish-image-text"></button>
+      </div>
     </template>
   </body>
 </html>

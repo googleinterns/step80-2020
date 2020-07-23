@@ -244,21 +244,20 @@ function appendToDisplayElement(recipeList) {
 
 // helper to create picture wrap for gallery display
 function createPictureWrap(displayRecipeElement, recipe) {
-  var pictureWrap = document.createElement('div');
-  pictureWrap.className = 'dish-image-wrap';
+  var temp = document.querySelector("#picture-wrap-template");
+  var clone = temp.content.cloneNode(true);
 
-  var picture = document.createElement('img');
-  picture.className = 'dish-image';
-  picture.src = recipe["image"];
+  const pictureWrap = clone.querySelector(".dish-image-wrap");
+
+  const pictureElement = clone.querySelector(".dish-image");
+  pictureElement.src = recipe['image'];
   
   createRecipeElement(recipe, pictureWrap);
-  var pictureText = document.createElement('button');
-  pictureText.className = 'dish-image-text';
-  pictureText.innerHTML = recipe["title"];
 
-  displayRecipeElement.appendChild(pictureWrap);
-  pictureWrap.appendChild(picture);
-  pictureWrap.appendChild(pictureText);
+  const pictureText = clone.querySelector(".dish-image-text");
+  pictureText.innerHTML = recipe['title'];
+
+  displayRecipeElement.appendChild(clone);
 }
 
 
@@ -501,9 +500,9 @@ function createRecipeElement(recipe, pictureWrap) {
   closeElement.onclick = function() {
     hoverElement.style.display = "none";
     document.getElementById("display-recipes").style.opacity = "1";
-    const tagMenu = document.getElementById("tag-menu");
-    if (tagMenu != null) {
-      tagMenu.style.opacity = "1";
+    const tagHeader = document.getElementById("tag-page-header");
+    if (tagHeader != null) {
+      tagHeader.style.opacity = "1";
     }
   }
 
@@ -565,9 +564,9 @@ function createRecipeElement(recipe, pictureWrap) {
   pictureWrap.onclick = function() {
     hoverElement.style.display = "block";
     document.getElementById("display-recipes").style.opacity = "0.2";
-    const tagMenu = document.getElementById("tag-menu");
-    if (tagMenu != null) {
-      tagMenu.style.opacity = "0.2";
+    const tagHeader = document.getElementById("tag-page-header");
+    if (tagHeader != null) {
+      tagHeader.style.opacity = "0.2";
     }
   }
 }

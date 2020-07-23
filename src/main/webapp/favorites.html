@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8">
     <title>Your Favorite Recipes</title>
-    <link rel="stylesheet" href="style.css">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
 
@@ -27,6 +27,8 @@
       </div>
     </div>
     <div class="content">
+      <i id="love-food-icon" class="icon-heart icon-4x"></i>
+      <p id="favorite-recipes-title">Your Favorite Recipes</p>
       <div id="display-recipes"> </div>
       <div id="card-gallery"> </div>
     </div>
@@ -73,6 +75,12 @@
         <button class="tag-item-button">x</button>
       </p>
       <br/>
+    </template>
+    <template id="picture-wrap-template">
+      <div class="dish-image-wrap">
+        <img class="dish-image">
+        <button id="favorite-dish-image-text" class="dish-image-text"></button>
+      </div>
     </template>
   </body>
 </html>
