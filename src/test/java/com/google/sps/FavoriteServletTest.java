@@ -74,7 +74,7 @@ public final class FavoriteServletTest {
 
   @Test
   public void postFavoriteNotLoggedIn() throws IOException, ServletException, ParseException {
-    // User tries to post tag but is not logged in
+    // User tries to set favorite but not logged in
     helper.setEnvIsLoggedIn(false);
 
     StringWriter sw = new StringWriter();
@@ -92,7 +92,7 @@ public final class FavoriteServletTest {
 
   @Test
   public void postFavoriteNoParameters() throws IOException, ServletException, ParseException {
-    // User posts tag without filling in parameters
+    // User set favorite without setting any parameters
     helper.setEnvIsLoggedIn(true);
 
     StringWriter sw = new StringWriter();
@@ -156,7 +156,7 @@ public final class FavoriteServletTest {
 
   @Test
   public void getFavoriteNotLoggedIn() throws IOException, ServletException, ParseException {
-    // User tries to get tag without being logged in
+    // User tries to get favorites without being logged in
     helper.setEnvIsLoggedIn(false);
 
     StringWriter sw = new StringWriter();
@@ -174,6 +174,7 @@ public final class FavoriteServletTest {
 
   @Test
   public void getFavoritesNoParameters() throws IOException, ServletException, ParseException {
+    // User tries to get all favorites
     helper.setEnvIsLoggedIn(true);
 
     Long favoriteId1 = createFavoriteWithRecipeId("1");
@@ -199,6 +200,7 @@ public final class FavoriteServletTest {
   }
 
   public void getFavoriteHasRecipeIdParameter(String recipeId, Long favoriteId) throws IOException, ServletException, ParseException {
+    // User wants to know if recipe is favorite
     helper.setEnvIsLoggedIn(true);
 
     StringWriter sw = new StringWriter();
@@ -218,6 +220,7 @@ public final class FavoriteServletTest {
 
   @Test
   public void getFavoriteDoesNotExist() throws IOException, ServletException, ParseException {
+    // User wants to know if recipe is a favorite but it isn't
     helper.setEnvIsLoggedIn(true);
 
     StringWriter sw = new StringWriter();
