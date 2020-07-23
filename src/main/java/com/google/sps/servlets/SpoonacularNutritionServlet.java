@@ -68,7 +68,6 @@ public class SpoonacularNutritionServlet extends HttpServlet {
     WebTarget target = client.target(String.format("%s?title=%s&apiKey=%s", spoonacularPrefix, title, spoonacularKey));
     try {
       String recipeListJSONString = target.request(MediaType.APPLICATION_JSON).get(String.class);
-      System.out.println(recipeListJSONString);
       Gson gson = new Gson();
       response.setContentType("application/json");
       response.getWriter().println(gson.toJson(recipeListJSONString));

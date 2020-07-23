@@ -685,3 +685,34 @@ h1 {
   margin-top: 158px;
   text-align: center;
 }
+
+.loading {
+  position: fixed;
+  z-index: 999;
+  height: 2em;
+  width: 2em;
+  overflow: visible;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.loading {
+	display: none;
+	background: rgba( 26, 26, 26, 0.7 );
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	z-index: 99;
+	top: 0;
+}
+
+#loading-text {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  color: white;
+  font-size: 30px;
+}

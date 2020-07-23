@@ -56,15 +56,15 @@ public class SpoonacularCombinedServlet extends HttpServlet {
     Entity entity = results.asSingleEntity();
     String spoonacularKey = (String) entity.getProperty("key");
     
-    String query = request.getParameter("dishName");
+    String dishName = request.getParameter("dishName");
     Client client = ClientBuilder.newClient();
     try {
-      query = URLEncoder.encode(query);
+      dishName = URLEncoder.encode(dishName);
     } catch (Exception e) {
       System.out.println(e);
     }
     String targetString = String.format("%s/search?query=%s&number=%s&includeNutririon=true&apiKey=%s", 
-      SPOONACULAR_API_PREFIX, query, API_QUERY_NUMBER, spoonacularKey);
+      SPOONACULAR_API_PREFIX, dishName, API_QUERY_NUMBER, spoonacularKey);
     WebTarget target = client.target(targetString);
     try {
       String recipeListJSONString = target.request(MediaType.APPLICATION_JSON).get(String.class);
@@ -82,7 +82,7 @@ public class SpoonacularCombinedServlet extends HttpServlet {
         }
       }
       targetString = String.format("%s/informationBulk?includeNutrition=true&apiKey=%s&ids=%s", 
-        SPOONACULAR_API_PREFIX, SPOONACULAR_API_KEY, recipeList);
+        SPOONACULAR_API_PREFIX, spoonacularKey, recipeList);
       target = client.target(targetString);
       String recipeInformationString = target.request(MediaType.APPLICATION_JSON).get(String.class);
       Gson gson = new Gson();

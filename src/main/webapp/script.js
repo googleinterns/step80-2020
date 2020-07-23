@@ -14,6 +14,8 @@
 
 /** Fetches information returned from Spoonacular (after the image has been classified appropriately) */
 function getRecipeInfo() {
+  const overlay = document.getElementById('overlay');
+  overlay.style.display = 'block';
   const image = document.getElementById('image').files[0];
   const params = new FormData();
   params.append('image', image);
@@ -32,12 +34,21 @@ function getRecipeInfo() {
 
 function setRadioButtonValues() {
   getLoginStatus();
-  // set top options to radio buttons
-  document.getElementById("first-option-label").innerText = sessionStorage.optionOne;
-  document.getElementById("second-option-label").innerText = sessionStorage.optionTwo;
-  // set radio button values
-  document.getElementById("first-option").value = sessionStorage.optionOne;
-  document.getElementById("second-option").value = sessionStorage.optionTwo;
+  const firstOption = sessionStorage.optionOne;
+  const secondOption = sessionStorage.optionTwo;
+  const overlay = document.getElementById('overlay');
+  overlay.style.display = 'block';
+  fetch('/dishChoicePictures?firstOption='+firstOption+'&secondOption='+secondOption).then(response => response.json()).then((imageURLs) => {
+    document.getElementById("first-option-image").src = imageURLs["firstURL"];
+    document.getElementById("second-option-image").src = imageURLs["secondURL"];
+    // set top options to radio buttons
+    document.getElementById("first-option-label").innerText = firstOption;
+    document.getElementById("second-option-label").innerText = secondOption;
+    // set radio button values
+    document.getElementById("first-option").value = firstOption;
+    document.getElementById("second-option").value = secondOption;
+    overlay.style.display = 'none';
+  });
 }
 
 /** Fetches and then populates nutrition information section of display page with average fat, calories, etc. */
@@ -308,26 +319,6 @@ function postProfile() {
 function clearSavedProfileStatus() {
   const profileStatusElement = document.getElementById('saved-profile-status');
   profileStatusElement.style.display = "none";
-}
-
-/** Function gets recipe information from user input ID and displays the title on the page */
-function getRecipe(){
-  var idRecipe = document.getElementById("num-recipe").value;
-  fetch('/recipeInfo?idRecipe='+idRecipe).then(response => response.json()).then((recipeInfo) => {
-    recipeInf = JSON.parse(recipeInfo);
-    const recipeDisplayElement = document.getElementById('recipe-info');
-    recipeDisplayElement.innerText = recipeInf["title"];
-  });
-}
-
-/** Function gets recipe list from user input dish and displays the title of the first two returned results on the page */
-function getRecipeId(){
-  var dishName = document.getElementById("dish-name").value;
-  fetch('/dishId?dishName='+dishName).then(response => response.json()).then(recipeId => {
-    recipe = JSON.parse(recipeId);
-    const recipeIdDisplayElement = document.getElementById('recipe-id-info');
-    recipeIdDisplayElement.innerText = recipe[0]["title"] + "\n" + recipe[1]["title"];
-  });
 }
 
 /** Call the appropriate functions needed on-load of the body of home page */
@@ -670,6 +661,8 @@ function getSavedRecipe(displayRecipesElement, recipeId) {
 
 /** Reads dishname, fetches recipe information, and stores both in serssionStorage to use in display.html */
 function readUserDishChoice() {
+  const overlay = document.getElementById('overlay');
+  overlay.style.display = 'block';
   var dishName = document.forms.dishFitChoice.elements.labelFitChoice.value;
   if(dishName != null){
     fetch('/recipeInfo?dishName='+dishName).then(response => response.json()).then((recipeListInfoJson) => {
