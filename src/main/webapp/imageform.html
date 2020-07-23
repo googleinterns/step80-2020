@@ -7,7 +7,7 @@
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
     <script src="script.js"></script>
   </head>
-  <body class="home-body" onload="getLoginStatus()">
+  <body class="form-body" onload="getLoginStatus()">
     <div id="frame-top" class="frame"></div>
     <div id="frame-bottom" class="frame"></div>
     <div id="frame-right" class="frame"></div>
@@ -26,18 +26,17 @@
       </div>
     </div>
     <div class="form">
-      <form action="javascript:readUserDishInput()" id="form" class="form-container" enctype="multipart/form-data">
-        <i class="icon-picture"></i>
+      <form action="javascript:getRecipeInfo()" id="form" class="form-container" enctype="multipart/form-data">
+        <!-- <i class="icon-picture"></i> -->
         <!-- <h3 class="input-title">Search by Dish Image</h3> -->
-        <label class="file-container">
-          Choose File
+        <label id="input" class="file-container">
+          Upload Dish Image
           <i class="icon-upload-alt"></i>
           <input type="file" id="image" class="input-file" name="image" multiple="false" onchange="previewImage(this);"/>
+          <img class="image-preview" id="image-preview" >
+          <button type="submit" id="upload" class="upload image-upload">Submit</button>
         </label> 
-        <i onclick="/#about" class="icon-remove-sign icon-2x"></i>
-        <img class="image-preview" id="image-preview" >
-        <br>
-        <button type="submit" id="upload" class="upload">Upload</button>
+        <i onclick="window.location.href='/index.html'" class="icon-remove-sign icon-2x"></i>
       </form>
     </div>
   </body>

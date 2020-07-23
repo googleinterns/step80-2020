@@ -537,24 +537,15 @@ h2 {
   padding: 16px 20px;
 }
 
-.file-container {
-  color: darkorange;
-  font-size: 25px;
-  text-decoration: underline;
-  top: 7%;
-  width: 30%;
-}
-
-.file-container:hover {
+/* .file-container:hover {
   opacity: 1;
-}
+} */
 
 
 .file-container [type=file] {
   cursor: pointer;
   display: block;
-  margin-left: -10px;
-  margin-top: -24px;
+  margin-top: -40px;
   min-height: 100%;
   min-width: 100%;
   opacity: 0;
@@ -592,12 +583,20 @@ h2 {
   font-size: 20px;
   opacity: 0.8;
   padding: 10px 10px;
-  top: 45%;
-  width: 150px;
+  top: 50%;
 }
 
 .text-upload:hover {
   opacity: 1;
+}
+
+.image-upload {
+  bottom: 5%;
+  display: none;
+  font-family: 'TypeWriterBold', helvetica, sans-serif;
+  font-size: 20px;
+  position: fixed;
+  top: unset;
 }
 
 .icon-remove-sign {
@@ -614,12 +613,13 @@ h2 {
 
 .image-preview {
   border: 3px solid darkorange;
-  left: 40%;
-  margin-left: -40px;
-  max-height: 350px;
-  max-width: 400px;
+  display: none;
+  height: 50%;
+  left: 50%;
+  max-width: 100%;
   position: absolute;
-  top: 15%;
+  top: 45%;
+  transform: translate(-50%, -50%);
 }
 
 .txt-rotate {
@@ -699,7 +699,13 @@ h2 {
   visibility: visible;
 }
 
-.text-input {
+#input.file-container {
+  color: darkorange;
+  height: 10%;
+  padding: 20px 20px 20px 20px;
+}
+
+#input {
   background: white;
   border: none;
   border-bottom: 10px solid orange;
@@ -724,7 +730,8 @@ h2 {
   text-transform: uppercase;
   width: 70%;
 }
-.text-input:hover {
+
+#input:hover {
   border-bottom: 10px double darkseagreen;;
 }
 
@@ -837,8 +844,3 @@ h2 {
   padding-top: 0;
   width: auto;
 }
-
-
-
-
-

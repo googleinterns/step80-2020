@@ -246,6 +246,9 @@ function closeImageForm() {
 /** Generates a preview of the user's uploaded image */
 function previewImage(input) {
   if(input.files && input.files[0]) {
+    container = document.getElementById("input");
+    container.style.padding = "20px 20px 30% 20px";
+    container.innerText = "File uploaded: " + input.files[0].name;
     preview = document.getElementById("image-preview")
     var reader = new FileReader();
     reader.onload = function (e) {
