@@ -114,8 +114,11 @@ public class ProfileServlet extends HttpServlet {
     } else {
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       String id = userService.getCurrentUser().getUserId();
+      String email = userService.getCurrentUser().getEmail();
       Entity entity = new Entity("Profile", id);
       entity.setProperty("id", id);
+      entity.setProperty("email", email);
+      entity.setProperty("friendList", new ArrayList<String>());
       
       String userName = request.getParameter("userName");
       if (userName != null) {

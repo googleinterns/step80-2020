@@ -281,6 +281,8 @@ function getProfile() {
 
 /** Posts profile information from form to server */
 function postProfile() {
+  const params = new URLSearchParams();
+  
   const userName = document.getElementById('name-entry').value.trim();
   const vegetarian = document.getElementById("vegetarian-checkbox").checked;
   const vegan = document.getElementById("vegan-checkbox").checked;
@@ -291,7 +293,6 @@ function postProfile() {
   const allergies = allergiesString.split(",").map(allergy => {
     params.append('allergies', allergy.toLowerCase().trim()); 
   });
-  const params = new URLSearchParams();
   params.append('userName', userName);
   if (vegetarian) {
     params.append('dietary-needs', "VEGETARIAN");
@@ -671,4 +672,13 @@ function readUserDishChoice() {
       window.location.href = "/display.html";
     });
   }
+}
+
+/** Adds friend from the form */
+function addFriend() {
+  const friendEmail = document.getElementById('friend-input').value;
+  fetch('/addFriend?friendEmail='+friendEmail).then(response => response.text()).then((friendListResponse) => {
+    const friendResponseElement = document.getElementById("add-friend-response");
+    friendResponseElement.innerHTML = friendListResponse;
+  });
 }
