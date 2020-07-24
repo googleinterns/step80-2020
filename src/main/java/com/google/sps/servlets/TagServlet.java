@@ -149,11 +149,7 @@ public class TagServlet extends HttpServlet {
     Query query = getQueryWithFilters(tagName, recipeId, userService);
     PreparedQuery results = datastore.prepare(query);
     Entity entity = results.asSingleEntity();
-    if (entity == null) {
-      return false;
-    } else {
-      return true;
-    }
+    return entity != null;
   }
 
 }
