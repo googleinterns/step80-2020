@@ -13,7 +13,7 @@
 // limitations under the License.
 
 package com.google.sps;
-import com.google.sps.servlets.ProfileServlet;
+import com.google.sps.servlets.SavedRecipeServlet;
 import org.junit.Assert;
 import org.junit.After;
 import org.junit.Before;
@@ -47,16 +47,16 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import java.util.Arrays;
 
-/** Tests for ProfileServlet */
+/** Tests for SavedRecipeServlet */
 @RunWith(MockitoJUnitRunner.class)
-public final class ProfileServletTest {
-  // helper to mimic user authentication
+public final class RecipeServletTest {
+  // helper used to register API environment
   private final LocalServiceTestHelper helper =
     new LocalServiceTestHelper(new LocalUserServiceTestConfig()).setEnvAuthDomain("gmail.com")
       .setEnvEmail("test@gmail.com")
       .setEnvAttributes(ImmutableMap.of("com.google.appengine.api.users.UserService.user_id_key", "123"));
   
-  @Mock private ProfileServlet servlet;
+  @Mock private SavedRecipeServlet servlet;
   @Mock private HttpServletRequest request;
   @Mock private HttpServletResponse response;
 
@@ -64,7 +64,7 @@ public final class ProfileServletTest {
   public void setUp() throws ServletException {
     MockitoAnnotations.initMocks(this);
     helper.setUp();
-    servlet = new ProfileServlet();
+    servlet = new SavedRecipeServlet();
   }
 
   @After
@@ -73,10 +73,8 @@ public final class ProfileServletTest {
   }
 
   @Test
-  public void postProfileNotLoggedIn() throws IOException, ServletException, ParseException {
-    // User is not logged in when submitting profile
-    helper.setEnvIsLoggedIn(false);
-
+  public void postRecipeNoParameters() throws IOException, ServletException, ParseException {
+    // User tries to post recipe with no parameters
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
     when(response.getWriter()).thenReturn(pw);
@@ -87,133 +85,94 @@ public final class ProfileServletTest {
     JSONParser parser = new JSONParser();
     JSONObject json = (JSONObject) parser.parse(result);
     
-    assertEquals("User needs to log in to change profile.", json.get("error"));
+    assertEquals("User needs to input recipeId.", json.get("error"));
   }
-  
-  @Test
-  public void postProfileNoParameters() throws IOException, ServletException, ParseException {
-    // User is logged in but didn't input any parameters when submitting profile
-    helper.setEnvIsLoggedIn(true);
 
+  @Test
+  public void postOnlyRecipeId() throws IOException, ServletException, ParseException {
+    // User posts only recipe id when posting recipe
+    when(request.getParameter("recipe-id")).thenReturn("1");
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
     when(response.getWriter()).thenReturn(pw);
     
-    servlet.doPost(request, response);
-    String result = sw.getBuffer().toString().trim();
-
-    JSONParser parser = new JSONParser();
-    JSONObject json = (JSONObject) parser.parse(result);
-    
-    assertEquals("User needs to input username.", json.get("error"));
-  }
-
-  @Test
-  public void getProfileNotLoggedIn() throws IOException, ServletException, ParseException {
-    // User is not logged in when getting profile
-    helper.setEnvIsLoggedIn(false);
-    
-    StringWriter sw = new StringWriter();
-    PrintWriter pw = new PrintWriter(sw);
-    when(response.getWriter()).thenReturn(pw);
-    
-    servlet.doGet(request, response);
-    String result = sw.getBuffer().toString().trim();
-
-    JSONParser parser = new JSONParser();
-    JSONObject json = (JSONObject) parser.parse(result);
-
-    assertEquals("User needs to log in to see profile.", json.get("error"));
-  }
-
-  @Test
-  public void getProfileHasNoProfile() throws IOException, ServletException, ParseException {
-    // User tries to get profile but doesn't have a profile
-    helper.setEnvIsLoggedIn(true);
-    helper.setEnvEmail("test2@gmail.com")
-      .setEnvAttributes(ImmutableMap.of("com.google.appengine.api.users.UserService.user_id_key", "111"));
-    helper.setUp();
-
-    StringWriter sw = new StringWriter();
-    PrintWriter pw = new PrintWriter(sw);
-    when(response.getWriter()).thenReturn(pw);
-    
-    servlet.doGet(request, response);
-    String result = sw.getBuffer().toString().trim();
-
-    JSONParser parser = new JSONParser();
-    JSONObject json = (JSONObject) parser.parse(result);
-
-    assertFalse((boolean) json.get("hasProfile"));
-  }
-
-  @Test
-  public void onlyUsernameProfile() throws IOException, ServletException, ParseException {
-    // User submits profile but only username parameter is filled out
-    helper.setEnvIsLoggedIn(true);
-    helper.setEnvEmail("test@gmail.com")
-      .setEnvAttributes(ImmutableMap.of("com.google.appengine.api.users.UserService.user_id_key", "123"));
-    helper.setUp();
-
-    when(request.getParameter("userName")).thenReturn("testUserName");
-
-    StringWriter sw = new StringWriter();
-    PrintWriter pw = new PrintWriter(sw);
-    when(response.getWriter()).thenReturn(pw);
-    
-    // set username of profile
+    // set recipeId of recipe object
     servlet.doPost(request, response);
     
+    when(request.getParameter("recipeId")).thenReturn("1");
     sw = new StringWriter();
     pw = new PrintWriter(sw);
     when(response.getWriter()).thenReturn(pw);
     
-    // get profile from servlet
+    // get recipe from servlet, check if saved
     servlet.doGet(request, response);
     String result = sw.getBuffer().toString().trim();
 
     JSONParser parser = new JSONParser();
     JSONObject json = (JSONObject) parser.parse(result);
-    JSONObject profile = (JSONObject) json.get("profile");
-
-    assertEquals("testUserName", profile.get("userName"));
+    JSONObject recipe = (JSONObject) json.get("savedRecipe");
+    
+    assertEquals(new Long(1), recipe.get("id"));
+    assertTrue((boolean) json.get("recipeIsSaved"));
   }
 
   @Test
-  public void includeListInputsProfile() throws IOException, ServletException, ParseException {
-    // User submits profile list information (dietary needs, allergies)
-    helper.setEnvIsLoggedIn(true);
+  public void recipeDoesNotExist() throws IOException, ServletException, ParseException {
+    // User tries to get a recipe that does not exist
+    when(request.getParameter("recipeId")).thenReturn("2");
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
+    when(response.getWriter()).thenReturn(pw);
+    
+    servlet.doGet(request, response);
+    String result = sw.getBuffer().toString().trim();
 
-    when(request.getParameter("userName")).thenReturn("testUserName");
+    JSONParser parser = new JSONParser();
+    JSONObject json = (JSONObject) parser.parse(result);
+
+    assertFalse((boolean) json.get("recipeIsSaved"));
+  }
+
+  @Test
+  public void postRecipeParameters() throws IOException, ServletException, ParseException {
+    // User posts complete recipe information
+    when(request.getParameter("recipe-id")).thenReturn("1");
+    when(request.getParameter("recipe-title")).thenReturn("testTitle");
+    when(request.getParameter("image-url")).thenReturn("testImageUrl");
+    when(request.getParameter("source-url")).thenReturn("testSourceUrl");
+    when(request.getParameter("servings")).thenReturn("2");
+    when(request.getParameter("ready-in-minutes")).thenReturn("3");
     
     String[] dietList = {"VEGETARIAN","VEGAN"};
     when(request.getParameterValues("dietary-needs")).thenReturn(dietList);
 
-    String[] allergyList = {"milk"};
-    when(request.getParameterValues("allergies")).thenReturn(allergyList);
-
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
     when(response.getWriter()).thenReturn(pw);
     
-    // set profile with dietary needs and allergies
+    // set recipeId of recipe object
     servlet.doPost(request, response);
     
+    when(request.getParameter("recipeId")).thenReturn("1");
     sw = new StringWriter();
     pw = new PrintWriter(sw);
     when(response.getWriter()).thenReturn(pw);
     
-    // get profile from servlet
+    // get recipe from servlet, check all parameters
     servlet.doGet(request, response);
     String result = sw.getBuffer().toString().trim();
 
     JSONParser parser = new JSONParser();
     JSONObject json = (JSONObject) parser.parse(result);
-    JSONObject profile = (JSONObject) json.get("profile");
+    JSONObject recipe = (JSONObject) json.get("savedRecipe");
     
-    assertEquals("testUserName", profile.get("userName"));
-    assertEquals(Arrays.asList(dietList), profile.get("dietaryNeeds"));
-    assertEquals(Arrays.asList(allergyList), profile.get("allergies"));
+    assertTrue((boolean) json.get("recipeIsSaved"));
+    assertEquals(new Long(1), recipe.get("id"));
+    assertEquals("testTitle", recipe.get("title"));
+    assertEquals("testImageUrl", recipe.get("image"));
+    assertEquals("testSourceUrl", recipe.get("sourceUrl"));
+    assertEquals(new Long(2), recipe.get("servings"));
+    assertEquals(new Long(3), recipe.get("readyInMinutes"));
+    assertEquals(Arrays.asList(dietList), recipe.get("dietaryNeeds"));
   }
 }
-
