@@ -33,7 +33,7 @@ function getRecipeInfo() {
 }
 
 function setRadioButtonValues() {
-  getLoginStatus();
+  getLoginStatus('selection.html');
   const firstOption = sessionStorage.optionOne;
   const secondOption = sessionStorage.optionTwo;
   const overlay = document.getElementById('overlay');
@@ -433,8 +433,6 @@ function postProfile() {
   const dairyFree = document.getElementById("dairy-checkbox").checked;
 
   const allergiesString = document.getElementById("allergies-entry").value;
-  
-  const params = new URLSearchParams();
   allergiesString.split(",").map(allergy => {
     params.append('allergies', allergy.toLowerCase().trim()); 
   });
@@ -501,12 +499,17 @@ function getLoginStatus(url) {
       taggedLink.innerText = "My Tagged Recipes";
       taggedLink.href="/board.html";
 
+      const addFriendLink = document.createElement("a");
+      addFriendLink.innerText = "Add Friends";
+      addFriendLink.href="/friends.html";
+
       const logoutLink = document.createElement("a");
       logoutLink.innerHTML = "Logout";
       logoutLink.href = userInfo.logoutUrl;
 
       hoverMenuElement.appendChild(myProfileLink);
       hoverMenuElement.appendChild(taggedLink);
+      hoverMenuElement.appendChild(addFriendLink);
       hoverMenuElement.appendChild(logoutLink);
 
       if (!userInfo.hasProfile && url != "profile.html") {
@@ -885,4 +888,9 @@ function addFriend() {
     const friendResponseElement = document.getElementById("add-friend-response");
     friendResponseElement.innerHTML = friendListResponse;
   });
+}
+
+/** loads friend page */
+function loadFriendPage() {
+  getLoginStatus('friends.html');
 }

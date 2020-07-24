@@ -86,7 +86,7 @@ public class MultipleTagsServlet extends HttpServlet {
     // add filters for tagnames
     List<Query.Filter> tagFilters = new ArrayList<>();
     for (String tagName: tagNames) {
-      tagFilters.add(new Query.FilterPredicate("tagName", Query.FilterOperator.EQUAL, tagNames[i]));
+      tagFilters.add(new Query.FilterPredicate("tagName", Query.FilterOperator.EQUAL, tagName));
     }
     if (tagNames.length > 1) {
       filterList.add(new Query.CompositeFilter(Query.CompositeFilterOperator.OR, tagFilters));
