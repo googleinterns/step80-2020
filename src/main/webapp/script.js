@@ -31,7 +31,7 @@ function getRecipeInfo() {
 }
 
 function setRadioButtonValues() {
-  getLoginStatus();
+  getLoginStatus('selection.html');
   // set top options to radio buttons
   document.getElementById("first-option-label").innerText = sessionStorage.optionOne;
   document.getElementById("second-option-label").innerText = sessionStorage.optionTwo;
@@ -112,9 +112,15 @@ function displayRecipes() {
   appendToDisplayElement(JSON.parse(recipeList));
 }
 
+/** Call the appropriate functions needed on-load of the body of board page */
+function loadBoardPage() {
+  savedRecipes("");
+  refreshTagNameSelection();
+  getLoginStatus('board.html');
+}
+
 /** Display saved recipes by tag name */
-function savedRecipes() {
-  const tagName = document.getElementById('select-tag').value;
+function savedRecipes(tagName) {
   const displayRecipesElement = document.getElementById("display-recipes");
   displayRecipesElement.innerHTML = "";
 
@@ -123,8 +129,6 @@ function savedRecipes() {
     if (tagJson.error == null) {
       const tagList = tagJson.filteredList;
       const recipeIdList = new Set(tagList.map(tag => tag.recipeId));
-
-      refreshTagNameSelection();
     
       // display recipes as cards
       recipeIdList.forEach(recipeId => { 
@@ -137,26 +141,76 @@ function savedRecipes() {
   });
 }
 
-// refresh the tag selection in case tag was deleted or added
+// refresh the tag selection menu in case tag was deleted or added
 function refreshTagNameSelection() {
-  const selectElement = document.getElementById("select-tag");
-  if (selectElement != null) {
+  const tagMenuElement = document.getElementById("tag-menu");
+  if (tagMenuElement != null) {
     fetch('/tag-names').then(response => response.json()).then((tagNames) => {
-    selectElement.innerHTML = "<option value=''>All tags</option>";
+      tagMenuElement.innerHTML = "";
     
-    tagNames.forEach(tagName => {
-      selectElement.appendChild(addTagOption(tagName));
+      tagMenuElement.appendChild(addTagMenuItem("", "All tags"));
+      tagNames.forEach(tagName => {
+        tagMenuElement.appendChild(addTagMenuItem(tagName, tagName));
+      });
     });
-  });
   }
+
 }
 
-function addTagOption(tag) {
-  const optionElement = document.createElement('option');
-  optionElement.value = tag;
-  optionElement.innerHTML = tag;
-  optionElement.className = "tag-option";
-  return optionElement;
+// create tag menu item for selecting recipes by tag
+function addTagMenuItem(value, tag) {
+  var temp = document.querySelector("#tag-name-template");;
+  var tagMenuItemClone = temp.content.cloneNode(true);
+
+  const tagMenuItemElement = tagMenuItemClone.querySelector(".tag-menu-item");
+  tagMenuItemElement.value = tag;
+  if (tag == "All tags") {
+    tagMenuItemElement.style.color = "red";
+  }
+
+  // display text of tag, which when clicked displays the related recipes
+  const tagItemElement = tagMenuItemClone.querySelector('span');
+  tagItemElement.innerHTML = tag;
+  tagItemElement.addEventListener('click', () => {
+    savedRecipes(value);
+  });
+
+  // create button for deleting all tags with selected name
+  const tagItemButton = tagMenuItemClone.querySelector('button');
+  tagItemButton.addEventListener('click', () => {
+    fetch('/tag?tagName=' + value).then(response => response.json()).then((tagJson) => {
+      if (tagJson.error == null) {
+        // get all tags with tag name
+        const tagList = tagJson.filteredList;
+        const tagIdList = new Set(tagList.map(tag => tag.tagId));
+    
+        // delete tags from recipe cards
+        tagIdList.forEach(tagId => { 
+          deleteTagFromRecipeCard(tagId);
+        });
+      } else {
+        alert(tagJson.error);
+      }
+    });
+  });
+  return tagMenuItemClone;
+}
+
+function deleteTagFromRecipeCard(tagId) {
+  const params = new URLSearchParams();
+  params.append('tag-id', tagId);
+
+  fetch('/delete-tag', {method: 'POST', body: params}).then(() => {
+    // Remove the tag from the DOM.
+    const recipeCardTagList = document.querySelectorAll(".recipe-tag");
+    recipeCardTagList.forEach(tag => {
+      if (tag.value == tagId) {
+        tag.remove();
+      }
+    });
+    // Remove the tag from the menu list.
+    refreshTagNameSelection();
+  });
 }
 
 /** Helper function to display recipe cards in display-recipes element */
@@ -227,7 +281,7 @@ function previewImage(input) {
 
 /** Fetches profile from server and displays the information to user */
 function getProfile() {
-  getLoginStatus();
+  getLoginStatus('profile.html');
   fetch('/profile').then(response => response.json()).then((message) => {
     if (message.error == null) {
       if (message.hasProfile) {
@@ -277,10 +331,11 @@ function postProfile() {
   const dairyFree = document.getElementById("dairy-checkbox").checked;
 
   const allergiesString = document.getElementById("allergies-entry").value;
-  const allergies = allergiesString.split(",").map(allergy => {
+  
+  const params = new URLSearchParams();
+  allergiesString.split(",").map(allergy => {
     params.append('allergies', allergy.toLowerCase().trim()); 
   });
-  const params = new URLSearchParams();
   params.append('userName', userName);
   if (vegetarian) {
     params.append('dietary-needs', "VEGETARIAN");
@@ -301,6 +356,10 @@ function postProfile() {
       alert(message.error);
     } else {
       profileStatusElement.style.display = "block";
+      if (sessionStorage.redirectUrl != "") {
+        window.location.href = "/" + sessionStorage.redirectUrl;
+        sessionStorage.redirectUrl = "";
+      }
     }
   });
 }
@@ -333,21 +392,21 @@ function getRecipeId(){
 /** Call the appropriate functions needed on-load of the body of home page */
 function loadHomePage() {
   startSlideshow();
-  getLoginStatus();
+  getLoginStatus('index.html');
 }
 
 /** Call the appropriate functions needed on-load of the body of display page */
 function loadDisplayPage() {
   createNutritionElements();
-  getLoginStatus();
+  getLoginStatus('display.html');
 }
 
 /**
   * Checks with server if user has logged in.
   * Display corresponding text and url in login section if login is true/false.
   */
-function getLoginStatus() {
-  fetch('/login').then(response => response.json()).then((userInfo) => {
+function getLoginStatus(url) {
+  fetch('/login?url=' + url).then(response => response.json()).then((userInfo) => {
     const loginStatusElement = document.getElementById('login-status');
     const hoverMenuElement = document.getElementById('dropdown');
 
@@ -367,6 +426,11 @@ function getLoginStatus() {
       hoverMenuElement.appendChild(myProfileLink);
       hoverMenuElement.appendChild(taggedLink);
       hoverMenuElement.appendChild(logoutLink);
+
+      if (!userInfo.hasProfile && url != "profile.html") {
+        sessionStorage.redirectUrl = url;
+        window.location.href = "/profile.html";
+      }
       
     } else {
       const loginLink = document.createElement("a");
@@ -390,7 +454,7 @@ function hardCodedRecipeCard() {
   recipe['servings'] = 1;
   recipe['readyInMinutes'] = 10;
   recipe['vegetarian'] = true;
-  displayRecipeElement.appendChild(createRecipeElement(recipe));
+  createPictureWrap(displayRecipeElement, recipe);
 
   const recipe1 = {};
   recipe1['id'] = 2;
@@ -400,7 +464,7 @@ function hardCodedRecipeCard() {
   recipe1['servings'] = 1;
   recipe1['readyInMinutes'] = 10;
   recipe1['vegan'] = true;
-  displayRecipeElement.appendChild(createRecipeElement(recipe1));
+  createPictureWrap(displayRecipeElement, recipe1);
 }
 
 /** Creates an element that represents a recipe card */
@@ -438,7 +502,7 @@ function createRecipeElement(recipe, pictureWrap) {
 
   const addTagElement = clone.querySelector(".add-tag-button");
   addTagElement.addEventListener('click', () => {
-    const newTagName = (tagTextElement.value).trim();
+    const newTagName = (tagTextElement.value).toLowerCase().trim();
     if (newTagName != "") {
       const params = new URLSearchParams();
       params.append('tag-name', newTagName);
@@ -582,9 +646,14 @@ function createTagElement(tag) {
   var clone = temp.content.cloneNode(true);
 
   const tagElement = clone.querySelector(".recipe-tag");
+  tagElement.value = tag.tagId;
   
   const titleElement = clone.querySelector('span');
   titleElement.innerText = tag.tagName;
+  // change the displayed recipes when tag is clicked
+  titleElement.addEventListener('click', () => {
+    savedRecipes(tag.tagName);
+  });
 
   const deleteButtonElement = clone.querySelector('button');
   deleteButtonElement.addEventListener('click', () => {
@@ -610,8 +679,10 @@ function postSavedRecipe(recipe) {
   params.append('source-url', recipe['sourceUrl']);
   params.append('servings', recipe['servings']);
   params.append("ready-in-minutes", recipe['readyInMinutes']);
-  for(recipeIngredient of recipe['extendedIngredients']){
-    params.append('ingredient-names', recipeIngredient['name']);
+  if (recipe['extendedIngredients'] != null) {
+    for(recipeIngredient of recipe['extendedIngredients']){
+      params.append('ingredient-names', recipeIngredient['name']);
+    }
   }
   if (recipe['vegetarian']) {
     params.append('dietary-needs', "VEGETARIAN");
