@@ -712,9 +712,9 @@ h1 {
 
 #tag-menu {
   display: inline-block;
+  left: 10%;
   position: absolute;
   top: 350px;
-  left: 10%;
   width: 80%;
 }
 

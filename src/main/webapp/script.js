@@ -167,8 +167,7 @@ function multipleSavedRecipes() {
       });
     } else {
       alert(tagJson.error);
-    }
-    
+    }  
   });
 }
 
@@ -192,12 +191,9 @@ function savedRecipes(tagName) {
     }
     
   });
-
-
 }
 
 const PAGE_LENGTH = 4;
-
 // refresh the tag selection menu in case tag was deleted or added
 function refreshTagNameSelection() {
   const tagMenuElement = document.getElementById("tag-menu");
@@ -225,10 +221,6 @@ function refreshTagNameSelection() {
           carousel.appendChild(createTagCarouselPage(slice, false));
         }
       }
-
-      //tagNames.forEach(tagName => {
-        //tagMenuElement.appendChild(addTagMenuItem(tagName, tagName));
-      //});
     });
   }
 }
