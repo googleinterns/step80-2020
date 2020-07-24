@@ -112,11 +112,30 @@ function displayRecipes() {
   appendToDisplayElement(JSON.parse(recipeList));
 }
 
-/** Call the appropriate functions needed on-load of the body of board page */
+/** Call the appropriate functions needed on-load of the body of the tagged recipes page */
 function loadBoardPage() {
   savedRecipes("");
   refreshTagNameSelection();
   getLoginStatus('board.html');
+}
+
+/** Call the appropriate functions needed on-load of the body of the favorites page */
+function loadFavoritesPage() {
+  getLoginStatus("favorites.html");
+  const displayRecipesElement = document.getElementById("display-recipes");
+  displayRecipesElement.innerHTML = "";
+  fetch('/favorite').then(response => response.json()).then((message) => {
+    if (message.error == null) {
+      const recipeIdList = message.recipeList;
+
+      // display recipes as cards
+      recipeIdList.forEach(recipeId => { 
+        getSavedRecipe(displayRecipesElement, recipeId);
+      });
+    } else {
+      alert(message.error);
+    }
+  });
 }
 
 /** Display saved recipes by tag name */
@@ -480,9 +499,35 @@ function createRecipeElement(recipe, pictureWrap) {
 
   const closeElement = clone.querySelector(".icon-remove-sign");
   closeElement.onclick = function() {
-      hoverElement.style.display = "none";
-      document.getElementById("display-recipes").style.opacity = "1";
+    hoverElement.style.display = "none";
+    document.getElementById("display-recipes").style.opacity = "1";
+    const tagMenu = document.getElementById("tag-menu");
+    if (tagMenu != null) {
+      tagMenu.style.opacity = "1";
+    }
   }
+
+  const favoriteElement = clone.querySelector(".icon-star");
+  getFavorite(recipe['id'], favoriteElement);
+  favoriteElement.onclick = function() {
+    const params = new URLSearchParams();
+
+    if (favoriteElement.value != null) {
+      params.append('favorite-id', favoriteElement.value);
+    } else {
+      params.append('recipe-id', recipe['id']);
+    }
+    fetch('/favorite', {method: 'POST', body: params}).then(response => response.json()).then((message) => {
+      if (message.favoriteId != null) {
+        favoriteElement.value = message.favoriteId;
+        favoriteElement.style.color = "yellow";
+      } else {
+        favoriteElement.value = null;
+        favoriteElement.style.color = "transparent";
+      }
+    });
+  }
+
   const imageElement = clone.querySelector(".recipe-image");
   imageElement.src = recipe["image"];
 
@@ -518,9 +563,26 @@ function createRecipeElement(recipe, pictureWrap) {
   });
   document.getElementById("card-gallery").appendChild(clone);
   pictureWrap.onclick = function() {
-      hoverElement.style.display = "block";
-      document.getElementById("display-recipes").style.opacity = "0.2";
+    hoverElement.style.display = "block";
+    document.getElementById("display-recipes").style.opacity = "0.2";
+    const tagMenu = document.getElementById("tag-menu");
+    if (tagMenu != null) {
+      tagMenu.style.opacity = "0.2";
+    }
   }
+}
+
+// create an element that represents if recipe is one of user's favorites
+function getFavorite(recipeId, favoriteElement) {
+  fetch('/favorite?recipeId=' + recipeId).then(response => response.json()).then((message) => {
+    if (message.isFavorite) {
+      favoriteElement.value = message.favoriteId;
+      favoriteElement.style.color = "yellow";
+    } else {
+      favoriteElement.value = null;
+      favoriteElement.style.color = "transparent";
+    }
+  });
 }
 
 /** Get profile information to determine which alerts to create */
