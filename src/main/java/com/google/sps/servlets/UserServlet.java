@@ -40,16 +40,16 @@ public class UserServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json");
     JSONObject responseMap = new JSONObject();
+    String redirectUrl = request.getParameter("url");
 
     UserService userService = UserServiceFactory.getUserService();
     if (userService.isUserLoggedIn()) {
       String userEmail = userService.getCurrentUser().getEmail();
-      String urlToRedirectToAfterUserLogsOut = "/profile.html";
+      String urlToRedirectToAfterUserLogsOut = "/" + redirectUrl;  
       String logoutUrl = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut);
-      
+      responseMap.put("logoutUrl", logoutUrl);   
       responseMap.put("email", userEmail);
       responseMap.put("isLoggedIn", true);
-      responseMap.put("logoutUrl", logoutUrl);
 
       String userName = getUserProfileName(userService.getCurrentUser().getUserId());
       if (userName == null) {
@@ -59,7 +59,7 @@ public class UserServlet extends HttpServlet {
         responseMap.put("userName", userName);
       }
     } else {
-      String urlToRedirectToAfterUserLogsIn = "/profile.html";
+      String urlToRedirectToAfterUserLogsIn = "/" + redirectUrl;
       String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
 
       responseMap.put("isLoggedIn", false);

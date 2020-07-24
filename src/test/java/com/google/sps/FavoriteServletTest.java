@@ -13,7 +13,7 @@
 // limitations under the License.
 
 package com.google.sps;
-import com.google.sps.servlets.ProfileServlet;
+import com.google.sps.servlets.FavoriteRecipeServlet;
 import org.junit.Assert;
 import org.junit.After;
 import org.junit.Before;
@@ -45,18 +45,18 @@ import java.io.StringWriter;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import java.util.Arrays;
+import org.json.simple.JSONArray;
 
-/** Tests for ProfileServlet */
+/** Tests for FavoriteRecipeServlet */
 @RunWith(MockitoJUnitRunner.class)
-public final class ProfileServletTest {
+public final class FavoriteServletTest {
   // helper to mimic user authentication
   private final LocalServiceTestHelper helper =
     new LocalServiceTestHelper(new LocalUserServiceTestConfig()).setEnvAuthDomain("gmail.com")
       .setEnvEmail("test@gmail.com")
       .setEnvAttributes(ImmutableMap.of("com.google.appengine.api.users.UserService.user_id_key", "123"));
   
-  @Mock private ProfileServlet servlet;
+  @Mock private FavoriteRecipeServlet servlet;
   @Mock private HttpServletRequest request;
   @Mock private HttpServletResponse response;
 
@@ -64,7 +64,7 @@ public final class ProfileServletTest {
   public void setUp() throws ServletException {
     MockitoAnnotations.initMocks(this);
     helper.setUp();
-    servlet = new ProfileServlet();
+    servlet = new FavoriteRecipeServlet();
   }
 
   @After
@@ -73,8 +73,8 @@ public final class ProfileServletTest {
   }
 
   @Test
-  public void postProfileNotLoggedIn() throws IOException, ServletException, ParseException {
-    // User is not logged in when submitting profile
+  public void postFavoriteNotLoggedIn() throws IOException, ServletException, ParseException {
+    // User tries to set favorite but not logged in
     helper.setEnvIsLoggedIn(false);
 
     StringWriter sw = new StringWriter();
@@ -87,12 +87,12 @@ public final class ProfileServletTest {
     JSONParser parser = new JSONParser();
     JSONObject json = (JSONObject) parser.parse(result);
     
-    assertEquals("User needs to log in to change profile.", json.get("error"));
+    assertEquals("User needs to login", json.get("error"));
   }
-  
+
   @Test
-  public void postProfileNoParameters() throws IOException, ServletException, ParseException {
-    // User is logged in but didn't input any parameters when submitting profile
+  public void postFavoriteNoParameters() throws IOException, ServletException, ParseException {
+    // User set favorite without setting any parameters
     helper.setEnvIsLoggedIn(true);
 
     StringWriter sw = new StringWriter();
@@ -105,14 +105,60 @@ public final class ProfileServletTest {
     JSONParser parser = new JSONParser();
     JSONObject json = (JSONObject) parser.parse(result);
     
-    assertEquals("User needs to input username.", json.get("error"));
+    assertTrue(json.isEmpty());
+  }
+
+  // helper test for creating favorites with known parameters
+  public Long createFavoriteWithRecipeId(String recipeId) throws IOException, ServletException, ParseException {
+    helper.setEnvIsLoggedIn(true);
+
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
+    when(response.getWriter()).thenReturn(pw);
+    when(request.getParameter("recipe-id")).thenReturn(recipeId);
+    
+    servlet.doPost(request, response);
+    String result = sw.getBuffer().toString().trim();
+
+    JSONParser parser = new JSONParser();
+    JSONObject json = (JSONObject) parser.parse(result);
+    
+    assertTrue(json.get("favoriteId") != null);
+    return (Long) json.get("favoriteId");
+  }
+
+  // helper test for deleting favorites
+  public void deleteFavoriteWithFavoriteId(Long favoriteId) throws IOException, ServletException, ParseException {
+    helper.setEnvIsLoggedIn(true);
+
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
+    when(response.getWriter()).thenReturn(pw);
+    when(request.getParameter("favorite-id")).thenReturn(Long.toString(favoriteId));
+    
+    // delete favorite
+    servlet.doPost(request, response);
+    
+    // check if favorite does not exist due to deletion
+    sw = new StringWriter();
+    pw = new PrintWriter(sw);
+    when(response.getWriter()).thenReturn(pw);
+    when(request.getParameter("recipeId")).thenReturn("1");
+
+    servlet.doGet(request, response);
+    String result = sw.getBuffer().toString().trim();
+    
+    JSONParser parser = new JSONParser();
+    JSONObject json = (JSONObject) parser.parse(result);
+    
+    assertFalse((boolean) json.get("isFavorite"));
   }
 
   @Test
-  public void getProfileNotLoggedIn() throws IOException, ServletException, ParseException {
-    // User is not logged in when getting profile
+  public void getFavoriteNotLoggedIn() throws IOException, ServletException, ParseException {
+    // User tries to get favorites without being logged in
     helper.setEnvIsLoggedIn(false);
-    
+
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
     when(response.getWriter()).thenReturn(pw);
@@ -122,17 +168,17 @@ public final class ProfileServletTest {
 
     JSONParser parser = new JSONParser();
     JSONObject json = (JSONObject) parser.parse(result);
-
-    assertEquals("User needs to log in to see profile.", json.get("error"));
+    
+    assertEquals("User needs to login", json.get("error"));
   }
 
   @Test
-  public void getProfileHasNoProfile() throws IOException, ServletException, ParseException {
-    // User tries to get profile but doesn't have a profile
+  public void getFavoritesNoParameters() throws IOException, ServletException, ParseException {
+    // User tries to get all favorites
     helper.setEnvIsLoggedIn(true);
-    helper.setEnvEmail("test2@gmail.com")
-      .setEnvAttributes(ImmutableMap.of("com.google.appengine.api.users.UserService.user_id_key", "111"));
-    helper.setUp();
+
+    Long favoriteId1 = createFavoriteWithRecipeId("1");
+    Long favoriteId2 = createFavoriteWithRecipeId("2");
 
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
@@ -143,77 +189,51 @@ public final class ProfileServletTest {
 
     JSONParser parser = new JSONParser();
     JSONObject json = (JSONObject) parser.parse(result);
+    
+    assertTrue(((JSONArray) json.get("recipeList")).size() == 2);
+    assertEquals(null, json.get("error"));
 
-    assertFalse((boolean) json.get("hasProfile"));
+    getFavoriteHasRecipeIdParameter("1", favoriteId1);
+    
+    deleteFavoriteWithFavoriteId(favoriteId1);
+    deleteFavoriteWithFavoriteId(favoriteId2);
+  }
+
+  public void getFavoriteHasRecipeIdParameter(String recipeId, Long favoriteId) throws IOException, ServletException, ParseException {
+    // User wants to know if recipe is favorite
+    helper.setEnvIsLoggedIn(true);
+
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
+    when(response.getWriter()).thenReturn(pw);
+    when(request.getParameter("recipeId")).thenReturn(recipeId);
+    
+    servlet.doGet(request, response);
+    String result = sw.getBuffer().toString().trim();
+
+    JSONParser parser = new JSONParser();
+    JSONObject json = (JSONObject) parser.parse(result);
+    
+    assertTrue((boolean) json.get("isFavorite"));
+    assertEquals(favoriteId, json.get("favoriteId"));
   }
 
   @Test
-  public void onlyUsernameProfile() throws IOException, ServletException, ParseException {
-    // User submits profile but only username parameter is filled out
+  public void getFavoriteDoesNotExist() throws IOException, ServletException, ParseException {
+    // User wants to know if recipe is a favorite but it isn't
     helper.setEnvIsLoggedIn(true);
-    helper.setEnvEmail("test@gmail.com")
-      .setEnvAttributes(ImmutableMap.of("com.google.appengine.api.users.UserService.user_id_key", "123"));
-    helper.setUp();
-
-    when(request.getParameter("userName")).thenReturn("testUserName");
 
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
     when(response.getWriter()).thenReturn(pw);
+    when(request.getParameter("recipeId")).thenReturn("3");
     
-    // set username of profile
-    servlet.doPost(request, response);
-    
-    sw = new StringWriter();
-    pw = new PrintWriter(sw);
-    when(response.getWriter()).thenReturn(pw);
-    
-    // get profile from servlet
     servlet.doGet(request, response);
     String result = sw.getBuffer().toString().trim();
 
     JSONParser parser = new JSONParser();
     JSONObject json = (JSONObject) parser.parse(result);
-    JSONObject profile = (JSONObject) json.get("profile");
-
-    assertEquals("testUserName", profile.get("userName"));
-  }
-
-  @Test
-  public void includeListInputsProfile() throws IOException, ServletException, ParseException {
-    // User submits profile list information (dietary needs, allergies)
-    helper.setEnvIsLoggedIn(true);
-
-    when(request.getParameter("userName")).thenReturn("testUserName");
     
-    String[] dietList = {"VEGETARIAN","VEGAN"};
-    when(request.getParameterValues("dietary-needs")).thenReturn(dietList);
-
-    String[] allergyList = {"milk"};
-    when(request.getParameterValues("allergies")).thenReturn(allergyList);
-
-    StringWriter sw = new StringWriter();
-    PrintWriter pw = new PrintWriter(sw);
-    when(response.getWriter()).thenReturn(pw);
-    
-    // set profile with dietary needs and allergies
-    servlet.doPost(request, response);
-    
-    sw = new StringWriter();
-    pw = new PrintWriter(sw);
-    when(response.getWriter()).thenReturn(pw);
-    
-    // get profile from servlet
-    servlet.doGet(request, response);
-    String result = sw.getBuffer().toString().trim();
-
-    JSONParser parser = new JSONParser();
-    JSONObject json = (JSONObject) parser.parse(result);
-    JSONObject profile = (JSONObject) json.get("profile");
-    
-    assertEquals("testUserName", profile.get("userName"));
-    assertEquals(Arrays.asList(dietList), profile.get("dietaryNeeds"));
-    assertEquals(Arrays.asList(allergyList), profile.get("allergies"));
+    assertFalse((boolean) json.get("isFavorite"));
   }
 }
-
