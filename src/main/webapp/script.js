@@ -215,7 +215,6 @@ function refreshTagNameSelection() {
         if (i == 0) {
           carouselLinks.appendChild(createElementFromHTML('<li data-target="#myTagCarousel" data-slide-to="' + i + '" class="active"></li>'));
           carousel.appendChild(createTagCarouselPage(slice, true));
-
         } else {
           carouselLinks.appendChild(createElementFromHTML('<li data-target="#myTagCarousel" data-slide-to="' + i + '"></li>'));
           carousel.appendChild(createTagCarouselPage(slice, false));
@@ -228,7 +227,7 @@ function refreshTagNameSelection() {
 function createTagCarouselPage(slice, isFirst) {
   const page = document.createElement('div');
   if (isFirst) {
-    page.className= 'item active';
+    page.className = 'item active';
   } else {
     page.className = 'item';
   }
