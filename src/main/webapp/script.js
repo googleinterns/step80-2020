@@ -138,6 +138,40 @@ function loadFavoritesPage() {
   });
 }
 
+/** Display saved recipes by tag names that are checked in tag selection */
+function multipleSavedRecipes() {
+  const checkedcheckboxes = document.querySelectorAll('input[name="tag-menu-checkbox"]:checked');
+  var tagNames = [];
+  checkedcheckboxes.forEach((checkbox) => {
+    tagNames.push(checkbox.value);
+  });
+  var tagNameParameters = "";
+  if (tagNames.length > 0) {
+    tagNameParameters += "?";
+    for (var i = 0; i < tagNames.length-1; i++) {
+      tagNameParameters += "tag-names=" + tagNames[i] + "&";
+    }
+    tagNameParameters += "tag-names=" + tagNames[tagNames.length-1];
+  }
+  const displayRecipesElement = document.getElementById("display-recipes");
+  displayRecipesElement.innerHTML = "";
+
+  fetch('/multiple-tags' + tagNameParameters).then(response => response.json()).then((tagJson) => {
+    // get list of unique recipes from tagJson
+    if (tagJson.error == null) {
+      const recipeList = tagJson.recipeList;
+    
+      // display recipes as cards
+      recipeList.forEach(recipeId => { 
+        getSavedRecipe(displayRecipesElement, recipeId);
+      });
+    } else {
+      alert(tagJson.error);
+    }
+    
+  });
+}
+
 /** Display saved recipes by tag name */
 function savedRecipes(tagName) {
   const displayRecipesElement = document.getElementById("display-recipes");
@@ -158,22 +192,64 @@ function savedRecipes(tagName) {
     }
     
   });
+
+
 }
+
+const PAGE_LENGTH = 4;
 
 // refresh the tag selection menu in case tag was deleted or added
 function refreshTagNameSelection() {
   const tagMenuElement = document.getElementById("tag-menu");
   if (tagMenuElement != null) {
     fetch('/tag-names').then(response => response.json()).then((tagNames) => {
-      tagMenuElement.innerHTML = "";
-    
-      tagMenuElement.appendChild(addTagMenuItem("", "All tags"));
-      tagNames.forEach(tagName => {
-        tagMenuElement.appendChild(addTagMenuItem(tagName, tagName));
-      });
+      const carouselLinks = document.getElementById("tag-indicators");
+      carouselLinks.innerHTML = "";
+      const carousel = document.getElementById("tag-inner");
+      carousel.innerHTML = "";
+
+      var pages = Math.floor(tagNames.length / PAGE_LENGTH);
+      var remainder = tagNames.length % PAGE_LENGTH;
+      if (remainder != 0) {
+        pages++;
+      }
+
+      for (i = 0; i < pages; i++) {
+        var slice = tagNames.slice(i*PAGE_LENGTH, (i+1)*PAGE_LENGTH);
+        if (i == 0) {
+          carouselLinks.appendChild(createElementFromHTML('<li data-target="#myTagCarousel" data-slide-to="' + i + '" class="active"></li>'));
+          carousel.appendChild(createTagCarouselPage(slice, true));
+
+        } else {
+          carouselLinks.appendChild(createElementFromHTML('<li data-target="#myTagCarousel" data-slide-to="' + i + '"></li>'));
+          carousel.appendChild(createTagCarouselPage(slice, false));
+        }
+      }
+
+      //tagNames.forEach(tagName => {
+        //tagMenuElement.appendChild(addTagMenuItem(tagName, tagName));
+      //});
     });
   }
+}
 
+function createTagCarouselPage(slice, isFirst) {
+  const page = document.createElement('div');
+  if (isFirst) {
+    page.className= 'item active';
+  } else {
+    page.className = 'item';
+  }
+  slice.forEach(tagName => page.appendChild(addTagMenuItem(tagName, tagName)));
+  return page;
+}
+
+function createElementFromHTML(htmlString) {
+  var div = document.createElement('div');
+  div.innerHTML = htmlString.trim();
+
+  // Change this to div.childNodes to support multiple top-level nodes
+  return div.firstChild; 
 }
 
 // create tag menu item for selecting recipes by tag
@@ -183,16 +259,6 @@ function addTagMenuItem(value, tag) {
 
   const tagMenuItemElement = tagMenuItemClone.querySelector(".tag-menu-item");
   tagMenuItemElement.value = tag;
-  if (tag == "All tags") {
-    tagMenuItemElement.style.color = "red";
-  }
-
-  // display text of tag, which when clicked displays the related recipes
-  const tagItemElement = tagMenuItemClone.querySelector('span');
-  tagItemElement.innerHTML = tag;
-  tagItemElement.addEventListener('click', () => {
-    savedRecipes(value);
-  });
 
   // create button for deleting all tags with selected name
   const tagItemButton = tagMenuItemClone.querySelector('button');
@@ -212,6 +278,20 @@ function addTagMenuItem(value, tag) {
       }
     });
   });
+
+  // display text of tag, which when clicked displays the related recipes
+  const tagItemElement = tagMenuItemClone.querySelector('span');
+  tagItemElement.innerHTML = tag;
+  tagItemElement.addEventListener('click', () => {
+    savedRecipes(value);
+  });
+
+  const tagCheckbox = tagMenuItemClone.querySelector(".tag-menu-checkbox");
+  tagCheckbox.value = value;
+  tagCheckbox.onclick = function() {
+    multipleSavedRecipes();
+  }
+
   return tagMenuItemClone;
 }
 

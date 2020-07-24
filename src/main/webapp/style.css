@@ -711,8 +711,11 @@ h1 {
 }
 
 #tag-menu {
-  border: 2px solid green;
   display: inline-block;
+  position: absolute;
+  top: 350px;
+  left: 10%;
+  width: 80%;
 }
 
 .tag-menu-item {
@@ -721,6 +724,7 @@ h1 {
   display: inline-block;
   margin: 5px;
   padding: 5px 5px 5px 10px;
+  text-align: left;
   width: auto;
 }
 
@@ -733,6 +737,7 @@ h1 {
   display: inline-block;
   margin: auto;
   width: 100px;
+  word-wrap: break-word;
 }
 
 .tag-item-button {
@@ -762,4 +767,8 @@ h1 {
   left: 50%;
   margin-top: 175px;
   position: absolute;
+}
+
+#tag-inner {
+  text-align: center;
 }

@@ -3,9 +3,12 @@
   <head>
     <meta charset="UTF-8">
     <title>Your Recipe Board</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   </head>
 
   <body onload="javascript:loadBoardPage()"> 
@@ -28,10 +31,22 @@
     </div>
     <div class="content">
       <div id="tag-page-header">
-        <div id="tag-menu"></div>
-        <i class="icon-arrow-left icon-4x"></i>
         <div id="your-tags-text">Your Tags</div>
         <i class="icon-tags icon-4x"></i>
+      </div>
+      <div id="tag-menu">
+        <div id="myTagCarousel" class="carousel slide" data-ride="carousel">
+          <ol id="tag-indicators" class="carousel-indicators"> </ol>
+          <div id="tag-inner" class="carousel-inner"> </div>
+          <a class="left carousel-control" href="#myTagCarousel" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="right carousel-control" href="#myTagCarousel" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            <span class="sr-only">Next</span>
+          </a>
+        </div>
       </div>
       <div id="display-recipes"> </div>
       <div id="card-gallery"> </div>
@@ -74,11 +89,11 @@
       </div>
     </template>
     <template id="tag-name-template">
-      <p class="tag-menu-item">
-        <span class="tag-item-name"></span>
+      <div class="tag-menu-item">
         <button class="tag-item-button">x</button>
-      </p>
-      <br/>
+        <span class="tag-item-name"></span>
+        <input type="checkbox" name="tag-menu-checkbox" class="tag-menu-checkbox">
+      </div>
     </template>
     <template id="picture-wrap-template">
       <div class="dish-image-wrap">
