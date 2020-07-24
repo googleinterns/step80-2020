@@ -40,12 +40,11 @@ import org.json.simple.JSONObject;
 import java.util.Set;
 import java.util.HashSet;
 
-/** Servlet that returns and adds tags in Datastore */
+/** Servlet that returns the recipeIds of the recipes that have the specified tagnames */
 @WebServlet("/multiple-tags")
 public class MultipleTagsServlet extends HttpServlet {
   private static final String AUTHORIZATION_ERROR = "User needs to login";
   
-  /** Return all tags filtered by tagName and/or recipeId */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
@@ -53,6 +52,7 @@ public class MultipleTagsServlet extends HttpServlet {
     Gson gson = new Gson();  
     String json;
 
+    // user's tags selection
     String[] tagNames = request.getParameterValues("tag-names");
     if (userService.isUserLoggedIn()) {
       Query query = getQueryWithFilters(tagNames, userService);
@@ -80,9 +80,10 @@ public class MultipleTagsServlet extends HttpServlet {
     List<Query.Filter> filterList = new ArrayList<>();
     String userId = userService.getCurrentUser().getUserId();
 
-    // set up filters for query
+    // set up filters for query over user's tags
     filterList.add(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userId));
     
+    // add filters for tagnames
     List<Query.Filter> tagFilters = new ArrayList<>();
     if (tagNames != null) {
       if (tagNames.length > 1) {
