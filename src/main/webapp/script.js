@@ -245,16 +245,18 @@ function closeImageForm() {
 
 /** Generates a preview of the user's uploaded image */
 function previewImage(input) {
+  var preview = document.getElementById("image-preview");
+  var label =  document.getElementById("label-title");
+  var container = document.getElementById("input");
+  var reader = new FileReader();
+  var upload = document.getElementById("upload");
   if(input.files && input.files[0]) {
-    container = document.getElementById("input");
     container.style.padding = "20px 20px 30% 20px";
-    container.innerText = "File uploaded: " + input.files[0].name;
-    preview = document.getElementById("image-preview")
-    var reader = new FileReader();
+    label.innerText = "File uploaded: " + input.files[0].name;
     reader.onload = function (e) {
       preview.src = e.target.result;
       preview.style.display = "inline-block";
-      document.getElementById("upload").style.display = "inline-block";
+      upload.style.display = "inline-block";
     };
     reader.readAsDataURL(input.files[0]);
   }

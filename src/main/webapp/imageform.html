@@ -27,13 +27,10 @@
     </div>
     <div class="form">
       <form action="javascript:getRecipeInfo()" id="form" class="form-container" enctype="multipart/form-data">
-        <!-- <i class="icon-picture"></i> -->
-        <!-- <h3 class="input-title">Search by Dish Image</h3> -->
-        <label id="input" class="file-container">
-          Upload Dish Image
-          <i class="icon-upload-alt"></i>
-          <input type="file" id="image" class="input-file" name="image" multiple="false" onchange="previewImage(this);"/>
-          <img class="image-preview" id="image-preview" >
+        <label for="image" id="input" class="file-container">
+          <p id="label-title"> Upload Dish Image<i class="icon-upload-alt"></i></p>
+          <input type="file" id="image" class="input-file" name="image" multiple="false" onchange="previewImage(this);">
+          <img class="image-preview" id="image-preview">
           <button type="submit" id="upload" class="upload image-upload">Submit</button>
         </label> 
         <i onclick="window.location.href='/index.html'" class="icon-remove-sign icon-2x"></i>
