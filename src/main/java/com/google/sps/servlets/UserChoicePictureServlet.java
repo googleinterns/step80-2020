@@ -45,8 +45,9 @@ import com.google.appengine.api.datastore.Query;
 @WebServlet("/dishChoicePictures")
 public class UserChoicePictureServlet extends HttpServlet {
   private static String PREFIX_KNOWLEDGE_GRAPH = "https://kgsearch.googleapis.com/v1/entities:search";
+  private static String IMAGE_NOT_FOUND = "https://cdn.iconscout.com/icon/premium/png-512-thumb/no-data-found-1965030-1662565.png";
 
-  /**  */
+  /** Uses Knowledge Graph API to get images from two queried dish names */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -60,7 +61,7 @@ public class UserChoicePictureServlet extends HttpServlet {
     String secondOption = (String) request.getParameter("secondOption");
     String firstImageURL = getImageUrl(firstOption, knowledgeGraphKey);
     String secondImageURL = getImageUrl(secondOption, knowledgeGraphKey);
-    String imageURLs = "{\"firstURL\": \""+firstImageURL+"\", \"secondURL\": \""+secondImageURL+"\"}";
+    String imageURLs = String.format("{\"firstURL\": \"%s\", \"secondURL\": \"%s\"}", firstImageURL, secondImageURL);
     System.out.println(imageURLs);
     response.setContentType("application/json");
     response.getWriter().println(imageURLs);
@@ -70,8 +71,8 @@ public class UserChoicePictureServlet extends HttpServlet {
     Client client = ClientBuilder.newClient();
     try {
       dishName = URLEncoder.encode(dishName);
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
+      dishName = "";
       System.out.println(e);
     }
     WebTarget target = client.target(String.format("%s?query=%s&key=%s&types=image", PREFIX_KNOWLEDGE_GRAPH, dishName, knowledgeGraphKey));
@@ -91,7 +92,7 @@ public class UserChoicePictureServlet extends HttpServlet {
           return imageURL;
         }
       }
-      return "https://cdn.iconscout.com/icon/premium/png-512-thumb/no-data-found-1965030-1662565.png";
+      return IMAGE_NOT_FOUND;
     } catch(Exception e){
       System.out.println(e);
       return "";
