@@ -62,11 +62,8 @@ public class SavedRecipeServlet extends HttpServlet {
       String sourceUrl = checkIfStringNull((String) entity.getProperty("sourceUrl"));
       Long servings = checkIfLongNull((Long) entity.getProperty("servings"));
       Long readyInMinutes = checkIfLongNull((Long) entity.getProperty("readyInMinutes"));
-      ArrayList<String> dietaryNeedsStrings = (ArrayList<String>) entity.getProperty("dietaryNeeds");
-      dietaryNeedsStrings = nullToArrayList(dietaryNeedsStrings);
-
-      ArrayList<String> ingredientNamesStrings = (ArrayList<String>) entity.getProperty("ingredientNames");
-      ingredientNamesStrings = nullToArrayList(ingredientNamesStrings);
+      ArrayList<String> dietaryNeedsStrings = getArrayListProperty(entity, "dietaryNeeds");
+      ArrayList<String> ingredientNamesStrings = getArrayListProperty(entity, "ingredientNames");
       
       // convert string to Diet enum because datastore stores dietaryNeeds as a list of strings
       ArrayList<SavedRecipe.Diet> dietaryNeeds = new ArrayList<>();
@@ -165,11 +162,9 @@ public class SavedRecipeServlet extends HttpServlet {
     }
   }
 
-  public ArrayList<String> nullToArrayList(ArrayList<String> valuesList) {
-    if (valuesList == null) {
-      return new ArrayList<>();
-    }
-    return valuesList;
+  public ArrayList<String> getArrayListProperty(Entity entity, String propertyName) {
+    ArrayList<String> valueList = (ArrayList) entity.getProperty(propertyName);
+    return valueList == null ? new ArrayList<>() : valueList;
   }
 
   public String checkIfStringNull(String str) {
