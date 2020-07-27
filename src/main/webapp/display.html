@@ -3,9 +3,12 @@
   <head>
     <meta charset="UTF-8">
     <title>Your Recipes</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   </head>
 
   <body id="display-background" onload="loadDisplayPage()"> 
@@ -27,6 +30,7 @@
       </div>
     </div>
     <div class="content">
+      <div class="empty-container"> </div>
       <span
           id="dish"
           class="txt-rotate"
@@ -36,7 +40,9 @@
       <a class="scroller2 bounce" href="#display-recipes">
         <i class="icon-double-angle-down icon-4x"></i>
       </a>
-      <div id="display-recipes"> </div>
+      <div id="display-recipes">
+        <h2>Recipe Gallery:</h2>
+      </div>
       <div id="card-gallery"> </div>
     </div>
     <template id="recipe-template">
@@ -58,10 +64,24 @@
             <div id="recipe-alert-block"> </div>
           </div>
         </div>
-        <div class="recipe-card-tags"></div>
+        <div class="container">
+          <div id="myCarousel" class="carousel slide" data-ride="carousel">
+            <ol class="carousel-indicators"> </ol>
+            <div class="carousel-inner"> </div>
+            <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+              <span class="glyphicon glyphicon-chevron-left"></span>
+              <span class="sr-only">Previous</span>
+            </a>
+            <a class="right carousel-control" href="#myCarousel" data-slide="next">
+              <span class="glyphicon glyphicon-chevron-right"></span>
+              <span class="sr-only">Next</span>
+            </a>
+          </div>
+        </div>
         <div class="recipe-card-table">
-          <textarea class="tag-input"></textarea>
-          <button class="add-tag-button">+</button>
+          <input type="text" name="tag-input" class="tag-input"></input>
+          <label id="tag-label" class="form-label" for="tag-input">Add a tag</label>
+          <div class="add-tag-button"> <i class="icon-plus-sign icon-3x"></i></div>
         </div>
       </div>
     </template>
