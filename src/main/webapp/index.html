@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Image Upload</title>
+    <title>Home</title>
     <link rel="stylesheet" href="style.css">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
     <script src="script.js"></script>
@@ -30,22 +30,10 @@
     </a>
     <div id="about">
       <div class="about-container">
-        <h3>About Forked</h3>
-        <h4 class="about-text">Curious what ingredients are in your dish? Want to find a similar recipe for later? Worried about potential food allergens or restrictions? Forked provides you with instantanous information on your dish. Just upload your photo below and let us do the rest!</h4>
-        <button id="popup-button" class="open-button" onclick="openImageForm()">Analyze Your Dish</button>
-      </div>
-      <div class="form-popup" class="hidden" id="popup">
-        <form action="javascript:getRecipeInfo()" id="form" class="form-container" enctype="multipart/form-data">
-          <label class="file-container">
-            Choose File
-            <i class="icon-upload-alt"></i>
-            <input type="file" id="image" class="input-file" name="image" multiple="false" onchange="previewImage(this);"/>
-          </label> 
-          <i onclick="closeImageForm()" class="icon-remove-sign icon-2x"></i>
-          <img class="image-preview" id="image-preview" >
-          <br>
-          <button type="submit" id="upload" class="upload">Upload</button>
-        </form>
+        <h3 id="about-text-title">About Forked</h3>
+        <h4 id="about-text" class="about-text">Curious what ingredients are in your dish? Want to find a similar recipe for later? Worried about potential food allergens or restrictions? Forked provides you with instantanous information on your dish. Just upload a photo of your dish or type in its name and let us do the rest!</h4>
+        <button class="button-container" onclick="window.location.href='/imageform.html'"> <i class="icon-picture search-icon"></i></button>
+        <button class="button-container" onclick="window.location.href='/textform.html'"> <i class="icon-font search-icon"></i></button>
       </div>
     </div>
     <div class="loading" id="overlay">
