@@ -29,24 +29,50 @@ import com.google.gson.Gson;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.io.UnsupportedEncodingException;
+
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+
 /** Servlet to take in dish name and return bulk recipe infomation */
 @WebServlet("/recipeInfo")
 public class SpoonacularCombinedServlet extends HttpServlet {
-  private static final String spoonacularPrefix = "https://api.spoonacular.com/recipes";
-  private static final String spoonacularAPIKey = "cd2269d31cb94065ad1e73ce292374a5";
+  private static final String SPOONACULAR_API_PREFIX = "https://api.spoonacular.com/recipes";
+  private static final String API_QUERY_NUMBER = "6";
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String query = request.getParameter("dishName");
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Query query =
+      new Query("apiKey")
+        .setFilter(new Query.FilterPredicate("keyName", Query.FilterOperator.EQUAL, "spoonacular"));
+    PreparedQuery results = datastore.prepare(query);
+    Entity entity = results.asSingleEntity();
+    String spoonacularKey = (String) entity.getProperty("key");
+    
+    String dishName = request.getParameter("dishName");
     Client client = ClientBuilder.newClient();
-    query = query.replaceAll(" ", "+");
-    WebTarget target = client.target(spoonacularPrefix + "/search?query=" + query + "&number=6&includeNutrition=true&apiKey=" + spoonacularAPIKey);
+    try {
+      dishName = URLEncoder.encode(dishName);
+    } catch (Exception e) {
+      System.out.println(e);
+    }
+    String targetString = String.format("%s/search?query=%s&number=%s&includeNutririon=true&apiKey=%s", 
+      SPOONACULAR_API_PREFIX, dishName, API_QUERY_NUMBER, spoonacularKey);
+    WebTarget target = client.target(targetString);
     try {
       String recipeListJSONString = target.request(MediaType.APPLICATION_JSON).get(String.class);
       JSONObject recipeJson = new JSONObject(recipeListJSONString);
       JSONArray recipeListJson = new JSONArray(recipeJson.get("results").toString());
       String recipeList = "";
       Boolean isFirstinList = true;
-      for(Object recipeInfoObject: recipeListJson){
+      for(Object recipeInfoObject: recipeListJson) {
         JSONObject recipeInfoJson = (JSONObject)recipeInfoObject;
         if(isFirstinList) {
           recipeList = recipeList + recipeInfoJson.get("id"); 
@@ -55,7 +81,9 @@ public class SpoonacularCombinedServlet extends HttpServlet {
           recipeList = recipeList + "," + recipeInfoJson.get("id"); 
         }
       }
-      target = client.target(spoonacularPrefix + "/informationBulk?number=2&apiKey=" + spoonacularAPIKey + "&ids=" + recipeList);
+      targetString = String.format("%s/informationBulk?includeNutrition=true&apiKey=%s&ids=%s", 
+        SPOONACULAR_API_PREFIX, spoonacularKey, recipeList);
+      target = client.target(targetString);
       String recipeInformationString = target.request(MediaType.APPLICATION_JSON).get(String.class);
       Gson gson = new Gson();
       response.setContentType("application/json");
