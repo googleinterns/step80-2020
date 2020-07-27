@@ -220,8 +220,8 @@ body {
 }
 
 .search-icon {
-  font-size: 130px;
   color: darkseagreen;
+  font-size: 130px;
   opacity: 0.7;
   padding-left: 60px;
   padding-right: 60px;
@@ -230,10 +230,10 @@ body {
 }
 
 .button-container {
-  color: white;
-  cursor: pointer;
   background-color: white;
   border: none;
+  color: white;
+  cursor: pointer;
 }
 
 .search-icon:hover {
@@ -242,11 +242,11 @@ body {
 }
 
 .form-label {
+  color: gray;
   opacity: 1;
   padding-top: 10px;
   padding-left: 60px;
   position: absolute;
-  color: gray;
   z-index: -1;
 }
 
@@ -536,11 +536,6 @@ h2 {
   opacity: 0.6;
   padding: 16px 20px;
 }
-
-/* .file-container:hover {
-  opacity: 1;
-} */
-
 
 .file-container [type=file] {
   cursor: pointer;
