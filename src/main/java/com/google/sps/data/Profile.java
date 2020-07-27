@@ -26,6 +26,7 @@ public abstract class Profile {
   public abstract String getUserName();
   public abstract ArrayList<Diet> getDietaryNeeds();
   public abstract ArrayList<String> getAllergies();
+  public abstract ArrayList<String> getFriendList();
   public static Builder builder() {
     return new AutoValue_Profile.Builder();
   }
@@ -41,11 +42,13 @@ public abstract class Profile {
       * @param userName The name of the user that the profile belongs to.
       * @param dietaryNeeds The dietary needs of the user (ex: vegetarian, vegan)
       * @param allergies The allergies of the user
+      * @param friendList The friendList of the user
       */
     public abstract Builder setId(String id);
     public abstract Builder setUserName(String userName);
     public abstract Builder setDietaryNeeds(ArrayList<Diet> dietaryNeeds);
     public abstract Builder setAllergies(ArrayList<String> allergies);
+    public abstract Builder setFriendList(ArrayList<String> friendList);
     public abstract Profile build();
   } 
 }
