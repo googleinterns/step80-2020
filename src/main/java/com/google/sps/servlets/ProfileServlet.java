@@ -64,6 +64,9 @@ public class ProfileServlet extends HttpServlet {
         
         ArrayList<String> allergies = (ArrayList<String>) entity.getProperty("allergies");
         allergies = nullToArrayList(allergies);
+
+        ArrayList<String> friendList = (ArrayList<String>) entity.getProperty("friendList");
+        friendList = nullToArrayList(friendList);
         
         ArrayList<Profile.Diet> dietaryNeeds = new ArrayList<>();
         for (String dietString: dietaryNeedsStrings) {
@@ -84,7 +87,7 @@ public class ProfileServlet extends HttpServlet {
           }
         }
         Profile profileObject = Profile.builder().setId(id).setUserName(userName).
-          setDietaryNeeds(dietaryNeeds).setAllergies(allergies).build();
+          setDietaryNeeds(dietaryNeeds).setAllergies(allergies).setFriendList(friendList).build();
           
         responseMap.put("profile", profileObject);
         responseMap.put("hasProfile", true);
@@ -114,8 +117,11 @@ public class ProfileServlet extends HttpServlet {
     } else {
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       String id = userService.getCurrentUser().getUserId();
+      String email = userService.getCurrentUser().getEmail();
       Entity entity = new Entity("Profile", id);
       entity.setProperty("id", id);
+      entity.setProperty("email", email);
+      entity.setProperty("friendList", new ArrayList<String>());
       
       String userName = request.getParameter("userName");
       if (userName != null) {

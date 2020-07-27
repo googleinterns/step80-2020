@@ -33,7 +33,7 @@ function getRecipeInfo() {
 }
 
 function setRadioButtonValues() {
-  getLoginStatus();
+  getLoginStatus('selection.html');
   const firstOption = sessionStorage.optionOne;
   const secondOption = sessionStorage.optionTwo;
   const overlay = document.getElementById('overlay');
@@ -439,6 +439,8 @@ function getProfile() {
 
 /** Posts profile information from form to server */
 function postProfile() {
+  const params = new URLSearchParams();
+  
   const userName = document.getElementById('name-entry').value.trim();
   const vegetarian = document.getElementById("vegetarian-checkbox").checked;
   const vegan = document.getElementById("vegan-checkbox").checked;
@@ -446,8 +448,6 @@ function postProfile() {
   const dairyFree = document.getElementById("dairy-checkbox").checked;
 
   const allergiesString = document.getElementById("allergies-entry").value;
-  
-  const params = new URLSearchParams();
   allergiesString.split(",").map(allergy => {
     params.append('allergies', allergy.toLowerCase().trim()); 
   });
@@ -514,12 +514,17 @@ function getLoginStatus(url) {
       taggedLink.innerText = "My Tagged Recipes";
       taggedLink.href="/board.html";
 
+      const addFriendLink = document.createElement("a");
+      addFriendLink.innerText = "Add Friends";
+      addFriendLink.href="/friends.html";
+
       const logoutLink = document.createElement("a");
       logoutLink.innerHTML = "Logout";
       logoutLink.href = userInfo.logoutUrl;
 
       hoverMenuElement.appendChild(myProfileLink);
       hoverMenuElement.appendChild(taggedLink);
+      hoverMenuElement.appendChild(addFriendLink);
       hoverMenuElement.appendChild(logoutLink);
 
       if (!userInfo.hasProfile && url != "profile.html") {
@@ -970,6 +975,22 @@ function readUserDishChoice() {
       window.location.href = "/display.html";
     });
   }
+}
+
+/** Adds friend from the form */
+function addFriend() {
+  const friendEmail = document.getElementById('friend-input').value;
+  const params = new URLSearchParams();
+  params.append('friendEmail', friendEmail);
+  fetch('/addFriend', {method: 'POST', body: params}).then(response => response.text()).then((friendListResponse) => {
+    const friendResponseElement = document.getElementById("add-friend-response");
+    friendResponseElement.innerHTML = friendListResponse;
+  });
+}
+
+/** Loads friend page */
+function loadFriendPage() {
+  getLoginStatus('friends.html');
 }
 
 /** Reads dishname, fetches recipe information, and stores both in serssionStorage to use in display.html */

@@ -968,3 +968,10 @@ h2 {
   position: fixed;
   top: 50%;
 }
+
+#friend-form {
+  display: block;
+  margin-left: 50%;
+  margin-right: auto;
+  margin-top: 150px;
+}
