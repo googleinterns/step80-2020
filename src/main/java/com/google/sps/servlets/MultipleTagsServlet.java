@@ -85,13 +85,15 @@ public class MultipleTagsServlet extends HttpServlet {
     
     // add filters for tagnames
     List<Query.Filter> tagFilters = new ArrayList<>();
-    for (String tagName: tagNames) {
-      tagFilters.add(new Query.FilterPredicate("tagName", Query.FilterOperator.EQUAL, tagNames[i]));
-    }
-    if (tagNames.length > 1) {
-      filterList.add(new Query.CompositeFilter(Query.CompositeFilterOperator.OR, tagFilters));
-    } else if (tagNames.length == 1) {
-      filterList.add(new Query.FilterPredicate("tagName", Query.FilterOperator.EQUAL, tagNames[0]));
+    if (tagNames != null) {
+      for (String tagName: tagNames) {
+        tagFilters.add(new Query.FilterPredicate("tagName", Query.FilterOperator.EQUAL, tagName));
+      }
+      if (tagNames.length > 1) {
+        filterList.add(new Query.CompositeFilter(Query.CompositeFilterOperator.OR, tagFilters));
+      } else if (tagNames.length == 1) {
+        filterList.add(new Query.FilterPredicate("tagName", Query.FilterOperator.EQUAL, tagNames[0]));
+      }
     }
 
     Query query = new Query("TagRecipePair");

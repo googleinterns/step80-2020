@@ -3,11 +3,12 @@
   <head>
     <meta charset="UTF-8">
     <title>Your Profile</title>
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
 
-  <body onload="getProfile()"> 
+  <body onload="getProfile()" id="profile-background"> 
     <div id="frame-top" class="frame"></div>
     <div id="frame-bottom" class="frame"></div>
     <div id="frame-right" class="frame"></div>
@@ -25,7 +26,7 @@
         </div>
       </div>
     </div>
-    <div class="content" id="profile-background">
+    <div class="content">
       <h2 id="profile-header">Profile</h2>
       <div id="login-section"></div>
       <form class="content" id="profile-form" action="javascript:postProfile()" method="POST" onchange="clearSavedProfileStatus()">
@@ -43,10 +44,23 @@
         </div>
         <div class="entry-box">
           <span class="entry-name"><strong>Allergies</strong></span>
+          <div>Quick Allergies Add-On</div>
+          <div id="allergy-options"> </div>
+          <div class="allergy-box-text">Current Allergies</div>
           <textarea class="text-box" id="allergies-entry" placeholder="Separate allergies using commas.." name="allergy-input"></textarea>
         </div>
         <div id="center-profile-button"><input id="profile-submit-button" type="submit" /></div>
       </form>
     </div>
+    <template id="allergy-name-template">
+      <div class="allergy-name-container">
+        <div class="allergy-menu-select">
+          <i class="icon-caret-right"></i>
+          <i class="icon-caret-down"></i>
+          <span class="allergy-name"></span>
+        </div>
+        <button type="button" class="add-allergy-button">+</button>
+      </div>
+    </template>
   </body>
 </html>

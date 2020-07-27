@@ -267,22 +267,22 @@ public final class TagServletsTest {
     testArray.add("tagName1");
 
     assertEquals(testArray, json);
+
+    deleteTag("tagName", "1");
+    deleteTag("tagName1", "2");
   }
 
-  @Test
-  public void deleteTag() throws IOException, ServletException, ParseException {
+  // helper test for deleting tags
+  public void deleteTag(String tagName, String recipeId) throws IOException, ServletException, ParseException {
     // User wants to delete tag
     helper.setEnvIsLoggedIn(true);
     
-    // post tag to be deleted
-    postTagHasParameters("deleteTagName", "1");
-
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
     when(response.getWriter()).thenReturn(pw);
     
-    when(request.getParameter("tagName")).thenReturn("deleteTagName");
-    when(request.getParameter("recipeId")).thenReturn("1");
+    when(request.getParameter("tagName")).thenReturn(tagName);
+    when(request.getParameter("recipeId")).thenReturn(recipeId);
     
     // get specific tag from server
     tagServlet.doGet(request, response);
@@ -308,8 +308,8 @@ public final class TagServletsTest {
     pw = new PrintWriter(sw);
     when(response.getWriter()).thenReturn(pw);
     
-    when(request.getParameter("tagName")).thenReturn("deleteTagName");
-    when(request.getParameter("recipeId")).thenReturn("1");
+    when(request.getParameter("tagName")).thenReturn(tagName);
+    when(request.getParameter("recipeId")).thenReturn(recipeId);
     
     // check if tag has been deleted from server
     tagServlet.doGet(request, response);

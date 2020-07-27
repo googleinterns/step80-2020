@@ -14,6 +14,7 @@
 
 package com.google.sps;
 import com.google.sps.servlets.UserServlet;
+import com.google.sps.servlets.ProfileServlet;
 import org.junit.Assert;
 import org.junit.After;
 import org.junit.Before;
@@ -58,6 +59,7 @@ public final class UserServletTest {
       .setEnvAttributes(ImmutableMap.of("com.google.appengine.api.users.UserService.user_id_key", "123"));
   
   @Mock private UserServlet servlet;
+  @Mock private ProfileServlet profileServlet;
   @Mock private HttpServletRequest request;
   @Mock private HttpServletResponse response;
 
@@ -66,6 +68,7 @@ public final class UserServletTest {
     MockitoAnnotations.initMocks(this);
     helper.setUp();
     servlet = new UserServlet();
+    profileServlet = new ProfileServlet();
   }
 
   @After
@@ -96,8 +99,17 @@ public final class UserServletTest {
     // User is logged in and has profile
     helper.setEnvIsLoggedIn(true);
 
+    when(request.getParameter("userName")).thenReturn("testUserName");
+
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
+    when(response.getWriter()).thenReturn(pw);
+    
+    // set username of profile
+    profileServlet.doPost(request, response);
+
+    sw = new StringWriter();
+    pw = new PrintWriter(sw);
     when(response.getWriter()).thenReturn(pw);
     
     servlet.doGet(request, response);
