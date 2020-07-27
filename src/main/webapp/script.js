@@ -357,27 +357,38 @@ function startSlideshow() {
 
 /** Opens form for user to submit image of dish for anlysis on home page */
 function openImageForm() {
-  document.getElementById("popup").style.display = "block";
+  document.getElementById("image-popup").style.display = "block";
+  document.getElementById("about-text").style.display = "none";
+  document.getElementById("about-text-title").style.display = "none";
   document.getElementById("popup-button").style.display = "none";
   document.getElementById("upload").style.display = "none";
   document.getElementById("image-preview").style.display = "none";
+  document.body.style.overflow = "hidden";
 }
 
 /** Closes form for user to submit image of dish */
 function closeImageForm() {
   document.getElementById("popup").style.display = "none";
   document.getElementById("popup-button").style.display = "inline-block";
+  document.getElementById("about-text").style.display = "inline-block";
+  document.getElementById("about-text-title").style.display = "inline-block";
+  document.body.style.overflow = "auto";
 }
 
 /** Generates a preview of the user's uploaded image */
 function previewImage(input) {
+  var preview = document.getElementById("image-preview");
+  var label =  document.getElementById("label-title");
+  var container = document.getElementById("input");
+  var reader = new FileReader();
+  var upload = document.getElementById("upload");
   if(input.files && input.files[0]) {
-    preview = document.getElementById("image-preview")
-    var reader = new FileReader();
+    container.style.padding = "20px 20px 30% 20px";
+    label.innerText = "File uploaded: " + input.files[0].name;
     reader.onload = function (e) {
       preview.src = e.target.result;
       preview.style.display = "inline-block";
-      document.getElementById("upload").style.display = "inline-block";
+      upload.style.display = "inline-block";
     };
     reader.readAsDataURL(input.files[0]);
   }
@@ -954,6 +965,18 @@ function readUserDishChoice() {
   var dishName = document.forms.dishFitChoice.elements.labelFitChoice.value;
   if(dishName != null){
     fetch('/recipeInfo?dishName='+dishName).then(response => response.json()).then((recipeListInfoJson) => {
+      sessionStorage.dishName = dishName;
+      sessionStorage.recipeList = recipeListInfoJson;
+      window.location.href = "/display.html";
+    });
+  }
+}
+
+/** Reads dishname, fetches recipe information, and stores both in serssionStorage to use in display.html */
+function readUserDishInput() {
+  var dishName = document.getElementById('input').value;
+  if(dishName != null){
+    fetch('/recipeInfo?dishName=' + dishName).then(response => response.json()).then((recipeListInfoJson) => {
       sessionStorage.dishName = dishName;
       sessionStorage.recipeList = recipeListInfoJson;
       window.location.href = "/display.html";

@@ -210,12 +210,34 @@ body {
   color: darkseagreen;
 }
 
+.search-icon {
+  color: darkseagreen;
+  font-size: 130px;
+  opacity: 0.7;
+  padding-left: 60px;
+  padding-right: 60px;
+  padding-top: 50px;
+  text-shadow: 0 0 2px black;
+}
+
+.button-container {
+  background-color: white;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.search-icon:hover {
+  font-size: 160px;
+  opacity: 1;
+}
+
 .form-label {
+  color: gray;
   opacity: 1;
   padding-top: 10px;
   padding-left: 60px;
   position: absolute;
-  color: gray;
   z-index: -1;
 }
 
@@ -234,14 +256,9 @@ body {
   border-bottom: 4px double darkseagreen;;
 }
 
-.login-full-page {
-  background-color: darkseagreen;
-  height: 100%;
-  opacity: 0.9;
-  position: fixed;
+.form-body {
+  overflow: hidden;
   text-align: center;
-  top: 0;
-  width: 100%;
 }
 
 .login-full-text {
@@ -269,7 +286,9 @@ h3 {
 
 .about-text {
   color: black;
+  font-family: 'TypeWriter', helvetica, sans-serif;
   font-size: 24px;
+  margin-bottom: 100px;
 }
 
 /* Frame */
@@ -389,7 +408,8 @@ h3 {
 }
 
 .icon-double-angle-down {
-  color: darkorange;
+  color: darkseagreen;
+  text-shadow: 0 0 3px orange;
 }
 
 .navbar-item a {
@@ -508,47 +528,22 @@ h2 {
   padding: 16px 20px;
 }
 
-.file-container {
-  color: darkorange;
-  font-size: 25px;
-  height: 6%;
-  left: 6%;
-  opacity: 0.7;
-  position: absolute;
-  text-decoration: underline;
-  top: 7%;
-  width: 30%;
-}
-
-.file-container:hover {
-  opacity: 1;
-}
-
-
 .file-container [type=file] {
   cursor: pointer;
   display: block;
-  margin-left: -10px;
-  margin-top: -24px;
+  margin-top: -40px;
   min-height: 100%;
   min-width: 100%;
   opacity: 0;
 }
 
-.form-popup {
-  background-image: url("/images/border2.png");
-  background-repeat: no-repeat;
-  background-size: contain;
-  display: none;
-  font-family: 'TypeWriterBold', helvetica, sans-serif;
-  height: 0;
-  padding-top: 100%;
-  position: relative;
-  width: 100%;
-}
-
 .form-container {
+  background-color: #bbd6bb;
+  height: 100%;
   padding: 10px;
+  position: absolute;
+  top: 150px;
+  width: 100%;
 }
 
 .upload {
@@ -564,6 +559,30 @@ h2 {
   padding: 10px 10px;
   top: 65%;
   width: 100px;
+}
+
+.text-upload {
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+  font-family: 'TypeWriterBold', helvetica, sans-serif;
+  font-size: 20px;
+  opacity: 0.8;
+  padding: 10px 10px;
+  top: 50%;
+}
+
+.text-upload:hover {
+  opacity: 1;
+}
+
+.image-upload {
+  bottom: 5%;
+  display: none;
+  font-family: 'TypeWriterBold', helvetica, sans-serif;
+  font-size: 20px;
+  position: fixed;
+  top: unset;
 }
 
 .icon-remove-sign {
@@ -597,12 +616,13 @@ h2 {
 
 .image-preview {
   border: 3px solid darkorange;
-  left: 40%;
-  margin-left: -40px;
-  max-height: 350px;
-  max-width: 400px;
+  display: none;
+  height: 50%;
+  left: 50%;
+  max-width: 100%;
   position: absolute;
-  top: 15%;
+  top: 45%;
+  transform: translate(-50%, -50%);
 }
 
 .txt-rotate {
@@ -688,6 +708,42 @@ h2 {
   background: rgb(234, 184, 19, .7);
   opacity: 1;
   visibility: visible;
+}
+
+#input.file-container {
+  color: darkorange;
+  height: 10%;
+  padding: 20px 20px 20px 20px;
+}
+
+#input {
+  background: white;
+  border: none;
+  border-bottom: 10px solid orange;
+  font-family: 'TypeWriter', helvetica, sans-serif;
+  font-size: 30px;
+  font-weight: bold;
+  height: 70px;
+  left: 50%;
+  padding: 5px;
+  position: absolute;
+  text-align: center;
+  top: 40%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+}
+
+.input-title {
+  color: white;
+  font-family: 'TypeWriter';
+  font-size: 50px;
+  text-shadow: 0 0 5px darkorange;
+  text-transform: uppercase;
+  width: 70%;
+}
+
+#input:hover {
+  border-bottom: 10px double darkseagreen;;
 }
 
 /* Fonts and animations */
