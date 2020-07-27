@@ -182,16 +182,6 @@ body {
   width: auto;
 }
 
-/* .recipe-tag:after, .recipe-tag:before {
-  border: solid transparent;
-  content: " ";
-  height: 0;
-  position: absolute;
-  right: 100%;
-  top: 50%;
-  width: 0;
-} */
-
 .recipe-tag:after {
   border-right-color: #88b7d5;
   border-width: 14px;
@@ -783,8 +773,3 @@ h2 {
   padding-top: 0;
   width: auto;
 }
-
-
-
-
-

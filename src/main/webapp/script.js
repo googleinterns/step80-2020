@@ -480,27 +480,7 @@ function createRecipeElement(recipe, pictureWrap) {
   addTagElement.addEventListener('click', () => {
     fetch('/login').then(response => response.json()).then((userInfo) => {
       if (!userInfo.isLoggedIn) {
-        const loginPopup = document.createElement('div');
-        loginPopup.className = "login-full-page";
-
-        loginPopup.onclick = function() {
-          loginPopup.style.display = "none";
-        }
-
-        const loginPopupText = document.createElement('h6');
-        loginPopupText.className = "login-full-text";
-        loginPopupText.innerText = "Please login to add tags and view nutrition information";
-        
-        const loginLink = document.createElement('a');
-        loginLink.className = "login-full-link upload";
-        loginLink.innerText = "LOGIN";
-        loginLink.href = userInfo.loginUrl;
-
-        document.body.append(loginPopup);
-        loginPopup.append(loginPopupText);
-        loginPopup.append(loginLink);
-        document.body.style.overflow = "hidden";
-        document.getElementById("display-recipes").style.opacity = "0.2";
+        displayLoginReminder();
       } else {
         const newTagName = (tagTextElement.value).trim();
         if (newTagName != "") {
@@ -524,6 +504,30 @@ function createRecipeElement(recipe, pictureWrap) {
       hoverElement.style.display = "block";
       document.getElementById("display-recipes").style.opacity = "0.2";
   }
+}
+
+function displayLoginReminder () {
+  const loginPopup = document.createElement('div');
+  loginPopup.className = "login-full-page";
+
+  loginPopup.onclick = function() {
+    loginPopup.style.display = "none";
+  }
+
+  const loginPopupText = document.createElement('h6');
+  loginPopupText.className = "login-full-text";
+  loginPopupText.innerText = "Please login to add tags and view nutrition information";
+        
+  const loginLink = document.createElement('a');
+  loginLink.className = "login-full-link upload";
+  loginLink.innerText = "LOGIN";
+  loginLink.href = userInfo.loginUrl;
+
+  document.body.append(loginPopup);
+  loginPopup.append(loginPopupText);
+  loginPopup.append(loginLink);
+  document.body.style.overflow = "hidden";
+  document.getElementById("display-recipes").style.opacity = "0.2";
 }
 
 /** Get profile information to determine which alerts to create */
@@ -638,7 +642,7 @@ function createElementFromHTML(htmlString) {
   var div = document.createElement('div');
   div.innerHTML = htmlString.trim();
 
-  // Change this to div.childNodes to support multiple top-level nodes
+  // TODO: Change this to div.childNodes to support multiple top-level nodes
   return div.firstChild; 
 }
 
