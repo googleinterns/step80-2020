@@ -43,44 +43,44 @@ import java.util.List;
 public class AddFriendsServlet extends HttpServlet {
   
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String friendEmail = request.getParameter("friendEmail");
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Query query = new Query("Profile")
-      .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, friendEmail));
-    PreparedQuery results = datastore.prepare(query);
-    Entity entity = results.asSingleEntity();
-    if(entity != null) {
-      UserService userService = UserServiceFactory.getUserService();
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    UserService userService = UserServiceFactory.getUserService();
       if (!userService.isUserLoggedIn()) {
         response.setContentType("application/html");
         response.getWriter().println("Please log in to add friends");
       } else {
-        query = new Query("Profile")
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Query query = new Query("Profile")
           .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userService.getCurrentUser().getUserId()));
-        results = datastore.prepare(query);
-        entity = results.asSingleEntity();
-        if(entity == null) {
+        PreparedQuery results = datastore.prepare(query);
+        Entity userEntity = results.asSingleEntity();
+        if(userEntity == null) {
           response.setContentType("application/html");
           response.getWriter().println("Please create your user profile before adding friends");
         } else {
-          ArrayList<String> friendList = (ArrayList<String>) entity.getProperty("friendList");
-          if(friendList.contains(friendEmail)){
+          String friendEmail = request.getParameter("friendEmail");
+          query = new Query("Profile")
+            .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, friendEmail));
+          results = datastore.prepare(query);
+          Entity friendEntity = results.asSingleEntity();
+          if(friendEntity == null) {
             response.setContentType("application/html");
-            response.getWriter().println("You already have this user as a friend");
-          } else {
-            friendList.add(friendEmail);
-            entity.setProperty("friendList", friendList);
-            datastore.put(entity);
-            response.setContentType("application/html");
-            response.getWriter().println("Successfully added");
+            response.getWriter().println("Sorry, email not found");      
+          }
+          else {
+            ArrayList<String> friendList = (ArrayList<String>) userEntity.getProperty("friendList");
+            if(friendList.contains(friendEmail)){
+              response.setContentType("application/html");
+              response.getWriter().println("You already have this user as a friend");
+            } else {
+              friendList.add(friendEmail);
+              userEntity.setProperty("friendList", friendList);
+              datastore.put(userEntity);
+              response.setContentType("application/html");
+              response.getWriter().println("Successfully added");
+            }
           }
         }
       }
-    }
-    else {
-      response.setContentType("application/html");
-      response.getWriter().println("Sorry, email not found");
-    }
   }
 }

@@ -884,13 +884,15 @@ function readUserDishChoice() {
 /** Adds friend from the form */
 function addFriend() {
   const friendEmail = document.getElementById('friend-input').value;
-  fetch('/addFriend?friendEmail='+friendEmail).then(response => response.text()).then((friendListResponse) => {
+  const params = new URLSearchParams();
+  params.append('friendEmail', friendEmail);
+  fetch('/addFriend', {method: 'POST', body: params}).then(response => response.text()).then((friendListResponse) => {
     const friendResponseElement = document.getElementById("add-friend-response");
     friendResponseElement.innerHTML = friendListResponse;
   });
 }
 
-/** loads friend page */
+/** Loads friend page */
 function loadFriendPage() {
   getLoginStatus('friends.html');
 }

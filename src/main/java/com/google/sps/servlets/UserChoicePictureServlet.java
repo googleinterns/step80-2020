@@ -44,8 +44,8 @@ import com.google.appengine.api.datastore.Query;
 /** Servlet to take in dish name and return dish picture */
 @WebServlet("/dishChoicePictures")
 public class UserChoicePictureServlet extends HttpServlet {
-  private static String PREFIX_KNOWLEDGE_GRAPH = "https://kgsearch.googleapis.com/v1/entities:search";
-  private static String IMAGE_NOT_FOUND = "https://cdn.iconscout.com/icon/premium/png-512-thumb/no-data-found-1965030-1662565.png";
+  private static final String PREFIX_KNOWLEDGE_GRAPH = "https://kgsearch.googleapis.com/v1/entities:search";
+  private static final String IMAGE_NOT_FOUND = "https://cdn.iconscout.com/icon/premium/png-512-thumb/no-data-found-1965030-1662565.png";
 
   /** Uses Knowledge Graph API to get images from two queried dish names */
   @Override
