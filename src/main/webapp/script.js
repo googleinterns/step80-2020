@@ -368,7 +368,7 @@ function previewImage(input) {
   }
 }
 
-const allergies = {
+const ALLERGIES = {
   'Nuts': ["Almond", "Cashew", "Chestnut", "Hazelnut", "Pecan", "Walnut"],
   'Grain': ['Barley', 'Maize', 'Oat', 'Rice', 'Rye', 'Wheat'],
   'Legumes': ["Bean", "Pea",' Lentil', 'Lupin'],
@@ -409,7 +409,6 @@ function getProfile() {
               break;
           }
         });
-
         userNameElement.value = profile.userName;
         allergiesStringElement.value = (profile.allergies).join(", ");
       }
@@ -417,8 +416,8 @@ function getProfile() {
       // create quick allergy add-on elements
       const allergyOptionsElement = document.getElementById("allergy-options");
       allergyOptionsElement.innerHTML = "";
-      Object.keys(allergies).forEach(category => {
-        allergyOptionsElement.append(createAllergyCategoryElement(category, allergies[category]));
+      Object.keys(ALLERGIES).forEach(category => {
+        allergyOptionsElement.append(createAllergyCategoryElement(category, ALLERGIES[category]));
       });
       
     } else {

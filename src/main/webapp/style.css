@@ -1,8 +1,8 @@
 #profile-background {
   background-image: url("/images/fancy-silverware.jpg");
+  background-position: 50% 50%;
   background-repeat: no-repeat;
   background-size: 1100px 800px;
-  background-position: 50% 50%;
   margin-top: 10%;
 }
 
