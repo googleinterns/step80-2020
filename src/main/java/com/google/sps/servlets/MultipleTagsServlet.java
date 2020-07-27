@@ -40,12 +40,11 @@ import org.json.simple.JSONObject;
 import java.util.Set;
 import java.util.HashSet;
 
-/** Servlet that returns and adds tags in Datastore */
-@WebServlet("/tag")
-public class TagServlet extends HttpServlet {
+/** Servlet that returns the recipeIds of the recipes that have the specified tagnames */
+@WebServlet("/multiple-tags")
+public class MultipleTagsServlet extends HttpServlet {
   private static final String AUTHORIZATION_ERROR = "User needs to login";
   
-  /** Return all tags filtered by tagName and/or recipeId */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
@@ -53,25 +52,19 @@ public class TagServlet extends HttpServlet {
     Gson gson = new Gson();  
     String json;
 
-    String inputTagName = request.getParameter("tagName");
-    Long inputRecipeId = strToLong(request.getParameter("recipeId"));
+    // user's tags selection
+    String[] tagNames = request.getParameterValues("tag-names");
     if (userService.isUserLoggedIn()) {
-      Query query = getQueryWithFilters(inputTagName, inputRecipeId, userService);
+      Query query = getQueryWithFilters(tagNames, userService);
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       PreparedQuery results = datastore.prepare(query);
 
-      ArrayList<TagRecipePair> filteredList = new ArrayList<>();
+      HashSet<Long> recipeList = new HashSet<>();
       for (Entity entity : results.asIterable()) {
-        long tagId = entity.getKey().getId();
-        String userId = (String) entity.getProperty("userId");
-        String tagName = (String) entity.getProperty("tagName");
         long recipeId = (long) entity.getProperty("recipeId");
-
-        TagRecipePair tagObject = new TagRecipePair(tagId, userId, tagName, recipeId);
-        filteredList.add(tagObject);
+        recipeList.add(recipeId);
       }
-
-      responseMap.put("filteredList", filteredList);
+      responseMap.put("recipeList", recipeList);
 
     } else {
       responseMap.put("error", AUTHORIZATION_ERROR); 
@@ -83,17 +76,22 @@ public class TagServlet extends HttpServlet {
   }
 
   // helper function for creating query with a combination of filters
-  public Query getQueryWithFilters(String tagName, Long recipeId, UserService userService) {
+  public Query getQueryWithFilters(String[] tagNames, UserService userService) {
     List<Query.Filter> filterList = new ArrayList<>();
     String userId = userService.getCurrentUser().getUserId();
 
-    // set up filters for query
+    // set up filters for query over user's tags
     filterList.add(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userId));
-    if (tagName != null && !tagName.equals("")) {
-      filterList.add(new Query.FilterPredicate("tagName", Query.FilterOperator.EQUAL, tagName));
+    
+    // add filters for tagnames
+    List<Query.Filter> tagFilters = new ArrayList<>();
+    for (String tagName: tagNames) {
+      tagFilters.add(new Query.FilterPredicate("tagName", Query.FilterOperator.EQUAL, tagNames[i]));
     }
-    if (recipeId != null) {
-      filterList.add(new Query.FilterPredicate("recipeId", Query.FilterOperator.EQUAL, recipeId));
+    if (tagNames.length > 1) {
+      filterList.add(new Query.CompositeFilter(Query.CompositeFilterOperator.OR, tagFilters));
+    } else if (tagNames.length == 1) {
+      filterList.add(new Query.FilterPredicate("tagName", Query.FilterOperator.EQUAL, tagNames[0]));
     }
 
     Query query = new Query("TagRecipePair");
@@ -105,37 +103,6 @@ public class TagServlet extends HttpServlet {
     return query;
   }
 
-  /** Add a TagRecipePair to datastore which represents a user's tag on a recipe */
-  @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    UserService userService = UserServiceFactory.getUserService();
-    JSONObject responseMap = new JSONObject();
-
-    if (!userService.isUserLoggedIn()) {
-      responseMap.put("error", AUTHORIZATION_ERROR);
-    } else {
-      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-      String userId = userService.getCurrentUser().getUserId();
-      Entity entity = new Entity("TagRecipePair"); // also want to get key of entity if it exists
-      entity.setProperty("userId", userId);
-      
-      String tagName = request.getParameter("tag-name");
-      entity.setProperty("tagName", tagName);
-      
-      Long recipeId = strToLong(request.getParameter("recipe-id"));
-      entity.setProperty("recipeId", recipeId);
-      
-      if (tagName != null && recipeId != null && !ifTagExists(tagName, recipeId, userService)) {
-        datastore.put(entity);
-      }
-    }
-
-    Gson gson = new Gson();   
-    String json = gson.toJson(responseMap);
-    response.setContentType("application/json");
-    response.getWriter().println(json);
-  }
-
   public Long strToLong(String str) {
     if (str == null) {
       return null;
@@ -143,13 +110,4 @@ public class TagServlet extends HttpServlet {
       return Long.parseLong(str);
     }
   }
-
-  public boolean ifTagExists(String tagName, Long recipeId, UserService userService) {
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Query query = getQueryWithFilters(tagName, recipeId, userService);
-    PreparedQuery results = datastore.prepare(query);
-    Entity entity = results.asSingleEntity();
-    return entity != null;
-  }
-
 }

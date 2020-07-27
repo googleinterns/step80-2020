@@ -36,15 +36,14 @@ import org.json.simple.JSONObject;
 
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.List;
 
 /** Servlet that posts and gets saved recipe information in Datastore */
 @WebServlet("/saved-recipe")
 public class SavedRecipeServlet extends HttpServlet {
-  
   /** Gets SavedRecipe using the recipe's id */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    UserService userService = UserServiceFactory.getUserService();
     JSONObject responseMap = new JSONObject();
 
     // get recipeId from request parameter
@@ -58,15 +57,19 @@ public class SavedRecipeServlet extends HttpServlet {
     if (entity == null) {
       responseMap.put("recipeIsSaved", false);
     } else {
-      String title = (String) entity.getProperty("title");
-      String imageUrl = (String) entity.getProperty("imageUrl");
-      String sourceUrl = (String) entity.getProperty("sourceUrl");
-      Long servings = (Long) entity.getProperty("servings");
-      Long readyInMinutes = (Long) entity.getProperty("readyInMinutes");
-      ArrayList<String> dietaryNeedsStrings = (ArrayList<String>) entity.getProperty("dietaryNeeds");
+      String title = checkIfStringNull((String) entity.getProperty("title"));
+      String imageUrl = checkIfStringNull((String) entity.getProperty("imageUrl"));
+      String sourceUrl = checkIfStringNull((String) entity.getProperty("sourceUrl"));
+      Long servings = checkIfLongNull((Long) entity.getProperty("servings"));
+      Long readyInMinutes = checkIfLongNull((Long) entity.getProperty("readyInMinutes"));
+      ArrayList<String> dietaryNeedsStrings = getArrayListProperty(entity, "dietaryNeeds");
+      ArrayList<String> ingredientNamesStrings = getArrayListProperty(entity, "ingredientNames");
       
       // convert string to Diet enum because datastore stores dietaryNeeds as a list of strings
       ArrayList<SavedRecipe.Diet> dietaryNeeds = new ArrayList<>();
+      if(dietaryNeedsStrings == null) {
+        dietaryNeedsStrings = new ArrayList<String>();
+      }
       for (String dietString: dietaryNeedsStrings) {
         switch(dietString) {
           case "VEGETARIAN":
@@ -85,8 +88,10 @@ public class SavedRecipeServlet extends HttpServlet {
         }
       }
       SavedRecipe savedRecipeObject = SavedRecipe.builder().setId(recipeId).setTitle(title).
-        setImage(imageUrl).setSourceUrl(sourceUrl).setServings(servings).setReadyInMinutes(readyInMinutes).setDietaryNeeds(dietaryNeeds).build();
-          
+        setImage(imageUrl).setSourceUrl(sourceUrl).setServings(servings)
+        .setReadyInMinutes(readyInMinutes).setDietaryNeeds(dietaryNeeds)
+        .setIngredientNames(ingredientNamesStrings).build();
+        
       responseMap.put("savedRecipe", savedRecipeObject);
       responseMap.put("recipeIsSaved", true);
     }
@@ -100,32 +105,87 @@ public class SavedRecipeServlet extends HttpServlet {
   /** saves recipe information in datastore */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    UserService userService = UserServiceFactory.getUserService();
-
+    JSONObject responseMap = new JSONObject();
+    
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     String recipeIdStr = request.getParameter("recipe-id");
-    Entity entity = new Entity("SavedRecipe", recipeIdStr);
+    if (recipeIdStr != null) {
+      Entity entity = new Entity("SavedRecipe", recipeIdStr);
     
-    entity.setProperty("recipeId", Long.parseLong(recipeIdStr));
+      entity.setProperty("recipeId", Long.parseLong(recipeIdStr));
 
-    String title = request.getParameter("recipe-title");
-    entity.setProperty("title", title);
+      String title = request.getParameter("recipe-title");
+      entity.setProperty("title", title);
 
-    String imageUrl = request.getParameter("image-url");
-    entity.setProperty("imageUrl", imageUrl);
+      String imageUrl = request.getParameter("image-url");
+      entity.setProperty("imageUrl", imageUrl);
 
-    String sourceUrl = request.getParameter("source-url");
-    entity.setProperty("sourceUrl", sourceUrl);
+      String sourceUrl = request.getParameter("source-url");
+      entity.setProperty("sourceUrl", sourceUrl);
 
-    long servings = Long.parseLong(request.getParameter("servings"));
-    entity.setProperty("servings", servings);
+      Long servings = strToLong(request.getParameter("servings"));
+      entity.setProperty("servings", servings);
 
-    long readyInMinutes = Long.parseLong(request.getParameter("ready-in-minutes"));
-    entity.setProperty("readyInMinutes", readyInMinutes);
+      Long readyInMinutes = strToLong(request.getParameter("ready-in-minutes"));
+      entity.setProperty("readyInMinutes", readyInMinutes);
 
-    String[] dietaryNeeds = request.getParameterValues("dietary-needs");
-    entity.setProperty("dietaryNeeds", Arrays.asList(dietaryNeeds));
+      String[] dietaryNeeds = retrieveLists(request, "dietary-needs");
+      entity.setProperty("dietaryNeeds", Arrays.asList(dietaryNeeds));
+
+      String[] ingredientNames = retrieveLists(request, "ingredient-names");
+      entity.setProperty("ingredientNames", Arrays.asList(ingredientNames));
     
-    datastore.put(entity);
+      datastore.put(entity);
+    } else {
+      String errorMessage = "User needs to input recipeId.";
+      responseMap.put("error", errorMessage);
+    }
+    Gson gson = new Gson();   
+    String json = gson.toJson(responseMap);
+    response.setContentType("application");
+    response.getWriter().println(json);
+  }
+
+  public Long strToLong(String str) {
+    if (str == null) {
+      return null;
+    } else {
+      return Long.parseLong(str);
+    }
+  }
+
+  public List<String> convertToList(String[] valuesList) {
+    if (valuesList == null) {
+      return new ArrayList<>();
+    } else {
+      return Arrays.asList(valuesList);
+    }
+  }
+
+  public ArrayList<String> getArrayListProperty(Entity entity, String propertyName) {
+    ArrayList<String> valueList = (ArrayList) entity.getProperty(propertyName);
+    return valueList == null ? new ArrayList<>() : valueList;
+  }
+
+  public String checkIfStringNull(String str) {
+    if (str == null) {
+      return "";
+    }
+    return str;
+  }
+
+  public Long checkIfLongNull(Long num) {
+    if (num == null) {
+      return new Long(0);
+    }
+    return num;
+  }
+  
+  String[] retrieveLists(HttpServletRequest request, String query) {
+    String[] tempList = request.getParameterValues(query);
+    if(tempList == null) {
+      tempList = new String[0];
+    }
+    return tempList;
   }
 }

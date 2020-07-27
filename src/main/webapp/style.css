@@ -110,6 +110,7 @@ body {
   position: fixed;
   top: 50%;
   width: 800px;
+  z-index: 8;
 }
 
 .recipe-card-title {
@@ -477,7 +478,6 @@ h2 {
 
 /* About Box */
 #about {
-  z-index: 1;
   left: 50%;
   padding-bottom: 15%;
   position: absolute;
@@ -485,6 +485,7 @@ h2 {
   transform: translateX(-50%);
   top: 1500px;
   width: 70%;
+  z-index: 1;
 }
 
 .paint-stroke {
@@ -573,6 +574,23 @@ h2 {
   top: 5%;
 }
 
+/* selected favorite icon */
+.icon-star {
+  color: transparent;
+  cursor: pointer;
+  position: absolute;
+  right: 10%;
+  top: 5%;
+}
+
+/* unselected favorite icon */
+.icon-star-empty {
+  color: black;
+  position: absolute;
+  right: 10%;
+  top: 5%;
+}
+
 .form-container .upload:hover, .open-button:hover {
   opacity: 1;
 }
@@ -638,6 +656,7 @@ h2 {
 
 .dish-image {
   height: 100%;
+  max-height: 200px;
   object-fit: cover;
   width: 100%;
 }
@@ -656,6 +675,13 @@ h2 {
   top: 0;
   visibility: hidden;
   width: 100%;
+}
+
+#favorite-dish-image-text {
+  background: rgb(234, 184, 19, .7);
+  opacity: 1;
+  position: static;
+  visibility: visible;
 }
 
 .dish-image-wrap:hover .dish-image-text {
@@ -701,30 +727,113 @@ h2 {
   animation-name: bounce;
 }
 
-#select-tags {
-  border-bottom: 2px solid black; 
-  font-weight: bold;
-  letter-spacing: .15em;
-  margin-left: 10px;
-  padding: 3px 5px;
-}
-
-#select-tags:focus, #select-tags:active {
-  border-bottom-color: red;
-}
-
-#select-button {
-  background-color: #4caf50;
-  color: white;
-  cursor: pointer;
-  font-family: 'TypeWriterBold', helvetica, sans-serif;
-  margin-left: 15px;
-  opacity: 0.8;
-  padding: 5px 10px;
-}
-
 #selection {
   margin-top: 158px;
+  text-align: center;
+}
+
+.label-options {
+  font-family: 'TypeWriter', helvetica, sans-serif;
+  font-size: 3vw;
+  padding-right: 50%;
+  color: black;
+}
+
+.radio-label {
+  padding-left: 50%;
+}
+
+#label-header {
+  font-family: 'TypeWriterBold', helvetica, sans-serif;
+  font-size: 3vw;
+  color: darkorange;
+}
+
+#tag-page-header {
+  display: flex;
+  position: absolute;
+  top: 250px;
+}
+
+.icon-arrow-left {
+  color: darkseagreen;
+  margin: auto;
+  margin-left: 30px;
+}
+
+#your-tags-text {
+  font-family: 'TypeWriter', helvetica, sans-serif;
+  font-size: 50px;
+  margin: auto;
+  margin-left: 30px;
+}
+
+.icon-tags {
+  color: darkseagreen;
+  margin: auto;
+  margin-left: 30px;
+}
+
+#tag-menu {
+  display: inline-block;
+  left: 10%;
+  position: absolute;
+  top: 350px;
+  width: 80%;
+}
+
+.tag-menu-item {
+  background: lightgreen;
+  border: 2px solid green;
+  display: inline-block;
+  margin: 5px;
+  padding: 5px 5px 5px 10px;
+  text-align: left;
+  width: auto;
+}
+
+.tag-menu-item:hover {
+  background: rgb(84, 192, 84);
+  cursor: pointer;
+}
+
+.tag-item-name {
+  display: inline-block;
+  margin: auto;
+  width: 100px;
+  word-wrap: break-word;
+}
+
+.tag-item-button {
+  background: red;
+  border: none;
+  border-radius: 20px;
+  color: white;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.tag-item-button:hover {
+  background: rgb(255, 102, 102);
+}
+
+#favorite-recipes-title {
+  border-bottom: 5px dotted darkseagreen;
+  font-family: 'TypeWriter', helvetica, sans-serif;
+  font-size: 50px;
+  margin-top: 250px;
+  position: absolute;
+  width: 800px;
+}
+
+#love-food-icon {
+  color: red;
+  left: 50%;
+  margin-top: 175px;
+  position: absolute;
+}
+
+#tag-inner {
   text-align: center;
 }
 
@@ -772,4 +881,34 @@ h2 {
   margin-top: 70px;
   padding-top: 0;
   width: auto;
+
+.loading {
+  bottom: 0;
+  height: 2em;
+  left: 0;
+  margin: auto;
+  overflow: visible;
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 2em;
+  z-index: 999;
+}
+
+.loading {
+	background: rgba( 26, 26, 26, 0.7 );
+	display: none;
+	height: 100%;
+	position: fixed;
+	top: 0;
+	width: 100%;
+	z-index: 99;
+}
+
+#loading-text {
+  color: white;
+  font-size: 30px;
+  left: 50%;
+  position: fixed;
+  top: 50%;
 }
