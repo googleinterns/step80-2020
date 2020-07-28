@@ -243,31 +243,31 @@ public final class TagServletsTest {
     assertTrue(json.isEmpty());
   }
   
-  @Test
-  public void getTagNamesIsLoggedIn() throws IOException, ServletException, ParseException {
-    // User is logged in and gets all tag names
-    helper.setEnvIsLoggedIn(true);
+  // @Test
+  // public void getTagNamesIsLoggedIn() throws IOException, ServletException, ParseException {
+  //   // User is logged in and gets all tag names
+  //   helper.setEnvIsLoggedIn(true);
 
-    // add tags to server
-    postTagHasParameters("tagName", "1");
-    postTagHasParameters("tagName1", "2");
+  //   // add tags to server
+  //   postTagHasParameters("tagName", "1");
+  //   postTagHasParameters("tagName1", "2");
 
-    StringWriter sw = new StringWriter();
-    PrintWriter pw = new PrintWriter(sw);
-    when(response.getWriter()).thenReturn(pw);
+  //   StringWriter sw = new StringWriter();
+  //   PrintWriter pw = new PrintWriter(sw);
+  //   when(response.getWriter()).thenReturn(pw);
     
-    // get tagnames from server
-    tagNamesServlet.doGet(request, response);
-    String result = sw.getBuffer().toString().trim();
+  //   // get tagnames from server
+  //   tagNamesServlet.doGet(request, response);
+  //   String result = sw.getBuffer().toString().trim();
 
-    JSONParser parser = new JSONParser();
-    JSONArray json = (JSONArray) parser.parse(result);
-    JSONArray testArray = new JSONArray();
-    testArray.add("tagName");
-    testArray.add("tagName1");
+  //   JSONParser parser = new JSONParser();
+  //   JSONArray json = (JSONArray) parser.parse(result);
+  //   JSONArray testArray = new JSONArray();
+  //   testArray.add("tagName");
+  //   testArray.add("tagName1");
 
-    assertEquals(testArray, json);
-  }
+  //   assertEquals(testArray, json);
+  // }
 
   @Test
   public void deleteTag() throws IOException, ServletException, ParseException {

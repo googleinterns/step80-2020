@@ -637,6 +637,33 @@ h2 {
   transform: translate(-50%, -50%);
 }
 
+.feed-container {
+  border: 5px solid orange;
+  background-color: white;
+  height: 500px;
+  left: 50%;
+  margin-bottom: 20px;
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+.feed-text {
+  font-family: TypeWriter;
+  margin-left: 20px;
+}
+
+.email {
+  font-weight: bolder;
+}
+
+#feed {
+  margin-top: 50%;
+  position: relative;
+}
+
+.feed-body {
+  background-color: darkseagreen;
+}
 #nutrition-info {
   font-family: 'TypeWriter', helvetica, sans-serif;
   font-size: 30px;
