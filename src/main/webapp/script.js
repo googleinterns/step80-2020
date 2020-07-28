@@ -626,7 +626,6 @@ function createRecipeElement(recipe, pictureWrap) {
   carouselId.id = "myCarousel" + recipe['id'];
 
   const carouselLinks = clone.querySelector(".carousel-indicators");
-  console.log(carouselLinks.className);
   const carousel = clone.querySelector(".carousel-inner");
   createRecipeCardTags(recipe['id'], carouselLinks, carousel);
 
@@ -1013,10 +1012,8 @@ function appendtoFeedElement() {
 
   getLoginStatus();
   fetch('/feed').then(response => response.json()).then((message) => {
-    console.log("here");
     if (message.error == null) {
       const recipeList = message.recipeList;
-      console.log(recipeList);
       recipeList.forEach(recipe => { 
         createFeedElement(feed, recipe.recipeId, recipe.userId, recipe.dateFavorited);
       });
