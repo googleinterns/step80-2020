@@ -2,16 +2,12 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Your Recipes</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <title>Home</title>
     <link rel="stylesheet" href="style.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
     <script src="script.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   </head>
-
-  <body id="display-background" onload="loadDisplayPage()"> 
+  <body onload="loadSharePage()">
     <div id="frame-top" class="frame"></div>
     <div id="frame-bottom" class="frame"></div>
     <div id="frame-right" class="frame"></div>
@@ -24,26 +20,19 @@
             <li class="navbar-item" id="login-status">
               <a href="profile.html">My Profile</a>
               <div class="dropdown-content" id="dropdown"></div>
-            </li>          
+            </li>
           </ul>
         </div>
       </div>
     </div>
-    <div class="content">
-      <div class="empty-container"> </div>
-      <span
-          id="dish"
-          class="txt-rotate"
-          data-rotate="Ceasar Salad"
-          data-period="10000"></span>
-      <div id="nutrition-info"> </div>
-      <a class="scroller2 bounce" href="#display-recipes">
-        <i class="icon-double-angle-down icon-4x"></i>
-      </a>
-      <div id="display-recipes" class="display-recipes-gallery">
-        <h2>Recipe Gallery:</h2>
-      </div>
-      <div id="card-gallery"> </div>
+    <div class="shared-recipe" id="display-recipes">
+      <h3>Share a recipe</h3>
+      <div id="card-gallery"></div>
+      <h3 id="shared-recipe-intro"></h3>
+      <input id="friend-input"type="text" placeholder="Friend email"></input>
+      <input id="shared-recipe-message" type="text" placeholder="addional message"></input>
+      <button onClick="javaScript:shareRecipe()">Share Recipe</button>
+      <h3 id="shared-recipe-response"></h3>
     </div>
     <template id="recipe-template">
       <div class="recipe-card">

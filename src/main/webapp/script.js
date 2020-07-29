@@ -517,6 +517,10 @@ function getLoginStatus(url) {
       const addFriendLink = document.createElement("a");
       addFriendLink.innerText = "Add Friends";
       addFriendLink.href="/friends.html";
+      
+      const seeSharedRecipesLink = document.createElement("a");
+      seeSharedRecipesLink.innerText = "See Shared Recipes";
+      seeSharedRecipesLink.href="/sharedRecipeViewer.html";
 
       const logoutLink = document.createElement("a");
       logoutLink.innerHTML = "Logout";
@@ -525,6 +529,7 @@ function getLoginStatus(url) {
       hoverMenuElement.appendChild(myProfileLink);
       hoverMenuElement.appendChild(taggedLink);
       hoverMenuElement.appendChild(addFriendLink);
+      hoverMenuElement.appendChild(seeSharedRecipesLink);
       hoverMenuElement.appendChild(logoutLink);
 
       if (!userInfo.hasProfile && url != "profile.html") {
@@ -573,6 +578,12 @@ function createRecipeElement(recipe, pictureWrap) {
   var clone = temp.content.cloneNode(true);
   
   const hoverElement = clone.querySelector(".recipe-card");
+
+  const shareButtonElement = clone.querySelector(".share-button");
+  shareButtonElement.addEventListener('click', function(){
+    postSavedRecipe(recipe);
+    setShareRecipe(recipe['id']);
+  });
 
   const titleElement = clone.querySelector(".recipe-card-title");
   titleElement.innerText = recipe["title"];
@@ -626,7 +637,6 @@ function createRecipeElement(recipe, pictureWrap) {
   carouselId.id = "myCarousel" + recipe['id'];
 
   const carouselLinks = clone.querySelector(".carousel-indicators");
-  console.log(carouselLinks.className);
   const carousel = clone.querySelector(".carousel-inner");
   createRecipeCardTags(recipe['id'], carouselLinks, carousel);
 
@@ -1003,4 +1013,97 @@ function readUserDishInput() {
       window.location.href = "/display.html";
     });
   }
+}
+
+/** Loads recipe shared page */
+function loadSharePage() {
+  getLoginStatus('shareRecipe.html');
+  recipeId = sessionStorage.sharedRecipe;
+  fetch('/saved-recipe?recipeId=' + recipeId).then(response => response.json()).then((savedRecipeJson) => {
+    // check if recipe information is saved in datastore
+    if (savedRecipeJson.recipeIsSaved) {
+      const savedRecipe = savedRecipeJson.savedRecipe;
+      
+      // modify json to allow dietary needs to be displayed on recipe card
+      const dietaryNeeds = savedRecipe.dietaryNeeds;
+      dietaryNeeds.forEach(dietaryNeed => {
+        switch(dietaryNeed) {
+          case "VEGETARIAN":
+            savedRecipe['vegetarian'] = true;
+            break;
+          case "VEGAN":
+            savedRecipe['vegan'] = true;
+            break;
+          case "GLUTENFREE":
+            savedRecipe['glutenFree'] = true;
+            break;
+          case "DAIRYFREE":
+            savedRecipe['dairyFree'] = true;
+            break;
+          default: 
+            break;
+        }
+      });
+      const ingredientNames = savedRecipe.ingredientNames;
+      savedRecipe['extendedIngredients'] = [];
+      ingredientNames.forEach(ingredient => {
+        savedRecipe['extendedIngredients'].push({'name': ingredient});
+      });
+
+      // display recipe card using the recipe's saved information
+      const displayRecipesElement = document.getElementById("display-recipes");
+      createPictureWrap(displayRecipesElement, savedRecipe);
+    }
+  });
+}
+
+/* Posts shared recipe and message to data store */
+function shareRecipe() {
+  const friendEmail = document.getElementById('friend-input').value;
+  const params = new URLSearchParams();
+
+  message = document.getElementById('shared-recipe-message').value;
+  params.append('message', message);
+  params.append('recipeId', sessionStorage.sharedRecipe);
+  params.append('friendEmail', friendEmail);
+  fetch('/shareRecipe', {method: 'POST', body: params}).then(response => response.text()).then((sharedRecipeResponse) => {
+    const sharedRecipeElement = document.getElementById("shared-recipe-response");
+    sharedRecipeElement.innerHTML = sharedRecipeResponse;
+  });
+}
+
+function loadSentRecipes() {
+  const overlay = document.getElementById('overlay');
+  overlay.style.display = 'block';
+  getLoginStatus('shareRecipe.html');
+  fetch('/shareRecipe').then(response => response.json()).then((messageJsonList) => {
+    const sharedRecipeListElement = document.getElementById("shared-messages");
+    messageJsonList.forEach(sharedRecipe => {
+      createSharedRecipeElement(sharedRecipeListElement, sharedRecipe);
+    });
+  overlay.style.display = 'none';
+  });
+}
+
+function createSharedRecipeElement(sharedRecipeListElement, sharedRecipe) {
+  var temp = document.querySelector("#shared-recipe-template");
+  var clone = temp.content.cloneNode(true);
+
+  const email = clone.querySelector(".shared-recipe-email");
+  email.innerText = "Shared recipe from: " + sharedRecipe['userEmail'];
+
+  const pictureElement = clone.querySelector(".shared-recipe-image");
+  pictureElement.innerText = "Recipe id: " + sharedRecipe['recipeId'];
+
+  if(sharedRecipe['messageContent'] != "") {
+    const date = clone.querySelector(".shared-recipe-message");
+    date.innerText = "Attached message:\n" + sharedRecipe['messageContent'];
+  }
+
+  sharedRecipeListElement.appendChild(clone);
+}
+
+function setShareRecipe(recipeId) {
+  sessionStorage.sharedRecipe = recipeId;
+  window.location.href = "/shareRecipe.html";
 }

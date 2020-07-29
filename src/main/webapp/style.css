@@ -602,6 +602,12 @@ h2 {
   top: 5%;
 }
 
+.share-button {
+  position: absolute;
+  right: 15%;
+  top: 5%;
+}
+
 /* unselected favorite icon */
 .icon-star-empty {
   color: black;
@@ -657,7 +663,7 @@ h2 {
 }
 
 /* Recipe Image Gallery */
-#display-recipes {
+.display-recipes-gallery {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, 1fr);
@@ -937,6 +943,7 @@ h2 {
   margin-top: 70px;
   padding-top: 0;
   width: auto;
+}
 
 .loading {
   bottom: 0;
@@ -974,4 +981,25 @@ h2 {
   margin-left: 50%;
   margin-right: auto;
   margin-top: 150px;
+}
+
+.shared-recipe {
+  margin-top: 150px;
+  justify-content: center;
+}
+
+#shared-recipe-content {
+  margin-top: 150px;
+  margin-left: 15%;
+  margin-right: 15%;
+}
+
+.shared-recipe-container {
+  border: solid 1px black;
+  margin-bottom: 15px;
+  margin-top: 15px;
+}
+
+#shared-recipe-title {
+  text-align: center;
 }
