@@ -639,6 +639,51 @@ h2 {
   transform: translate(-50%, -50%);
 }
 
+.feed-container {
+  background-color: white;
+  border: 5px solid orange;
+  height: 500px;
+  left: 50%;
+  margin-bottom: 20px;
+  position: relative;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  width: 600px;
+}
+
+.feed-text {
+  font-family: 'TypeWriter';
+  padding-bottom: 10px;
+  padding-top: 20px;
+}
+
+.date {
+  float: right;
+  margin-right: 20px;
+}
+
+.email {
+  float: left;
+  font-weight: bolder;
+  margin-left: 20px;
+}
+
+.feed-title {
+  color: black;
+  float: left;
+  font-family: 'TypeWriterBold';
+  font-size: 25px;
+  margin-left: 20px;
+  padding-top: 20px;
+}
+
+#feed {
+  margin-top: 50%;
+}
+
+.feed-body {
+  background-color: darkseagreen;
+}
 #nutrition-info {
   font-family: 'TypeWriter', helvetica, sans-serif;
   font-size: 30px;

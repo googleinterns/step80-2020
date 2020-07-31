@@ -41,6 +41,8 @@ import java.util.HashMap;
 import org.json.simple.JSONObject;
 import java.util.Set;
 import java.util.HashSet;
+import java.time.format.DateTimeFormatter;  
+import java.time.LocalDateTime;
 
 /** Servlet that returns and keeps track of favorite recipes in Datastore */
 @WebServlet("/favorite")
@@ -57,13 +59,27 @@ public class FavoriteRecipeServlet extends HttpServlet {
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Long recipeId = strToLong(request.getParameter("recipeId"));
+    String email = request.getParameter("email");
+    String userId;
+
     if (userService.isUserLoggedIn()) {
       Query query = new Query("FavoriteRecipe");
+
+      //see if a specific user's favorites are supposed to be returned or if just the current user
+      if (email != null) {
+        Query userQuery = new Query("Profile")
+            .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, email));
+        PreparedQuery results = datastore.prepare(userQuery);
+        Entity entity = results.asSingleEntity();
+        userId = (String) entity.getProperty("id");
+      } else {
+        userId = userService.getCurrentUser().getUserId();
+      }
 
       if (recipeId != null) {
         // see if specific recipe has been favorited
         List<Query.Filter> filterList = new ArrayList<>();
-        filterList.add(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userService.getCurrentUser().getUserId()));
+        filterList.add(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userId));
         filterList.add(new Query.FilterPredicate("recipeId", Query.FilterOperator.EQUAL, recipeId));
         query.setFilter(new Query.CompositeFilter(Query.CompositeFilterOperator.AND, filterList));
         PreparedQuery results = datastore.prepare(query);
@@ -74,17 +90,23 @@ public class FavoriteRecipeServlet extends HttpServlet {
         } else {
           responseMap.put("isFavorite", true);
           long favoriteId = entity.getKey().getId();
+          String dateFavorited = (String) entity.getProperty("dateFavorited");
           responseMap.put("favoriteId", favoriteId);
+          responseMap.put("dateFavorited", dateFavorited);
         }
       } else {
         // give back list of favorited recipes
-        query.setFilter(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userService.getCurrentUser().getUserId()));
+        query.setFilter(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userId));
         PreparedQuery results = datastore.prepare(query);
 
-        ArrayList<Long> recipeList = new ArrayList<>();
+        ArrayList<FavoriteRecipe> recipeList = new ArrayList();
         for (Entity entity : results.asIterable()) {
+          long entityFavoriteId = entity.getKey().getId();
+          String entityUserId = (String) entity.getProperty("userId");
           long entityRecipeId = (long) entity.getProperty("recipeId");
-          recipeList.add(entityRecipeId);
+          String entityDate = (String) entity.getProperty("dateFavorited");
+
+          recipeList.add(new FavoriteRecipe (entityFavoriteId, entityUserId, entityRecipeId, entityDate));
         }
         responseMap.put("recipeList", recipeList);
       }
@@ -125,7 +147,12 @@ public class FavoriteRecipeServlet extends HttpServlet {
       
         Long recipeId = strToLong(request.getParameter("recipe-id"));
         entity.setProperty("recipeId", recipeId);
-      
+        
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/mm/yyyy HH:mm");  
+        LocalDateTime now = LocalDateTime.now();  
+        String dateFavorited = dateFormat.format(now);
+        entity.setProperty("dateFavorited", dateFavorited);  
+
         if (recipeId != null) {
           datastore.put(entity);
 

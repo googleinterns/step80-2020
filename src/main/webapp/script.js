@@ -141,7 +141,7 @@ function loadFavoritesPage() {
   displayRecipesElement.innerHTML = "";
   fetch('/favorite').then(response => response.json()).then((message) => {
     if (message.error == null) {
-      const recipeIdList = message.recipeList;
+      const recipeIdList = message.recipeList.map(list => list.recipeId)
 
       // display recipes as cards
       recipeIdList.forEach(recipeId => { 
@@ -174,8 +174,8 @@ function multipleSavedRecipes() {
   fetch('/multiple-tags' + tagNameParameters).then(response => response.json()).then((tagJson) => {
     // get list of unique recipes from tagJson
     if (tagJson.error == null) {
-      const recipeList = tagJson.recipeList;
-    
+      const recipeList = tagJson.recipeList.map(list => list.recipeId);
+
       // display recipes as cards
       recipeList.forEach(recipeId => { 
         getSavedRecipe(displayRecipesElement, recipeId);
@@ -717,7 +717,6 @@ function createRecipeElement(recipe, pictureWrap) {
   carouselId.id = "myCarousel" + recipe['id'];
 
   const carouselLinks = clone.querySelector(".carousel-indicators");
-  console.log(carouselLinks.className);
   const carousel = clone.querySelector(".carousel-inner");
   createRecipeCardTags(recipe['id'], carouselLinks, carousel);
 
@@ -1095,4 +1094,50 @@ function readUserDishInput() {
       window.location.href = "/display.html";
     });
   }
+}
+
+/** Creates list of user's friends' favorites */
+function displayFeed() {
+  const feed = document.getElementById("feed");
+  feed.innerHTML = "";
+
+  getLoginStatus();
+  fetch('/feed').then(response => response.json()).then((message) => {
+    if (message.error == null) {
+      const recipeList = message.recipeList;
+      recipeList.forEach(recipe => { 
+        createFeedElement(feed, recipe.recipeId, recipe.userId, recipe.dateFavorited);
+      });
+    } else {
+      alert(message.error);
+    }
+  });
+}
+
+/** Fetches information about the favorited recipe and populates a feed element accordinly */
+function createFeedElement(feed, recipe, userId, date) {
+  fetch('/saved-recipe?recipeId=' + recipe).then(response => response.json()).then((savedRecipeJson) => {
+    // check if recipe information is saved in datastore
+    if (savedRecipeJson.recipeIsSaved) {
+      const savedRecipe = savedRecipeJson.savedRecipe;
+      
+      var temp = document.querySelector("#feed-item-template");
+      var clone = temp.content.cloneNode(true);
+      
+      const email = clone.querySelector(".email");
+      email.innerText = userId;
+
+      const pictureElement = clone.querySelector(".feed-image");
+      pictureElement.src = savedRecipe['image'];
+
+      const dateElement = clone.querySelector(".date");
+      dateElement.innerText = date;
+
+      const titleElement = clone.querySelector(".feed-title");
+      titleElement.innerText = savedRecipe['title'];
+      titleElement.href = savedRecipe['sourceUrl'];
+
+      feed.appendChild(clone);
+    }
+  });
 }
