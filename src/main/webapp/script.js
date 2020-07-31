@@ -394,6 +394,14 @@ function previewImage(input) {
   }
 }
 
+const ALLERGIES = {
+  'Nuts': ["Almond", "Cashew", "Chestnut", "Hazelnut", "Pecan", "Walnut"],
+  'Grain': ['Barley', 'Maize', 'Oat', 'Rice', 'Rye', 'Wheat'],
+  'Legumes': ["Bean", "Pea",' Lentil', 'Lupin'],
+  'Shellfish': ['Crab', 'Crawfish', 'Lobster', 'Oyster', 'Scallop', 'Shrimp', 'Squid'],
+  'Fish': ["Pollock", "Carp", "Cod", "Mackerel", "Salmon", "Tuna"]
+};
+
 /** Fetches profile from server and displays the information to user */
 function getProfile() {
   getLoginStatus('profile.html');
@@ -430,11 +438,93 @@ function getProfile() {
         userNameElement.value = profile.userName;
         allergiesStringElement.value = (profile.allergies).join(", ");
       }
+
+      // create quick allergy add-on elements
+      const allergyOptionsElement = document.getElementById("allergy-options");
+      allergyOptionsElement.innerHTML = "";
+      Object.keys(ALLERGIES).forEach(category => {
+        allergyOptionsElement.append(createAllergyCategoryElement(category, ALLERGIES[category]));
+      });
       
     } else {
       alert(message.error);
     }
   });
+}
+
+// create allergy category element with specific allergies
+function createAllergyCategoryElement(category, allergies) {
+  const allergyCategoryElement = document.createElement("div");
+  allergyCategoryElement.className = "allergy-category";
+
+  const allergyContainer = document.createElement("div");
+  allergyContainer.className = "allergy-container";
+  
+  const allergyTitle = addAllergyElement(true, category, allergies, allergyContainer);
+  
+  // title is before container
+  allergyCategoryElement.append(allergyTitle);
+  allergyCategoryElement.append(allergyContainer);
+
+  allergies.forEach(allergy => {
+    allergyContainer.append(addAllergyElement(false, allergy, [], null));
+  });
+  return allergyCategoryElement;
+}
+
+// create allergy element and modify is allergy name is name of category
+function addAllergyElement(isCategory, allergyName, allergyList, allergyContainer) {
+  var temp = document.querySelector("#allergy-name-template");;
+  var clone = temp.content.cloneNode(true);
+
+  const nameElement = clone.querySelector(".allergy-name");
+  nameElement.innerText = allergyName;
+  // if allergy is name of category of allergies
+  if (isCategory) {
+    const iconRight = clone.querySelector(".icon-caret-right");
+    const iconDown = clone.querySelector(".icon-caret-down");
+    iconRight.style.display = "block";
+    
+    nameElement.style.color = "red";
+
+    const menuSelect = clone.querySelector(".allergy-menu-select");
+    menuSelect.style.cursor = "pointer";
+    menuSelect.onclick = function() {
+      if (allergyContainer.style.display != "flex") {
+        allergyContainer.style.display = "flex";
+        iconDown.style.display = "block";
+        iconRight.style.display = "none";
+      } else {
+        allergyContainer.style.display = "none";
+        iconRight.style.display = "block";
+        iconDown.style.display = "none";
+      }
+    };
+  }
+  
+  // button to add allergy/allergies to allergy textarea
+  const buttonElement = clone.querySelector('.add-allergy-button');
+  const allergiesStringElement = document.getElementById("allergies-entry");
+  // add allergies to allergies entry box when button is clicked
+  buttonElement.addEventListener('click', () => {
+    var currentAllergies = allergiesStringElement.value.split(",").map(function(allergy) {
+      return allergy.trim();
+    });
+    if (!currentAllergies.includes(allergyName.toLowerCase())) {
+      if (allergiesStringElement.value != "") {
+        allergiesStringElement.value += ", ";
+      }
+      allergiesStringElement.value += allergyName.toLowerCase();
+    }
+    if (isCategory) {
+      allergyList.forEach(allergy => {
+        if (!currentAllergies.includes(allergy.toLowerCase())) {
+          allergiesStringElement.value += ", " + allergy.toLowerCase();
+        }
+      });
+    }
+  });
+  return clone;
 }
 
 /** Posts profile information from form to server */
@@ -602,6 +692,7 @@ function createRecipeElement(recipe, pictureWrap) {
       if (message.favoriteId != null) {
         favoriteElement.value = message.favoriteId;
         favoriteElement.style.color = "yellow";
+        postSavedRecipe(recipe);
       } else {
         favoriteElement.value = null;
         favoriteElement.style.color = "transparent";
@@ -714,7 +805,6 @@ function getFavorite(recipeId, favoriteElement) {
 
 /** Get profile information to determine which alerts to create */
 function createRecipeCardAlerts(recipe, alertElements) {
-  const dietList = ['vegetarian', 'vegan', 'glutenFree', 'dairyFree'];
   const iconMap = {
     'vegetarian': 'icon-leaf',
     'vegan': 'icon-exclamation',
@@ -727,7 +817,7 @@ function createRecipeCardAlerts(recipe, alertElements) {
     'glutenFree': 'Alert: Contains gluten',
     'dairyFree': 'Alert: Contains dairy'
   };
-  
+
   fetch('/profile').then(response => response.json()).then((message) => {
     if (message.hasProfile) {
       const profile = message.profile;
@@ -767,7 +857,7 @@ function createRecipeCardAlerts(recipe, alertElements) {
 
       const allergyList = allergyAlertList(recipe['extendedIngredients'], profile.allergies);
       if (allergyList.length > 0) {
-        alertElements.appendChild(createAlertElement("icon-food", "The following allergies have been seen: " + allergyList.join(", "))); 
+        alertElements.appendChild(createAlertElement("icon-food", "The following ingredients have allergens: " + allergyList.join(", "))); 
       }
     }
   });
@@ -775,11 +865,11 @@ function createRecipeCardAlerts(recipe, alertElements) {
 
 // Loop through recipe ingredients to find food allergies
 function allergyAlertList(ingredients, allergies) {
-  var allergyList = [];
+  let allergyList = new Set();
   for (allergy of allergies) {
     for (ingredient of ingredients) {
       if (ifStringMatch(ingredient['name'], allergy)) {
-        allergyList.push(allergy);
+        allergyList.add(ingredient['name']);
         break;
       }
     }
@@ -797,12 +887,14 @@ function ifStringMatch(ingredient, allergy) {
 
 // strip common endings of input word
 function stripEnding(str) {
+  const commonEndings = ["ies", "es", "s", "y"];
   const strLength = str.length;
-  if (str.substring(strLength-3, strLength) == "ies") {
-    return str.substring(0, strLength-3);
-  } else if (str.substring(strLength-1, strLength) == "s" || str.substring(strLength-1, strLength == "y")) {
-    return str.substring(0, strLength-1);
-  }
+  commonEndings.forEach(ending => {
+    if (str.endsWith(ending)) {
+      return str.substring(0, strLength - ending.length);
+    }
+  });
+  return str;
 }
 
 /** Creates an element that represents an alert */
