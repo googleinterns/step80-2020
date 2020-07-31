@@ -90,150 +90,150 @@ public final class FavoriteServletTest {
     assertEquals("User needs to login", json.get("error"));
   }
 
-  // @Test
-  // public void postFavoriteNoParameters() throws IOException, ServletException, ParseException {
-  //   // User set favorite without setting any parameters
-  //   helper.setEnvIsLoggedIn(true);
+  @Test
+  public void postFavoriteNoParameters() throws IOException, ServletException, ParseException {
+    // User set favorite without setting any parameters
+    helper.setEnvIsLoggedIn(true);
 
-  //   StringWriter sw = new StringWriter();
-  //   PrintWriter pw = new PrintWriter(sw);
-  //   when(response.getWriter()).thenReturn(pw);
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
+    when(response.getWriter()).thenReturn(pw);
     
-  //   servlet.doPost(request, response);
-  //   String result = sw.getBuffer().toString().trim();
+    servlet.doPost(request, response);
+    String result = sw.getBuffer().toString().trim();
 
-  //   JSONParser parser = new JSONParser();
-  //   JSONObject json = (JSONObject) parser.parse(result);
+    JSONParser parser = new JSONParser();
+    JSONObject json = (JSONObject) parser.parse(result);
     
-  //   assertTrue(json.isEmpty());
-  // }
+    assertTrue(json.isEmpty());
+  }
 
-  // // helper test for creating favorites with known parameters
-  // public Long createFavoriteWithRecipeId(String recipeId) throws IOException, ServletException, ParseException {
-  //   helper.setEnvIsLoggedIn(true);
+  // helper test for creating favorites with known parameters
+  public Long createFavoriteWithRecipeId(String recipeId) throws IOException, ServletException, ParseException {
+    helper.setEnvIsLoggedIn(true);
 
-  //   StringWriter sw = new StringWriter();
-  //   PrintWriter pw = new PrintWriter(sw);
-  //   when(response.getWriter()).thenReturn(pw);
-  //   when(request.getParameter("recipe-id")).thenReturn(recipeId);
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
+    when(response.getWriter()).thenReturn(pw);
+    when(request.getParameter("recipe-id")).thenReturn(recipeId);
     
-  //   servlet.doPost(request, response);
-  //   String result = sw.getBuffer().toString().trim();
+    servlet.doPost(request, response);
+    String result = sw.getBuffer().toString().trim();
 
-  //   JSONParser parser = new JSONParser();
-  //   JSONObject json = (JSONObject) parser.parse(result);
+    JSONParser parser = new JSONParser();
+    JSONObject json = (JSONObject) parser.parse(result);
     
-  //   assertTrue(json.get("favoriteId") != null);
-  //   return (Long) json.get("favoriteId");
-  // }
+    assertTrue(json.get("favoriteId") != null);
+    return (Long) json.get("favoriteId");
+  }
 
-  // // helper test for deleting favorites
-  // public void deleteFavoriteWithFavoriteId(Long favoriteId) throws IOException, ServletException, ParseException {
-  //   helper.setEnvIsLoggedIn(true);
+  // helper test for deleting favorites
+  public void deleteFavoriteWithFavoriteId(Long favoriteId) throws IOException, ServletException, ParseException {
+    helper.setEnvIsLoggedIn(true);
 
-  //   StringWriter sw = new StringWriter();
-  //   PrintWriter pw = new PrintWriter(sw);
-  //   when(response.getWriter()).thenReturn(pw);
-  //   when(request.getParameter("favorite-id")).thenReturn(Long.toString(favoriteId));
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
+    when(response.getWriter()).thenReturn(pw);
+    when(request.getParameter("favorite-id")).thenReturn(Long.toString(favoriteId));
     
-  //   // delete favorite
-  //   servlet.doPost(request, response);
+    // delete favorite
+    servlet.doPost(request, response);
     
-  //   // check if favorite does not exist due to deletion
-  //   sw = new StringWriter();
-  //   pw = new PrintWriter(sw);
-  //   when(response.getWriter()).thenReturn(pw);
-  //   when(request.getParameter("recipeId")).thenReturn("1");
+    // check if favorite does not exist due to deletion
+    sw = new StringWriter();
+    pw = new PrintWriter(sw);
+    when(response.getWriter()).thenReturn(pw);
+    when(request.getParameter("recipeId")).thenReturn("1");
 
-  //   servlet.doGet(request, response);
-  //   String result = sw.getBuffer().toString().trim();
+    servlet.doGet(request, response);
+    String result = sw.getBuffer().toString().trim();
     
-  //   JSONParser parser = new JSONParser();
-  //   JSONObject json = (JSONObject) parser.parse(result);
+    JSONParser parser = new JSONParser();
+    JSONObject json = (JSONObject) parser.parse(result);
     
-  //   assertFalse((boolean) json.get("isFavorite"));
-  // }
+    assertFalse((boolean) json.get("isFavorite"));
+  }
 
-  // @Test
-  // public void getFavoriteNotLoggedIn() throws IOException, ServletException, ParseException {
-  //   // User tries to get favorites without being logged in
-  //   helper.setEnvIsLoggedIn(false);
+  @Test
+  public void getFavoriteNotLoggedIn() throws IOException, ServletException, ParseException {
+    // User tries to get favorites without being logged in
+    helper.setEnvIsLoggedIn(false);
 
-  //   StringWriter sw = new StringWriter();
-  //   PrintWriter pw = new PrintWriter(sw);
-  //   when(response.getWriter()).thenReturn(pw);
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
+    when(response.getWriter()).thenReturn(pw);
     
-  //   servlet.doGet(request, response);
-  //   String result = sw.getBuffer().toString().trim();
+    servlet.doGet(request, response);
+    String result = sw.getBuffer().toString().trim();
 
-  //   JSONParser parser = new JSONParser();
-  //   JSONObject json = (JSONObject) parser.parse(result);
+    JSONParser parser = new JSONParser();
+    JSONObject json = (JSONObject) parser.parse(result);
     
-  //   assertEquals("User needs to login", json.get("error"));
-  // }
+    assertEquals("User needs to login", json.get("error"));
+  }
 
-  // @Test
-  // public void getFavoritesNoParameters() throws IOException, ServletException, ParseException {
-  //   // User tries to get all favorites
-  //   helper.setEnvIsLoggedIn(true);
+  @Test
+  public void getFavoritesNoParameters() throws IOException, ServletException, ParseException {
+    // User tries to get all favorites
+    helper.setEnvIsLoggedIn(true);
 
-  //   Long favoriteId1 = createFavoriteWithRecipeId("1");
-  //   Long favoriteId2 = createFavoriteWithRecipeId("2");
+    Long favoriteId1 = createFavoriteWithRecipeId("1");
+    Long favoriteId2 = createFavoriteWithRecipeId("2");
 
-  //   StringWriter sw = new StringWriter();
-  //   PrintWriter pw = new PrintWriter(sw);
-  //   when(response.getWriter()).thenReturn(pw);
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
+    when(response.getWriter()).thenReturn(pw);
     
-  //   servlet.doGet(request, response);
-  //   String result = sw.getBuffer().toString().trim();
+    servlet.doGet(request, response);
+    String result = sw.getBuffer().toString().trim();
 
-  //   JSONParser parser = new JSONParser();
-  //   JSONObject json = (JSONObject) parser.parse(result);
+    JSONParser parser = new JSONParser();
+    JSONObject json = (JSONObject) parser.parse(result);
     
-  //   assertTrue(((JSONArray) json.get("recipeList")).size() == 2);
-  //   assertEquals(null, json.get("error"));
+    assertTrue(((JSONArray) json.get("recipeList")).size() == 2);
+    assertEquals(null, json.get("error"));
 
-  //   getFavoriteHasRecipeIdParameter("1", favoriteId1);
+    getFavoriteHasRecipeIdParameter("1", favoriteId1);
     
-  //   deleteFavoriteWithFavoriteId(favoriteId1);
-  //   deleteFavoriteWithFavoriteId(favoriteId2);
-  // }
+    deleteFavoriteWithFavoriteId(favoriteId1);
+    deleteFavoriteWithFavoriteId(favoriteId2);
+  }
 
-  // public void getFavoriteHasRecipeIdParameter(String recipeId, Long favoriteId) throws IOException, ServletException, ParseException {
-  //   // User wants to know if recipe is favorite
-  //   helper.setEnvIsLoggedIn(true);
+  public void getFavoriteHasRecipeIdParameter(String recipeId, Long favoriteId) throws IOException, ServletException, ParseException {
+    // User wants to know if recipe is favorite
+    helper.setEnvIsLoggedIn(true);
 
-  //   StringWriter sw = new StringWriter();
-  //   PrintWriter pw = new PrintWriter(sw);
-  //   when(response.getWriter()).thenReturn(pw);
-  //   when(request.getParameter("recipeId")).thenReturn(recipeId);
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
+    when(response.getWriter()).thenReturn(pw);
+    when(request.getParameter("recipeId")).thenReturn(recipeId);
     
-  //   servlet.doGet(request, response);
-  //   String result = sw.getBuffer().toString().trim();
+    servlet.doGet(request, response);
+    String result = sw.getBuffer().toString().trim();
 
-  //   JSONParser parser = new JSONParser();
-  //   JSONObject json = (JSONObject) parser.parse(result);
+    JSONParser parser = new JSONParser();
+    JSONObject json = (JSONObject) parser.parse(result);
     
-  //   assertTrue((boolean) json.get("isFavorite"));
-  //   assertEquals(favoriteId, json.get("favoriteId"));
-  // }
+    assertTrue((boolean) json.get("isFavorite"));
+    assertEquals(favoriteId, json.get("favoriteId"));
+  }
 
-  // @Test
-  // public void getFavoriteDoesNotExist() throws IOException, ServletException, ParseException {
-  //   // User wants to know if recipe is a favorite but it isn't
-  //   helper.setEnvIsLoggedIn(true);
+  @Test
+  public void getFavoriteDoesNotExist() throws IOException, ServletException, ParseException {
+    // User wants to know if recipe is a favorite but it isn't
+    helper.setEnvIsLoggedIn(true);
 
-  //   StringWriter sw = new StringWriter();
-  //   PrintWriter pw = new PrintWriter(sw);
-  //   when(response.getWriter()).thenReturn(pw);
-  //   when(request.getParameter("recipeId")).thenReturn("3");
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
+    when(response.getWriter()).thenReturn(pw);
+    when(request.getParameter("recipeId")).thenReturn("3");
     
-  //   servlet.doGet(request, response);
-  //   String result = sw.getBuffer().toString().trim();
+    servlet.doGet(request, response);
+    String result = sw.getBuffer().toString().trim();
 
-  //   JSONParser parser = new JSONParser();
-  //   JSONObject json = (JSONObject) parser.parse(result);
+    JSONParser parser = new JSONParser();
+    JSONObject json = (JSONObject) parser.parse(result);
     
-  //   assertFalse((boolean) json.get("isFavorite"));
-  // }
+    assertFalse((boolean) json.get("isFavorite"));
+  }
 }

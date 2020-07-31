@@ -638,8 +638,8 @@ h2 {
 }
 
 .feed-container {
-  border: 5px solid orange;
   background-color: white;
+  border: 5px solid orange;
   height: 500px;
   left: 50%;
   margin-bottom: 20px;
@@ -651,6 +651,8 @@ h2 {
 
 .feed-text {
   font-family: 'TypeWriter';
+  padding-bottom: 10px;
+  padding-top: 20px;
 }
 
 .date {
@@ -665,10 +667,12 @@ h2 {
 }
 
 .feed-title {
-  color: darkseagreen;
+  color: black;
   float: left;
   font-family: 'TypeWriterBold';
-  font-size: 20px;
+  font-size: 25px;
+  margin-left: 20px;
+  padding-top: 20px;
 }
 
 #feed {

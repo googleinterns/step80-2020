@@ -27,11 +27,17 @@ public class FavoriteRecipe {
     * @param favoriteId The unique id of the favorite object
     * @param userId The unique id of the profile.
     * @param recipeId The ids of the recipe that the user favorited
+    * @param datefavorited The formatted date string of of when the recipe was favorited by the user
     */
   public FavoriteRecipe(long favoriteId, String userId, long recipeId, String dateFavorited) {
     this.favoriteId = favoriteId;
     this.userId = userId;
     this.recipeId = recipeId;
     this.dateFavorited = dateFavorited;
+  }
+
+  // Returns the dateFavorited of a given recipe
+  public String getFavoriteDate() {
+    return dateFavorited;
   }
 }

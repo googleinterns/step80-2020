@@ -1006,8 +1006,7 @@ function readUserDishInput() {
 }
 
 /** Creates list of user's friends' favorites */
-function appendtoFeedElement() {
-  var favorites = [];
+function displayFeed() {
   const feed = document.getElementById("feed");
   feed.innerHTML = "";
 
@@ -1015,31 +1014,24 @@ function appendtoFeedElement() {
   fetch('/feed').then(response => response.json()).then((message) => {
     if (message.error == null) {
       const recipeList = message.recipeList;
-       console.log(recipeList);
       recipeList.forEach(recipe => { 
-        console.log("here");
         createFeedElement(feed, recipe.recipeId, recipe.userId, recipe.dateFavorited);
       });
     } else {
-      console.log("here");
       alert(message.error);
     }
   });
 }
 
+/** Fetches information about the favorited recipe and populates a feed element accordinly */
 function createFeedElement(feed, recipe, userId, date) {
-  console.log(recipe);
-  console.log(userId);
   fetch('/saved-recipe?recipeId=' + recipe).then(response => response.json()).then((savedRecipeJson) => {
     // check if recipe information is saved in datastore
     if (savedRecipeJson.recipeIsSaved) {
       const savedRecipe = savedRecipeJson.savedRecipe;
       
-      console.log("hey");
       var temp = document.querySelector("#feed-item-template");
       var clone = temp.content.cloneNode(true);
-
-      const container = clone.querySelector(".feed-container");
       
       const email = clone.querySelector(".email");
       email.innerText = userId;

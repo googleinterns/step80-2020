@@ -38,11 +38,11 @@ import org.json.simple.JSONObject;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 
-/** Servlet that posts and gets user profiles in Datastore */
+/** Servlet that gets and returns the list of recipes favorited by a user's friends */
 @WebServlet("/feed")
 public class FeedServlet extends HttpServlet {
-  
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
@@ -50,7 +50,10 @@ public class FeedServlet extends HttpServlet {
     JSONObject responseMap = new JSONObject();
     ArrayList<FavoriteRecipe> recipeList = new ArrayList();
 
-    if (userService.isUserLoggedIn()) {
+    if (!userService.isUserLoggedIn()) {
+      String errorMessage = "User needs to log in.";
+      responseMap.put("error", errorMessage);
+    } else {
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       Query query = new Query("Profile")
         .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userService.getCurrentUser().getUserId()));
@@ -75,7 +78,6 @@ public class FeedServlet extends HttpServlet {
         PreparedQuery userResults = datastore.prepare(userQuery);
         for (Entity userEntity : userResults.asIterable()) {
           long entityFavoriteId = userEntity.getKey().getId();
-          System.out.println(entityFavoriteId);
           String entityUserId = (String) friend;
           long entityRecipeId = (long) userEntity.getProperty("recipeId");
           String entityDate = (String) userEntity.getProperty("dateFavorited");
@@ -85,12 +87,14 @@ public class FeedServlet extends HttpServlet {
         }
       }
       System.out.println(recipeList);
+
+      Collections.sort(recipeList, (o1, o2) -> o2.getFavoriteDate().compareTo(o1.getFavoriteDate()));
+
+      System.out.println(recipeList);
+
       responseMap.put("recipeList", recipeList);
       responseMap.put("email", email);
-    } else {
-      String errorMessage = "User needs to log in.";
-      responseMap.put("error", errorMessage);
-    }
+    } 
     
     Gson gson = new Gson();   
     String json = gson.toJson(responseMap);
