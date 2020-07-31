@@ -1038,7 +1038,6 @@ function createFeedElement(feed, recipe, userId, date) {
 
       const pictureElement = clone.querySelector(".feed-image");
       pictureElement.src = savedRecipe['image'];
-      // createRecipeElement(recipe, pictureWrap, "feed");
 
       const dateElement = clone.querySelector(".date");
       dateElement.innerText = date;
