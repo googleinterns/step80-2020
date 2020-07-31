@@ -46,29 +46,22 @@ public class ShareRecipeServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
      UserService userService = UserServiceFactory.getUserService();
-    if (!userService.isUserLoggedIn()) {
-    } else {
+    if (userService.isUserLoggedIn()) {
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       Query query = new Query("Profile")
         .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userService.getCurrentUser().getUserId()));
       PreparedQuery results = datastore.prepare(query);
       Entity userEntity = results.asSingleEntity();
-      if(userEntity == null) {
-        //no profile
-      } else {
+      if(userEntity != null) {
         query = new Query("userMessages")
           .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, userService.getCurrentUser().getEmail()));
+        query.addSort("timestamp", SortDirection.DESCENDING);
         results = datastore.prepare(query);
         Entity messagesEntity = results.asSingleEntity();
-        if(messagesEntity == null) {
-          System.out.println(userService.getCurrentUser().getEmail());
-        } else {
+        if(messagesEntity != null) {
           ArrayList<String> messages = convertToList(messagesEntity, "messages");
           ArrayList<String> recipeIds = convertToList(messagesEntity, "recipeIds");
           ArrayList<String> userEmails = convertToList(messagesEntity, "userEmails");
-          System.out.println(messages);
-          System.out.println(recipeIds);
-          System.out.println(userEmails);
           JSONArray messageList = new JSONArray();
           for(int i = 0; i < messages.size(); i++) {
             JSONObject messageObject = new JSONObject();
@@ -96,7 +89,7 @@ public class ShareRecipeServlet extends HttpServlet {
     } else {
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       Query query = new Query("Profile")
-      .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userService.getCurrentUser().getUserId()));
+        .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userService.getCurrentUser().getUserId()));
       PreparedQuery results = datastore.prepare(query);
       Entity userEntity = results.asSingleEntity();
       if(userEntity == null) {
@@ -111,8 +104,7 @@ public class ShareRecipeServlet extends HttpServlet {
         if(friendEntity == null) {
           response.setContentType("application/html");
           response.getWriter().println("Sorry, email not found");      
-        }
-        else {
+        } else {
           query = new Query("userMessages")
             .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, friendEmail));
           results = datastore.prepare(query);

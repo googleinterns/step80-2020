@@ -986,6 +986,8 @@ h2 {
 .shared-recipe {
   margin-top: 150px;
   justify-content: center;
+  align-content: center;
+  text-align: center;
 }
 
 #shared-recipe-content {
@@ -995,11 +997,30 @@ h2 {
 }
 
 .shared-recipe-container {
-  border: solid 1px black;
+  border: solid 5px orange;
   margin-bottom: 15px;
   margin-top: 15px;
+  text-align: center;
 }
 
 #shared-recipe-title {
   text-align: center;
+}
+
+.shared-recipe-display {
+  margin-left: 45%;
+  margin-top: 15px;
+}
+
+#dish-image-wrap-container {
+  margin-top: 15px;
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+.shared-recipe-text {
+  font-family: 'TypeWriter', helvetica, sans-serif;
+  font-size: 20px;
+  color: darkorange;
 }

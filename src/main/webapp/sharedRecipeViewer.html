@@ -28,6 +28,7 @@
     <div id="shared-recipe-content">
       <h3 id="shared-recipe-title">Recipes that have been shared with you!</h3>
       <div id="shared-messages"></div>
+      <div id="card-gallery"></div>
     </div>
     <div class="loading" id="overlay">
       <div id="loading-text">
@@ -39,9 +40,15 @@
 
     <template id="shared-recipe-template">
       <div class="shared-recipe-container">
-        <p class="shared-recipe-email"></p>
-        <p class="shared-recipe-image"></p>
-        <p class="shared-recipe-message"></p>
+        <h3 class="shared-recipe-title"></h3>
+        <div id="dish-image-wrap-container">
+          <div class="dish-image-wrap">
+            <img class="dish-image">
+            <button class="dish-image-text"></button>
+          </div>
+        </div>
+        <p class="shared-recipe-email shared-recipe-text"></p>
+        <p class="shared-recipe-message shared-recipe-text"></p>
       </div>
     </template>
     
@@ -95,12 +102,6 @@
       <div class="recipe-tag">
         <span></span>
         <button class="delete-tag-button">X</button>
-      </div>
-    </template>
-    <template id="picture-wrap-template">
-      <div class="dish-image-wrap">
-        <img class="dish-image">
-        <button class="dish-image-text"></button>
       </div>
     </template>
   </body>

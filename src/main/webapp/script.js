@@ -1081,29 +1081,97 @@ function loadSentRecipes() {
     messageJsonList.forEach(sharedRecipe => {
       createSharedRecipeElement(sharedRecipeListElement, sharedRecipe);
     });
-  overlay.style.display = 'none';
+    overlay.style.display = 'none';
   });
 }
 
 function createSharedRecipeElement(sharedRecipeListElement, sharedRecipe) {
+//   var temp = document.querySelector("#shared-recipe-template");
+//   var clone = temp.content.cloneNode(true);
+
+//   const email = clone.querySelector(".shared-recipe-email");
+//   email.innerText = "Shared recipe from: " + sharedRecipe['userEmail'];
+
+//   const pictureElement = clone.querySelector(".shared-recipe-image");
+//   pictureElement.innerText = "Recipe id: " + sharedRecipe['recipeId'];
+
+//   if(sharedRecipe['messageContent'] != "") {
+//     const date = clone.querySelector(".shared-recipe-message");
+//     date.innerText = "Attached message:\n" + sharedRecipe['messageContent'];
+//  }
+  
+  setupSharedRecipePage(sharedRecipeListElement, sharedRecipe['recipeId'], sharedRecipe);
+//  sharedRecipeListElement.appendChild(clone);
+}
+
+function setShareRecipe(recipeId) {
+  sessionStorage.sharedRecipe = recipeId;
+  window.location.href = "/shareRecipe.html";
+}
+
+function setupSharedRecipePage(sharedRecipeListElement, recipeId, sharedRecipe) {
+  fetch('/saved-recipe?recipeId=' + recipeId).then(response => response.json()).then((savedRecipeJson) => {
+    // check if recipe information is saved in datastore
+    if (savedRecipeJson.recipeIsSaved) {
+      const savedRecipe = savedRecipeJson.savedRecipe;
+      
+      // modify json to allow dietary needs to be displayed on recipe card
+      const dietaryNeeds = savedRecipe.dietaryNeeds;
+      dietaryNeeds.forEach(dietaryNeed => {
+        switch(dietaryNeed) {
+          case "VEGETARIAN":
+            savedRecipe['vegetarian'] = true;
+            break;
+          case "VEGAN":
+            savedRecipe['vegan'] = true;
+            break;
+          case "GLUTENFREE":
+            savedRecipe['glutenFree'] = true;
+            break;
+          case "DAIRYFREE":
+            savedRecipe['dairyFree'] = true;
+            break;
+          default: 
+            break;
+        }
+      });
+      const ingredientNames = savedRecipe.ingredientNames;
+      savedRecipe['extendedIngredients'] = [];
+      ingredientNames.forEach(ingredient => {
+        savedRecipe['extendedIngredients'].push({'name': ingredient});
+      });
+
+      // display recipe card using the recipe's saved information
+      // displayRecipesElement.append(createRecipeElement(savedRecipe));
+      createPictureWrapSharedRecipe(sharedRecipeListElement, savedRecipe, sharedRecipe);
+    }
+  });
+}
+
+function createPictureWrapSharedRecipe(displayRecipesElement, recipe, sharedRecipe) {
   var temp = document.querySelector("#shared-recipe-template");
   var clone = temp.content.cloneNode(true);
 
+  const pictureWrap = clone.querySelector(".dish-image-wrap");
+
+  const pictureElement = clone.querySelector(".dish-image");
+  pictureElement.src = recipe['image'];
+  
+  createRecipeElement(recipe, pictureWrap);
+
+  const pictureText = clone.querySelector(".dish-image-text");
+  pictureText.innerHTML = recipe['title'];
+
+  const sharedRecipeTitle = clone.querySelector(".shared-recipe-title");
+  sharedRecipeTitle.innerHTML = recipe['title'];
+
   const email = clone.querySelector(".shared-recipe-email");
   email.innerText = "Shared recipe from: " + sharedRecipe['userEmail'];
-
-  const pictureElement = clone.querySelector(".shared-recipe-image");
-  pictureElement.innerText = "Recipe id: " + sharedRecipe['recipeId'];
 
   if(sharedRecipe['messageContent'] != "") {
     const date = clone.querySelector(".shared-recipe-message");
     date.innerText = "Attached message:\n" + sharedRecipe['messageContent'];
   }
 
-  sharedRecipeListElement.appendChild(clone);
-}
-
-function setShareRecipe(recipeId) {
-  sessionStorage.sharedRecipe = recipeId;
-  window.location.href = "/shareRecipe.html";
+  displayRecipesElement.appendChild(clone);
 }
