@@ -61,6 +61,8 @@ public class FeedServlet extends HttpServlet {
       ArrayList<String> friendList = (ArrayList<String>) entity.getProperty("friendList");
       friendList = nullToArrayList(friendList);
 
+      System.out.println(friendList);
+
       for (String friend: friendList) {
         Query emailQuery = new Query("Profile")
           .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, friend));
@@ -78,10 +80,11 @@ public class FeedServlet extends HttpServlet {
           long entityRecipeId = (long) userEntity.getProperty("recipeId");
           String entityDate = (String) userEntity.getProperty("dateFavorited");
 
-          FavoriteRecipe testing = new FavoriteRecipe (entityFavoriteId, friend, entityRecipeId, entityDate);
-          recipeList.add(testing);
+          FavoriteRecipe newRecipe = new FavoriteRecipe (entityFavoriteId, friend, entityRecipeId, entityDate);
+          recipeList.add(newRecipe);
         }
       }
+      System.out.println(recipeList);
       responseMap.put("recipeList", recipeList);
       responseMap.put("email", email);
     } else {

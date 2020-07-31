@@ -148,7 +148,7 @@ public class FavoriteRecipeServlet extends HttpServlet {
         Long recipeId = strToLong(request.getParameter("recipe-id"));
         entity.setProperty("recipeId", recipeId);
         
-        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/mm/yyyy HH:mm");  
         LocalDateTime now = LocalDateTime.now();  
         String dateFavorited = dateFormat.format(now);
         entity.setProperty("dateFavorited", dateFavorited);  

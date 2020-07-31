@@ -643,22 +643,36 @@ h2 {
   height: 500px;
   left: 50%;
   margin-bottom: 20px;
-  position: absolute;
+  position: relative;
+  text-align: center;
   transform: translate(-50%, -50%);
+  width: 600px;
 }
 
 .feed-text {
-  font-family: TypeWriter;
-  margin-left: 20px;
+  font-family: 'TypeWriter';
+}
+
+.date {
+  float: right;
+  margin-right: 20px;
 }
 
 .email {
+  float: left;
   font-weight: bolder;
+  margin-left: 20px;
+}
+
+.feed-title {
+  color: darkseagreen;
+  float: left;
+  font-family: 'TypeWriterBold';
+  font-size: 20px;
 }
 
 #feed {
   margin-top: 50%;
-  position: relative;
 }
 
 .feed-body {

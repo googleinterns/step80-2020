@@ -602,6 +602,7 @@ function createRecipeElement(recipe, pictureWrap) {
       if (message.favoriteId != null) {
         favoriteElement.value = message.favoriteId;
         favoriteElement.style.color = "yellow";
+        postSavedRecipe(recipe);
       } else {
         favoriteElement.value = null;
         favoriteElement.style.color = "transparent";
@@ -1014,21 +1015,27 @@ function appendtoFeedElement() {
   fetch('/feed').then(response => response.json()).then((message) => {
     if (message.error == null) {
       const recipeList = message.recipeList;
+       console.log(recipeList);
       recipeList.forEach(recipe => { 
+        console.log("here");
         createFeedElement(feed, recipe.recipeId, recipe.userId, recipe.dateFavorited);
       });
     } else {
+      console.log("here");
       alert(message.error);
     }
   });
 }
 
 function createFeedElement(feed, recipe, userId, date) {
+  console.log(recipe);
+  console.log(userId);
   fetch('/saved-recipe?recipeId=' + recipe).then(response => response.json()).then((savedRecipeJson) => {
     // check if recipe information is saved in datastore
     if (savedRecipeJson.recipeIsSaved) {
       const savedRecipe = savedRecipeJson.savedRecipe;
       
+      console.log("hey");
       var temp = document.querySelector("#feed-item-template");
       var clone = temp.content.cloneNode(true);
 
@@ -1039,9 +1046,14 @@ function createFeedElement(feed, recipe, userId, date) {
 
       const pictureElement = clone.querySelector(".feed-image");
       pictureElement.src = savedRecipe['image'];
+      // createRecipeElement(recipe, pictureWrap, "feed");
 
-      const date = clone.querySelector(".date");
-      date.innerText = date;
+      const dateElement = clone.querySelector(".date");
+      dateElement.innerText = date;
+
+      const titleElement = clone.querySelector(".feed-title");
+      titleElement.innerText = savedRecipe['title'];
+      titleElement.href = savedRecipe['sourceUrl'];
 
       feed.appendChild(clone);
     }
