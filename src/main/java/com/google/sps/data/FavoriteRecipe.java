@@ -13,6 +13,9 @@
 // limitations under the License.
 
 package com.google.sps.data;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
 
 /**
  * Class representing a user's favorite recipe
@@ -37,7 +40,15 @@ public class FavoriteRecipe {
   }
 
   // Returns the dateFavorited of a given recipe
-  public String getFavoriteDate() {
-    return dateFavorited;
+  public Date getFavoriteDate() {
+    SimpleDateFormat sdformat = new SimpleDateFormat("dd/mm/yyyy HH:mm");
+    Date output;
+    try {
+      return sdformat.parse(dateFavorited);
+    } catch(ParseException e) {
+      return null;
+    }
+    
+    // return dateFavorited;
   }
 }

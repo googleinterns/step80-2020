@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
+import java.text.ParseException;
 
 /** Servlet that gets and returns the list of recipes favorited by a user's friends */
 @WebServlet("/feed")
@@ -85,7 +86,7 @@ public class FeedServlet extends HttpServlet {
         }
       }
       Collections.sort(recipeList, (o1, o2) -> o2.getFavoriteDate().compareTo(o1.getFavoriteDate()));
-      
+      System.out.println(recipeList);
       responseMap.put("recipeList", recipeList);
       responseMap.put("email", email);
     } 

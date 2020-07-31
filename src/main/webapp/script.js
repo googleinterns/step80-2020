@@ -14,8 +14,6 @@
 
 /** Fetches information returned from Spoonacular (after the image has been classified appropriately) */
 function getRecipeInfo() {
-  const overlay = document.getElementById('overlay');
-  overlay.style.display = 'block';
   const image = document.getElementById('image').files[0];
   const params = new FormData();
   params.append('image', image);
@@ -174,7 +172,7 @@ function multipleSavedRecipes() {
   fetch('/multiple-tags' + tagNameParameters).then(response => response.json()).then((tagJson) => {
     // get list of unique recipes from tagJson
     if (tagJson.error == null) {
-      const recipeList = tagJson.recipeList.map(list => list.recipeId);
+      const recipeList = tagJson.recipeList;
 
       // display recipes as cards
       recipeList.forEach(recipeId => { 
@@ -604,6 +602,10 @@ function getLoginStatus(url) {
       taggedLink.innerText = "My Tagged Recipes";
       taggedLink.href="/board.html";
 
+      const favoriteLink = document.createElement("a");
+      favoriteLink.innerText = "My Favorite Recipes";
+      favoriteLink.href="/favorites.html";
+
       const addFriendLink = document.createElement("a");
       addFriendLink.innerText = "Add Friends";
       addFriendLink.href="/friends.html";
@@ -614,6 +616,7 @@ function getLoginStatus(url) {
 
       hoverMenuElement.appendChild(myProfileLink);
       hoverMenuElement.appendChild(taggedLink);
+      hoverMenuElement.appendChild(favoriteLink);
       hoverMenuElement.appendChild(addFriendLink);
       hoverMenuElement.appendChild(logoutLink);
 
@@ -673,8 +676,13 @@ function createRecipeElement(recipe, pictureWrap) {
     hoverElement.style.display = "none";
     document.getElementById("display-recipes").style.opacity = "1";
     const tagHeader = document.getElementById("tag-page-header");
+    const tagMenu = document.getElementById("tag-menu");
+    const favoriteHeader = document.getElementById("favorite-header");
     if (tagHeader != null) {
       tagHeader.style.opacity = "1";
+      tagMenu.style.opacity = "1";
+    } else if (favoriteHeader != null) {
+      favoriteHeader.style.opacity = "1";
     }
   }
 
@@ -759,8 +767,13 @@ function createRecipeElement(recipe, pictureWrap) {
     hoverElement.style.display = "block";
     document.getElementById("display-recipes").style.opacity = "0.2";
     const tagHeader = document.getElementById("tag-page-header");
+    const tagMenu = document.getElementById("tag-menu");
+    const favoriteHeader = document.getElementById("favorite-header");
     if (tagHeader != null) {
       tagHeader.style.opacity = "0.2";
+      tagMenu.style.opacity = "0.2";
+    } else if (favoriteHeader != null) {
+      favoriteHeader.style.opacity = "0.2";
     }
   }
 }
@@ -1132,6 +1145,7 @@ function createFeedElement(feed, recipe, userId, date) {
 
       const dateElement = clone.querySelector(".date");
       dateElement.innerText = date;
+      console.log(date);
 
       const titleElement = clone.querySelector(".feed-title");
       titleElement.innerText = savedRecipe['title'];

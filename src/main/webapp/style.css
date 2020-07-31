@@ -6,7 +6,7 @@ body {
   background-image: url("/images/fancy-silverware.jpg");
   background-position: 50% 50%;
   background-repeat: no-repeat;
-  background-size: 1100px 800px;
+  background-size: 1000px 750px;
   margin-top: 10%;
 }
 
@@ -671,10 +671,11 @@ h2 {
 .feed-title {
   color: black;
   float: left;
-  font-family: 'TypeWriterBold';
-  font-size: 25px;
+  font-family: 'TypeWriter';
+  font-size: 20px;
   margin-left: 20px;
-  padding-top: 20px;
+  padding-top: 13px;
+  text-transform: uppercase;
 }
 
 #feed {
@@ -716,6 +717,7 @@ h2 {
 
 .dish-image-wrap {
   border: 2px solid rgb(234, 184, 19);
+  cursor: pointer;
   max-height: 200px;
   max-width: 300px;
   position: relative;
@@ -836,10 +838,9 @@ h2 {
 }
 
 .label-options {
+  color: black;
   font-family: 'TypeWriter', helvetica, sans-serif;
   font-size: 3vw;
-  padding-right: 50%;
-  color: black;
 }
 
 .radio-label {
@@ -847,9 +848,10 @@ h2 {
 }
 
 #label-header {
+  color: darkorange;
   font-family: 'TypeWriterBold', helvetica, sans-serif;
   font-size: 3vw;
-  color: darkorange;
+  position: relative;
 }
 
 #tag-page-header {
@@ -937,7 +939,9 @@ h2 {
 }
 
 #tag-inner {
+  overflow: scroll;
   text-align: center;
+  width: 80%;
 }
 
 #allergy-options {
@@ -985,6 +989,7 @@ h2 {
 }
 
 .carousel-inner {
+  height: 55px;
   margin-left: 80px;
   overflow: hidden;
   text-align: center;
@@ -1028,6 +1033,7 @@ h2 {
   margin-top: 70px;
   padding-top: 0;
   width: auto;
+}
 
 .loading {
   bottom: 0;
@@ -1065,4 +1071,38 @@ h2 {
   margin-left: 50%;
   margin-right: auto;
   margin-top: 150px;
+}
+
+#board-right-control {
+  left: auto;
+}
+
+#tag-indicators {
+  right: 30%;
+}
+
+#bottom-tag-table {
+  bottom: 30px;
+  position: absolute;
+}
+
+#tag-container {
+  position: absolute;
+  top: 300px;
+}
+
+.selection-images {
+  max-height: 200px;
+  max-width: 200px
+}
+
+.selection-box {
+  margin-top: 10px;
+  text-align: center;
+}
+
+#selection-submit {
+  margin-right: 100%;
+  margin-top: 20px;
+  position: relative;
 }
