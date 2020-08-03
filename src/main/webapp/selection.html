@@ -29,13 +29,17 @@
     <div id="selection">
       <form action= "javascript:readUserDishChoice()" id="best-fit-choice" name="dishFitChoice">
         <h2 id="label-header">Choose The label that best fits your dish!</h1>
-        <img id="first-option-image"></img>
-        <input type="radio" class="radio-label" id="first-option" name="labelFitChoice" value="first-option">
-        <label id="first-option-label" class="label-options" for="first-option">First option</label><br>
-        <img crossorigin="anonymous" id="second-option-image"></img>
-        <input type="radio" class="radio-label" id="second-option" name="labelFitChoice" value="second-option">
-        <label crossorigin="anonymous" id="second-option-label" class="label-options"for="second-option">Second option</label><br>
-        <input type="submit" class="upload" value="Submit">
+        <div class="selection-box">
+          <img class="selection-images" id="first-option-image"></img><br/>
+          <input type="radio" class="radio-label" id="first-option" name="labelFitChoice" value="first-option">
+          <label id="first-option-label" class="label-options" for="first-option">First option</label><br>
+        </div>
+        <div class="selection-box">
+          <img class="selection-images" crossorigin="anonymous" id="second-option-image"></img><br/>
+          <input type="radio" class="radio-label" id="second-option" name="labelFitChoice" value="second-option">
+          <label crossorigin="anonymous" id="second-option-label" class="label-options"for="second-option">Second option</label><br>
+        </div>
+        <input type="submit" id="selection-submit" class="upload" value="Submit">
       </form>
     </div>
     <div class="loading" id="overlay">

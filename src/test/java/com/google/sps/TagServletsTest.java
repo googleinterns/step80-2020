@@ -16,6 +16,7 @@ package com.google.sps;
 import com.google.sps.servlets.TagServlet;
 import com.google.sps.servlets.TagNamesServlet;
 import com.google.sps.servlets.DeleteTagServlet;
+import com.google.sps.servlets.MultipleTagsServlet;
 import org.junit.Assert;
 import org.junit.After;
 import org.junit.Before;
@@ -62,6 +63,7 @@ public final class TagServletsTest {
   @Mock private TagServlet tagServlet;
   @Mock private TagNamesServlet tagNamesServlet;
   @Mock private DeleteTagServlet deleteTagServlet;
+  @Mock private MultipleTagsServlet multipleTagsServlet;
   @Mock private HttpServletRequest request;
   @Mock private HttpServletResponse response;
 
@@ -72,6 +74,7 @@ public final class TagServletsTest {
     tagServlet = new TagServlet();
     tagNamesServlet = new TagNamesServlet();
     deleteTagServlet = new DeleteTagServlet();
+    multipleTagsServlet = new MultipleTagsServlet();
   }
 
   @After
@@ -267,22 +270,22 @@ public final class TagServletsTest {
     testArray.add("tagName1");
 
     assertEquals(testArray, json);
+
+    deleteTag("tagName", "1");
+    deleteTag("tagName1", "2");
   }
 
-  @Test
-  public void deleteTag() throws IOException, ServletException, ParseException {
+  // helper test for deleting tags
+  public void deleteTag(String tagName, String recipeId) throws IOException, ServletException, ParseException {
     // User wants to delete tag
     helper.setEnvIsLoggedIn(true);
     
-    // post tag to be deleted
-    postTagHasParameters("deleteTagName", "1");
-
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
     when(response.getWriter()).thenReturn(pw);
     
-    when(request.getParameter("tagName")).thenReturn("deleteTagName");
-    when(request.getParameter("recipeId")).thenReturn("1");
+    when(request.getParameter("tagName")).thenReturn(tagName);
+    when(request.getParameter("recipeId")).thenReturn(recipeId);
     
     // get specific tag from server
     tagServlet.doGet(request, response);
@@ -308,8 +311,8 @@ public final class TagServletsTest {
     pw = new PrintWriter(sw);
     when(response.getWriter()).thenReturn(pw);
     
-    when(request.getParameter("tagName")).thenReturn("deleteTagName");
-    when(request.getParameter("recipeId")).thenReturn("1");
+    when(request.getParameter("tagName")).thenReturn(tagName);
+    when(request.getParameter("recipeId")).thenReturn(recipeId);
     
     // check if tag has been deleted from server
     tagServlet.doGet(request, response);
@@ -318,5 +321,38 @@ public final class TagServletsTest {
     getTagJson = (JSONObject) parser.parse(result);
     getTagJsonArray = (JSONArray) getTagJson.get("filteredList");
     assertTrue(getTagJsonArray.isEmpty());
+  }
+
+  @Test
+  public void getMultipleTagsIsLoggedIn() throws IOException, ServletException, ParseException {
+    // User is logged in and gets all tag names
+    helper.setEnvIsLoggedIn(true);
+
+    // add tags to server
+    postTagHasParameters("tagName", "1");
+    postTagHasParameters("tagName1", "2");
+    postTagHasParameters("tagName2", "3");
+
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
+    when(response.getWriter()).thenReturn(pw);
+
+    String[] tagList = {"tagName","tagName1"};
+    when(request.getParameterValues("tag-names")).thenReturn(tagList);
+    
+    // get tagnames from server
+    multipleTagsServlet.doGet(request, response);
+    String result = sw.getBuffer().toString().trim();
+
+    JSONParser parser = new JSONParser();
+    JSONObject json = (JSONObject) parser.parse(result);
+    JSONArray testArray = new JSONArray();
+    testArray.add(new Long(1));
+    testArray.add(new Long(2));
+    assertEquals(testArray, (JSONArray) json.get("recipeList"));
+
+    deleteTag("tagName", "1");
+    deleteTag("tagName1", "2");
+    deleteTag("tagName2", "3");
   }
 }
