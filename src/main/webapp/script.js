@@ -14,6 +14,8 @@
 
 /** Fetches information returned from Spoonacular (after the image has been classified appropriately) */
 function getRecipeInfo() {
+  const overlay = document.getElementById('overlay');
+  overlay.style.display = 'block';
   const image = document.getElementById('image').files[0];
   const params = new FormData();
   params.append('image', image);
@@ -135,6 +137,8 @@ function loadBoardPage() {
 /** Call the appropriate functions needed on-load of the body of the favorites page */
 function loadFavoritesPage() {
   getLoginStatus("favorites.html");
+  const overlay = document.getElementById('overlay');
+  overlay.style.display = 'block';
   const displayRecipesElement = document.getElementById("display-recipes");
   displayRecipesElement.innerHTML = "";
   fetch('/favorite').then(response => response.json()).then((message) => {
@@ -148,6 +152,7 @@ function loadFavoritesPage() {
     } else {
       alert(message.error);
     }
+    overlay.style.display = 'none';
   });
 }
 
@@ -595,15 +600,19 @@ function getLoginStatus(url) {
 
     if (userInfo.isLoggedIn) {
       const myProfileLink = document.createElement("a");
-      myProfileLink.innerText = "Edit My Profile";
+      myProfileLink.innerText = "My Profile";
       myProfileLink.href="/profile.html";
 
       const taggedLink = document.createElement("a");
-      taggedLink.innerText = "My Tagged Recipes";
+      taggedLink.innerText = "My Tags";
       taggedLink.href="/board.html";
 
+      const feedLink = document.createElement("a");
+      feedLink.innerText = "Friends Feed";
+      feedLink.href="/feed.html";
+
       const favoriteLink = document.createElement("a");
-      favoriteLink.innerText = "My Favorite Recipes";
+      favoriteLink.innerText = "My Favorites";
       favoriteLink.href="/favorites.html";
 
       const addFriendLink = document.createElement("a");
@@ -611,7 +620,7 @@ function getLoginStatus(url) {
       addFriendLink.href="/friends.html";
       
       const seeSharedRecipesLink = document.createElement("a");
-      seeSharedRecipesLink.innerText = "See Shared Recipes";
+      seeSharedRecipesLink.innerText = "Shared Recipes";
       seeSharedRecipesLink.href="/sharedRecipeViewer.html";
 
       const logoutLink = document.createElement("a");
@@ -623,6 +632,7 @@ function getLoginStatus(url) {
       hoverMenuElement.appendChild(favoriteLink);
       hoverMenuElement.appendChild(addFriendLink);
       hoverMenuElement.appendChild(seeSharedRecipesLink);
+      hoverMenuElement.appendChild(feedLink);
       hoverMenuElement.appendChild(logoutLink);
 
       if (!userInfo.hasProfile && url != "profile.html") {
@@ -1235,36 +1245,36 @@ function setShareRecipe(recipeId) {
 /* creates recipe and shared recipe cards for the page */
 function setupSharedRecipePage(sharedRecipeListElement, recipeId, sharedRecipe) {
   fetch('/saved-recipe?recipeId=' + recipeId).then(response => response.json()).then((savedRecipeJson) => {
-      // modify json to allow dietary needs to be displayed on recipe card
-      const dietaryNeeds = savedRecipe.dietaryNeeds;
-      dietaryNeeds.forEach(dietaryNeed => {
-        switch(dietaryNeed) {
-          case "VEGETARIAN":
-            savedRecipe['vegetarian'] = true;
-            break;
-          case "VEGAN":
-            savedRecipe['vegan'] = true;
-            break;
-          case "GLUTENFREE":
-            savedRecipe['glutenFree'] = true;
-            break;
-          case "DAIRYFREE":
-            savedRecipe['dairyFree'] = true;
-            break;
-          default: 
-            break;
-        }
-      });
-      const ingredientNames = savedRecipe.ingredientNames;
-      savedRecipe['extendedIngredients'] = [];
-      ingredientNames.forEach(ingredient => {
-        savedRecipe['extendedIngredients'].push({'name': ingredient});
-      });
+    // modify json to allow dietary needs to be displayed on recipe card
+    const savedRecipe = savedRecipeJson.savedRecipe;
+    const dietaryNeeds = savedRecipe.dietaryNeeds;
+    dietaryNeeds.forEach(dietaryNeed => {
+      switch(dietaryNeed) {
+        case "VEGETARIAN":
+          savedRecipe['vegetarian'] = true;
+          break;
+        case "VEGAN":
+          savedRecipe['vegan'] = true;
+          break;
+        case "GLUTENFREE":
+          savedRecipe['glutenFree'] = true;
+          break;
+        case "DAIRYFREE":
+          savedRecipe['dairyFree'] = true;
+          break;
+        default: 
+          break;
+      }
+    });
+    const ingredientNames = savedRecipe.ingredientNames;
+    savedRecipe['extendedIngredients'] = [];
+    ingredientNames.forEach(ingredient => {
+      savedRecipe['extendedIngredients'].push({'name': ingredient});
+    });
 
-      // display recipe card using the recipe's saved information
-      // displayRecipesElement.append(createRecipeElement(savedRecipe));
-      createPictureWrapSharedRecipe(sharedRecipeListElement, savedRecipe, sharedRecipe);
-    }
+    // display recipe card using the recipe's saved information
+    // displayRecipesElement.append(createRecipeElement(savedRecipe));
+    createPictureWrapSharedRecipe(sharedRecipeListElement, savedRecipe, sharedRecipe);
   });
 }
 

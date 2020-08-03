@@ -68,7 +68,7 @@ public class AddFriendsServlet extends HttpServlet {
             response.getWriter().println("Sorry, email not found");      
           }
           else {
-            ArrayList<String> friendList = (ArrayList<String>) userEntity.getProperty("friendList");
+            ArrayList<String> friendList = nullToArrayList((ArrayList<String>) userEntity.getProperty("friendList"));
             if(friendList.contains(friendEmail)){
               response.setContentType("application/html");
               response.getWriter().println("You already have this user as a friend");
@@ -82,5 +82,12 @@ public class AddFriendsServlet extends HttpServlet {
           }
         }
       }
+  }
+
+  public ArrayList<String> nullToArrayList(ArrayList<String> valuesList) {
+    if (valuesList == null) {
+      return new ArrayList<>();
+    }
+    return valuesList;
   }
 }
