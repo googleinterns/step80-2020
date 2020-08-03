@@ -2,16 +2,12 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Your Recipe Board</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <title>Home</title>
     <link rel="stylesheet" href="style.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
     <script src="script.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   </head>
-
-  <body onload="javascript:loadBoardPage()"> 
+  <body onload="loadSharePage()">
     <div id="frame-top" class="frame"></div>
     <div id="frame-bottom" class="frame"></div>
     <div id="frame-right" class="frame"></div>
@@ -29,27 +25,15 @@
         </div>
       </div>
     </div>
-    <div class="content">
-      <div id="tag-page-header">
-        <div id="your-tags-text">Your Tags</div>
-        <i class="icon-tags icon-4x"></i>
-      </div>
-      <div id="tag-menu">
-        <div id="myTagCarousel" class="carousel slide" data-ride="carousel">
-          <ol id="tag-indicators" class="carousel-indicators"> </ol>
-          <div id="tag-inner" class="carousel-inner"> </div>
-          <a class="left carousel-control" href="#myTagCarousel" data-slide="prev">
-            <span class="glyphicon glyphicon-chevron-left"></span>
-            <span class="sr-only">Previous</span>
-          </a>
-          <a id="board-right-control" class="right carousel-control" href="#myTagCarousel" data-slide="next">
-            <span class="glyphicon glyphicon-chevron-right"></span>
-            <span class="sr-only">Next</span>
-          </a>
-        </div>
-      </div>
-      <div id="display-recipes" class="display-recipes-gallery"> </div>
-      <div id="card-gallery"> </div>
+    <div class="shared-recipe">
+      <h3>Share a recipe</h3>
+      <div id="card-gallery"></div>
+      <h3 id="shared-recipe-intro"></h3>
+      <input id="friend-input"type="text" placeholder="Friend email"></input>
+      <input id="shared-recipe-message" type="text" placeholder="addional message"></input>
+      <button onClick="javaScript:shareRecipe()">Share Recipe</button>
+      <div id="display-recipes" class="shared-recipe-display"></div>
+      <h3 id="shared-recipe-response"></h3>
     </div>
     <template id="recipe-template">
       <div class="recipe-card">
@@ -71,7 +55,7 @@
             <div id="recipe-alert-block"> </div>
           </div>
         </div>
-        <div id="tag-container" class="container">
+        <div class="container">
           <div id="myCarousel" class="carousel slide" data-ride="carousel">
             <ol class="carousel-indicators"> </ol>
             <div class="carousel-inner"> </div>
@@ -85,7 +69,7 @@
             </a>
           </div>
         </div>
-        <div id="bottom-tag-table" class="recipe-card-table">
+        <div class="recipe-card-table">
           <input type="text" name="tag-input" class="tag-input"></input>
           <label id="tag-label" class="form-label" for="tag-input">Add a tag</label>
           <div class="add-tag-button"> <i class="icon-plus-sign icon-3x"></i></div>
@@ -101,13 +85,6 @@
       <div class="recipe-tag">
         <span></span>
         <button class="delete-tag-button">X</button>
-      </div>
-    </template>
-    <template id="tag-name-template">
-      <div class="tag-menu-item">
-        <button class="tag-item-button">x</button>
-        <span class="tag-item-name"></span>
-        <input type="checkbox" name="tag-menu-checkbox" class="tag-menu-checkbox">
       </div>
     </template>
     <template id="picture-wrap-template">

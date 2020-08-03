@@ -121,7 +121,6 @@ public class ProfileServlet extends HttpServlet {
       Entity entity = new Entity("Profile", id);
       entity.setProperty("id", id);
       entity.setProperty("email", email);
-      entity.setProperty("friendList", new ArrayList<String>());
       
       String userName = request.getParameter("userName");
       if (userName != null) {
@@ -134,9 +133,22 @@ public class ProfileServlet extends HttpServlet {
       
         // The put() function automatically inserts new data or updates existing data based on id
         datastore.put(entity);
+
+        Query userMessagesQuery = new Query("userMessages")
+          .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, userService.getCurrentUser().getEmail()));
+        PreparedQuery results = datastore.prepare(userMessagesQuery);
+        Entity userMessagesEntity = results.asSingleEntity();
+        if (userMessagesEntity == null) {
+          Entity userMessages = new Entity("userMessages", email);
+          userMessages.setProperty("email", email);
+          userMessages.setProperty("messages", new ArrayList<String>());
+          userMessages.setProperty("recipeIds", new ArrayList<String>());
+          userMessages.setProperty("userEmails", new ArrayList<String>());
+          datastore.put(userMessages);
+        }
       } else {
         String errorMessage = "User needs to input username.";
-      responseMap.put("error", errorMessage);
+        responseMap.put("error", errorMessage);
       }
     }
 

@@ -604,6 +604,12 @@ h2 {
   top: 5%;
 }
 
+.share-button {
+  position: absolute;
+  right: 15%;
+  top: 5%;
+}
+
 /* unselected favorite icon */
 .icon-star-empty {
   color: black;
@@ -705,7 +711,7 @@ h2 {
 }
 
 /* Recipe Image Gallery */
-#display-recipes {
+.display-recipes-gallery {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, 1fr);
@@ -1071,6 +1077,48 @@ h2 {
   margin-left: 50%;
   margin-right: auto;
   margin-top: 150px;
+}
+
+.shared-recipe {
+  margin-top: 150px;
+  justify-content: center;
+  align-content: center;
+  text-align: center;
+}
+
+#shared-recipe-content {
+  margin-top: 150px;
+  margin-left: 15%;
+  margin-right: 15%;
+}
+
+.shared-recipe-container {
+  border: solid 5px orange;
+  margin-bottom: 15px;
+  margin-top: 15px;
+  text-align: center;
+}
+
+#shared-recipe-title {
+  text-align: center;
+}
+
+.shared-recipe-display {
+  margin-left: 45%;
+  margin-top: 15px;
+}
+
+#dish-image-wrap-container {
+  margin-top: 15px;
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+.shared-recipe-text {
+  font-family: 'TypeWriter', helvetica, sans-serif;
+  font-size: 20px;
+  color: darkorange;
 }
 
 #board-right-control {
