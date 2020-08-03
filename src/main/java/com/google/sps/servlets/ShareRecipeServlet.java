@@ -55,7 +55,6 @@ public class ShareRecipeServlet extends HttpServlet {
       if(userEntity != null) {
         query = new Query("userMessages")
           .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, userService.getCurrentUser().getEmail()));
-        query.addSort("timestamp", SortDirection.DESCENDING);
         results = datastore.prepare(query);
         Entity messagesEntity = results.asSingleEntity();
         if(messagesEntity != null) {
